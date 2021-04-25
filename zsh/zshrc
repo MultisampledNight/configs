@@ -1,0 +1,61 @@
+# The following lines were added by compinstall
+
+zstyle ':completion:*' completer _expand _complete _ignored _correct _approximate
+zstyle ':completion:*' matcher-list 'r:|[._-]=** r:|=**'
+zstyle ':completion:*' max-errors 2
+zstyle ':completion:*' prompt 'Unsure. Tell me what exactly.'
+zstyle :compinstall filename '/home/multisn8/.zshrc'
+
+autoload -Uz compinit
+compinit
+# End of lines added by compinstall
+# Lines configured by zsh-newuser-install
+HISTFILE=~/.histfile
+HISTSIZE=10000
+SAVEHIST=10000
+setopt extendedglob notify
+unsetopt autocd beep nomatch
+bindkey -v
+# End of lines configured by zsh-newuser-install
+
+
+### ALIAS ###
+
+alias ls="ls -I '*~' --color=auto"
+alias l="ls -l"
+alias ll="l -a"
+
+alias vifm='vifmrun'
+
+alias R="R --quiet"
+
+
+### SHELLFUNCTIONS ###
+
+bydir() {
+	dir="$(basename $(pwd))"
+	touch "$dir$1"
+}
+
+
+### ENVIRONMENT VARIABLES ###
+
+export PATH="$PATH:$HOME/.local/share/gem/ruby/2.7.0/bin:$HOME/.local/bin:$HOME/info/path:$HOME/.cargo/bin"
+
+export EDITOR="/usr/bin/nvim"
+export GIT_EDITOR="/usr/bin/nvim"
+export MANPAGER="/usr/bin/nvim +Man!"
+export PAGER="/usr/bin/nvim -R"
+
+export WINEARCH="win64"
+
+
+### PROMPT ###
+# The colors I use here are:
+# - 87: #00ffff, very intense cyan
+# - 69: #5f87ff, middle between cyan and purple
+# - 57: #5f00ff, deep blue-purple
+
+PROMPT='%F{87}?%f'
+RPROMPT='%F{57}%~%f %F{57}-%T-%f%(0?.. %F{69}%?%f)%(!.%F{87}#%f)'
+
