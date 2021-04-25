@@ -5,7 +5,7 @@ I use both normal NeoVim as well as NeoVim Nightly. I adjusted my init.vim to wo
 
 ## Images
 
-![Image of my NeoVim setup](https://user-images.githubusercontent.com/80128916/115675210-af5fcd80-a34e-11eb-9e29-26be9e3e2f4a.png)
+![Full size image of my NeoVim setup](https://user-images.githubusercontent.com/80128916/116002001-c8d77280-a5f7-11eb-84a3-c24fce62ba73.png)
 
 ## Setup
 This assumes you are starting off with a clean NeoVim without any configuration, and you use `~/.config` as your configuration directory.
