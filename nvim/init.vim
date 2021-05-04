@@ -8,6 +8,7 @@ Plug 'TornaxO7/auto-cosco.vim', {'branch': 'stable'}
 Plug 'MultisampledNight/samplednight'
 Plug 'itchyny/lightline.vim'
 Plug 'preservim/nerdtree'
+Plug 'sirver/UltiSnips'
 
 " latex or something, idk
 Plug 'xuhdev/vim-latex-live-preview'
@@ -20,8 +21,7 @@ if has('nvim-0.5')
 	Plug 'folke/lsp-trouble.nvim'
 	Plug 'simrat39/symbols-outline.nvim'
 	Plug 'lukas-reineke/indent-blankline.nvim', {'branch': 'lua'}
-	" bugs around with auto-cosco.vim, so disable it... for now
-	"Plug 'hrsh7th/nvim-compe'
+	Plug 'hrsh7th/nvim-compe'
 endif
 
 call plug#end()
@@ -30,10 +30,12 @@ source ~/.config/nvim/helpers/general.vim
 source ~/.config/nvim/helpers/visual.vim
 source ~/.config/nvim/helpers/lightline.vim
 source ~/.config/nvim/helpers/rust.vim
+source ~/.config/nvim/helpers/ultisnips-config.vim
+source ~/.config/nvim/helpers/cosco-fun.vim
 
 "" nightly stuff
 if has('nvim-0.5')
-	"source ~/.config/nvim/helpers/compefun.vim
+	source ~/.config/nvim/helpers/compefun.vim
 	source ~/.config/nvim/helpers/lspconfigfun.vim
 	source ~/.config/nvim/helpers/treesitterfun.vim
 	source ~/.config/nvim/helpers/lsp-trouble.vim
