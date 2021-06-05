@@ -3,8 +3,6 @@
 call plug#begin('~/.local/share/nvim/vim-plug-stuff')
 
 " normal
-Plug 'wellle/context.vim'
-Plug 'TornaxO7/auto-cosco.vim', {'branch': 'stable'}
 Plug 'MultisampledNight/samplednight'
 Plug 'itchyny/lightline.vim'
 Plug 'preservim/nerdtree'
@@ -22,6 +20,9 @@ if has('nvim-0.5')
 	Plug 'simrat39/symbols-outline.nvim'
 	Plug 'lukas-reineke/indent-blankline.nvim', {'branch': 'lua'}
 	Plug 'hrsh7th/nvim-compe'
+	Plug 'p00f/nvim-ts-rainbow'
+	Plug 'romgrk/nvim-treesitter-context'
+	Plug 'b3nj5m1n/kommentary'
 endif
 
 call plug#end()
@@ -41,4 +42,5 @@ if has('nvim-0.5')
 	source ~/.config/nvim/helpers/lsp-trouble.vim
 	source ~/.config/nvim/helpers/symbols-outline.vim
 	source ~/.config/nvim/helpers/indent-blankline.vim
+	source ~/.config/nvim/helpers/kommentary-config.vim
 endif

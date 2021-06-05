@@ -1,0 +1,65 @@
+# initialization
+
+snippet init
+\documentclass{article}
+
+\begin{document}
+
+\title{$1}
+\author{$2}
+\maketitle
+
+$3
+
+\end{document}
+endsnippet
+
+snippet mathinit
+\documentclass{article}
+
+\usepackage{mathtools}
+\usepackage{dsfont}
+
+\begin{document}
+
+\title{$1}
+\author{$2}
+\maketitle
+
+$3
+
+\end{document}
+endsnippet
+
+snippet cheminit
+\usepackage{article}
+
+\usepackage{chemfig}
+\usepackage[version=4]{mhchem}
+
+\begin{document}
+
+$1
+
+\end{document}
+endsnippet
+
+snippet letter
+\documentclass{letter}
+
+\signature{$1}
+\address{$2}
+
+\begin{document}
+\begin{letter}{$3}
+
+\opening{$4}
+
+$5
+
+\closing{}
+
+\end{letter}
+\end{document}
+endsnippet
+

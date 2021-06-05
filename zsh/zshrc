@@ -1,8 +1,6 @@
 # The following lines were added by compinstall
 
 zstyle ':completion:*' completer _expand _complete _ignored _correct _approximate
-zstyle ':completion:*' matcher-list 'r:|[._-]=** r:|=**'
-zstyle ':completion:*' max-errors 2
 zstyle ':completion:*' prompt 'Unsure. Tell me what exactly.'
 zstyle :compinstall filename '/home/multisn8/.zshrc'
 
@@ -25,6 +23,9 @@ alias ls="ls -I '*~' --color=auto"
 alias l="ls -l"
 alias ll="l -a"
 
+alias docx2pdf='libreoffice --headless --convert-to pdf'
+
+alias nnvim='/home/multisn8/info/projects/shell/quick-neovim-nightly/neovim-bin/usr/bin/nvim'
 alias vifm='vifmrun'
 
 alias R="R --quiet"
@@ -37,8 +38,25 @@ bydir() {
 	touch "$dir$1"
 }
 
+# taken and shortened from https://github.com/jarun/nnn/blob/master/misc/quitcd/quitcd.bash_zsh
+nn() {
+    if [ -n $NNNLVL ] && [ "${NNNLVL:-0}" -ge 1 ]; then
+        echo "nnn is already running"
+        return
+    fi
 
-### ENVIRONMENT VARIABLES ###
+    export NNN_TMPFILE="${XDG_CONFIG_HOME:-$HOME/.config}/nnn/.lastd"
+
+    nnn -edx "$@"
+
+    if [ -f "$NNN_TMPFILE" ]; then
+            source "$NNN_TMPFILE"
+            rm -f "$NNN_TMPFILE" > /dev/null
+    fi
+}
+
+
+## ENVIRONMENT VARIABLES ###
 
 export PATH="$PATH:$HOME/.local/share/gem/ruby/2.7.0/bin:$HOME/.local/bin:$HOME/info/path:$HOME/.cargo/bin"
 
@@ -47,7 +65,19 @@ export GIT_EDITOR="/usr/bin/nvim"
 export MANPAGER="/usr/bin/nvim +Man!"
 export PAGER="/usr/bin/nvim -R"
 
+export SDL_VIDEODRIVER=x11
+
 export WINEARCH="win64"
+
+# nope, I don't want to have telemetry in dotnet
+export DOTNET_CLI_TELEMETRY_OPTOUT=1
+
+
+### STTY MAGIC ###
+# Honestly, I have no idea how that works
+stty start undef
+stty stop undef
+stty lnext undef
 
 
 ### PROMPT ###
@@ -58,4 +88,3 @@ export WINEARCH="win64"
 
 PROMPT='%F{87}?%f'
 RPROMPT='%F{57}%~%f %F{57}-%T-%f%(0?.. %F{69}%?%f)%(!.%F{87}#%f)'
-

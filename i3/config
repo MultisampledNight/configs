@@ -19,9 +19,26 @@ client.urgent            $violet      $violet      $background  $violet
 for_window [class=".*"] border pixel 1
 
 gaps inner 5
-smart_gaps on
+#smart_gaps on
 
 ### CUSTOM HOTKEYS ###
+# here's my keyboard who cares
+# +---++---++---++---++---++---++---++---++---++---++---++---++---++--------+
+# |Esc|| 1 || 2 || 3 || 4 || 5 || 6 || 7 || 8 || 9 || 0 || ß || ` ||  Back  |
+# +---++---++---++---++---++---++---++---++---++---++---++---++---++--------+
+# +-----++---++---++---++---++---++---++---++---++---++---++---++---++------+
+# | Tab || q || w || e || r || t || z || u || i || o || p || ü || ´ ||      |
+# +-----++---++---++---++---++---++---++---++---++---++---++---++---++-+ \n |
+# +-------++---++---++---++---++---++---++---++---++---++---++---++---+|    |
+# |Layer 3|| a || s || d || f || g || h || j || k || l || ö || ä ||L 3||    |
+# +-------++---++---++---++---++---++---++---++---++---++---++---++---++----+
+# +----++---++---++---++---++---++---++---++---++---++---++---++------------+
+# | Sh ||L 4|| y || x || c || v || b || n || m || , || . || - ||   Shift    |
+# +----++---++---++---++---++---++---++---++---++---++---++---++------------+
+# +----++----++---++-----------------------------++------++----++-----++----+
+# |Ctrl|| S* ||Alt||            Space            ||Alt Gr|| Fn || idk ||Ctrl|
+# +----++----++---++-----------------------------++------++----++-----++----+
+# *: Super, also sometimes called "Windows Key"
 
 # lock the screen
 bindsym $mod+Shift+x exec --no-startup-id i3lock --color=$violet
@@ -30,11 +47,18 @@ bindsym $mod+Shift+x exec --no-startup-id i3lock --color=$violet
 bindsym $mod+Shift+u exec --no-startup-id discord
 bindsym $mod+Shift+o exec --no-startup-id chromium
 bindsym $mod+Shift+b exec --no-startup-id blender
+bindsym $mod+Shift+a exec --no-startup-id lmms
+bindsym $mod+Shift+s exec --no-startup-id gimp
+bindsym $mod+Shift+d exec --no-startup-id godot
+bindsym $mod+Shift+f exec --no-startup-id pcmanfm
 bindsym $mod+Shift+p exec --no-startup-id spotify
 bindsym $mod+F12 exec --no-startup-id flameshot gui
 
 
 ### AUTOSTART ###
+
+# keyboard layout, somehow I can't find NeoQwertz in the localectl stuff
+exec --no-startup-id setxkbmap de neo_qwertz
 
 # compositor (blending, fading, blur, stuff like that)
 exec --no-startup-id picom -b --experimental-backends
@@ -60,7 +84,6 @@ exec --no-startup-id dunst
 bar {
 	status_command i3status
 }
-
 
 ### FUNCTIONAL ###
 ## You most likely DON'T want to change the stuff here.
@@ -159,3 +182,4 @@ bindsym XF86AudioPause exec --no-startup-id playerctl play-pause
 bindsym XF86AudioNext exec --no-startup-id playerctl next
 bindsym XF86AudioPrev exec --no-startup-id playerctl previous
 
+# vim:ft=sh:
