@@ -1,0 +1,22 @@
+import:
+  - ~/info/projects/colo/unsweetened/alacritty-colors.yml
+
+window:
+  dynamic_padding: true
+  title: Terminal
+
+font:
+  normal:
+    family: Roboto Mono
+
+  size: 11.0
+
+cursor:
+  style:
+    shape: Block
+  thickness: 0.05
+
+mouse:
+  hide_when_typing: true
+
+ipc_socket: false

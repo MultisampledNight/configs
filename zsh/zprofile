@@ -1,0 +1,2 @@
+path=("$HOME/info/path" $path "$HOME/.cargo/bin" "$HOME/.local/bin")
+source ~/.zshrc

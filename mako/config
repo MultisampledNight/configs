@@ -1,0 +1,39 @@
+sort=-time
+
+history=0
+markup=0
+
+on-button-left=dismiss
+on-button-middle=exec makoctl menu -n "$id" bemenu --list 6 --bottom --prompt "select action"
+on-button-right=invoke-default-action
+
+font=Cantarell 10
+background-color=#171c1c
+text-color=#c7c1c7
+progress-color=source #45dec2
+
+border-size=1
+border-color=#333e3e
+border-radius=3
+
+width=380
+height=280
+margin=14,8
+padding=9
+max-visible=4
+
+anchor=top-right
+layer=overlay
+
+[urgency=low]
+border-color=#171c1c
+
+[urgency=normal]
+border-color=#333e3e
+
+[urgency=high]
+border-color=#fffc4f
+
+
+[mode=do-not-disturb]
+invisible=1

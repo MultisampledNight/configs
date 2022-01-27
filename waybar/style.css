@@ -1,0 +1,48 @@
+* {
+	border: none;
+	border-radius: 0;
+	font-family: Roboto Mono, Cantarell;
+	font-size: 9pt;
+	color: #b8b2b8;
+}
+
+window#waybar {
+	background-color: #171c1c;
+}
+
+#workspaces button {
+	background-color: transparent;
+	border-radius: 3px;
+}
+
+#workspaces button:hover {
+	background: #171c1c;
+	border: #171c1c;
+	text-shadow: inherit;
+	box-shadow: inherit;
+}
+
+#workspaces button.focused {
+	background-color: #333e3e;
+  box-shadow: inset 0 2px #a8a3a8;
+}
+
+
+#clock, #battery, #cpu, #memory, #temperature, #backlight, #pulseaudio, #mode {
+	padding: 0 9px;
+	border-radius: 3px;
+}
+
+#mode {
+	background-color: #333e3e;
+	color: #c7c1c7;
+	margin-left: 20px;
+}
+
+#clock {
+	box-shadow: inset 0 1px #a8a3a8;
+}
+
+#clock, #battery, #cpu, #memory, #temperature, #pulseaudio {
+	 color: #a8a3a8;
+}

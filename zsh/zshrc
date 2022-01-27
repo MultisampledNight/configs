@@ -1,90 +1,120 @@
-# The following lines were added by compinstall
-
+zstyle ':completion:*' auto-description 'specifying %d'
 zstyle ':completion:*' completer _expand _complete _ignored _correct _approximate
-zstyle ':completion:*' prompt 'Unsure. Tell me what exactly.'
-zstyle :compinstall filename '/home/multisn8/.zshrc'
+zstyle ':completion:*' expand prefix suffix
+zstyle ':completion:*' file-sort access
+zstyle ':completion:*' format 'completing %d'
+zstyle ':completion:*' group-name ''
+zstyle ':completion:*' ignore-parents parent pwd .. directory
+zstyle ':completion:*' insert-unambiguous false
+zstyle ':completion:*' list-colors ''
+zstyle ':completion:*' list-prompt %SAt %p: Hit TAB for more, or the character to insert%s
+zstyle ':completion:*' list-suffixes true
+zstyle ':completion:*' matcher-list 'm:{[:lower:]}={[:upper:]}' 'r:|[._-]=** r:|=**' 'l:|=* r:|=*'
+zstyle ':completion:*' menu select=9
+zstyle ':completion:*' original false
+zstyle ':completion:*' preserve-prefix '//[^/]##/'
+zstyle ':completion:*' select-prompt %SScrolling active: current selection at %p%s
+zstyle ':completion:*' verbose true
+zstyle :compinstall filename "$HOME/.zshrc"
 
 autoload -Uz compinit
 compinit
-# End of lines added by compinstall
-# Lines configured by zsh-newuser-install
+
 HISTFILE=~/.histfile
-HISTSIZE=10000
-SAVEHIST=10000
-setopt extendedglob notify
-unsetopt autocd beep nomatch
+HISTSIZE=1000
+SAVEHIST=1000
+setopt autocd notify
+unsetopt beep extendedglob nomatch
 bindkey -v
-# End of lines configured by zsh-newuser-install
 
 
-### ALIAS ###
+alias ls='ls --group-directories-first -th --color=auto'
+alias l='ls -Hl'
+alias ll='l -a'
 
-alias ls="ls -I '*~' --color=auto"
-alias l="ls -l"
-alias ll="l -a"
+alias -g ...='../..'
+alias -g ....='../../..'
+alias -g .....='../../../..'
+
+alias neovide='neovide --multigrid'
+alias nvide='neovide'
+alias sqlite='sqlite3 -box'
+
+alias R='R --quiet'
+alias evcxr='evcxr --edit-mode vi --opt 2'
+alias pypy='pypy3 -q'
+
+alias cr='cargo run'
+alias crr='cargo run --release'
+alias cb='cargo build'
+alias cbr='cargo build --release'
+alias cw='cargo watch -c'
+alias ct='cargo test'
+alias ch='cargo check'
+alias docs='cargo doc --open'
 
 alias docx2pdf='libreoffice --headless --convert-to pdf'
 
-alias nnvim='/home/multisn8/info/projects/shell/quick-neovim-nightly/neovim-bin/usr/bin/nvim'
-alias vifm='vifmrun'
+export EDITOR="$HOME/info/path/edit"
+export GIT_EDITOR='nvim'
+export MANPAGER='cat'
+export GPG_TTY="$(tty)"
 
-alias R="R --quiet"
+export XDG_CURRENT_DESKTOP='Unity'
+export SDL_VIDEODRIVER='wayland'
+export QT_QPA_PLATFORM='wayland'
+export QT_QPA_PLATFORMTHEME='qt5ct'
+export QT_WAYLAND_DISABLE_WINDOWDECORATION=1
+export QT_WAYLAND_FORCE_DPI='physical'
+export ECORE_EVAS_ENGINE='wayland_egl'
+export ELM_ENGINE='wayland_egl'
+export ELM_DISPLAY='wl'
+export MOZ_ENABLE_WAYLAND=1
 
-
-### SHELLFUNCTIONS ###
-
-bydir() {
-	dir="$(basename $(pwd))"
-	touch "$dir$1"
-}
-
-# taken and shortened from https://github.com/jarun/nnn/blob/master/misc/quitcd/quitcd.bash_zsh
-nn() {
-    if [ -n $NNNLVL ] && [ "${NNNLVL:-0}" -ge 1 ]; then
-        echo "nnn is already running"
-        return
-    fi
-
-    export NNN_TMPFILE="${XDG_CONFIG_HOME:-$HOME/.config}/nnn/.lastd"
-
-    nnn -edx "$@"
-
-    if [ -f "$NNN_TMPFILE" ]; then
-            source "$NNN_TMPFILE"
-            rm -f "$NNN_TMPFILE" > /dev/null
-    fi
-}
-
-
-## ENVIRONMENT VARIABLES ###
-
-export PATH="$PATH:$HOME/.local/share/gem/ruby/2.7.0/bin:$HOME/.local/bin:$HOME/info/path:$HOME/.cargo/bin"
-
-export EDITOR="/usr/bin/nvim"
-export GIT_EDITOR="/usr/bin/nvim"
-export MANPAGER="/usr/bin/nvim +Man!"
-export PAGER="/usr/bin/nvim -R"
-
-export SDL_VIDEODRIVER=x11
-
-export WINEARCH="win64"
-
-# nope, I don't want to have telemetry in dotnet
 export DOTNET_CLI_TELEMETRY_OPTOUT=1
+export WINEARCH='win64'
+export GDK_SCALE=2
+export _JAVA_AWT_WM_NONREPARENTING=1
+unset _JAVA_OPTIONS
 
-
-### STTY MAGIC ###
-# Honestly, I have no idea how that works
 stty start undef
 stty stop undef
 stty lnext undef
 
+bydir() {
+	dir="$(basename $(pwd))"
+	touch $dir$1
+}
 
-### PROMPT ###
-# The colors I use here are:
-# - 87: #00ffff, very intense cyan
-# - 69: #5f87ff, middle between cyan and purple
-# - 57: #5f00ff, deep blue-purple
+# taken and shortened from https://github.com/jarun/nnn/blob/master/misc/quitcd/quitcd.bash_zsh
+nn() {
+	export NNN_TMPFILE="${XDG_CONFIG_HOME:-$HOME/.config}/nnn/.lastd"
+	nnn -edx "$@"
+	if [ -f "$NNN_TMPFILE" ]; then
+		source "$NNN_TMPFILE"
+		rm -f "$NNN_TMPFILE" > /dev/null
+	fi
+}
 
-PROMPT='%F{87}?%f'
-RPROMPT='%F{57}%~%f %F{57}-%T-%f%(0?.. %F{69}%?%f)%(!.%F{87}#%f)'
+man() {
+	/usr/bin/env man $@ | nvim +Man!
+}
+journalctl() {
+	/usr/bin/journalctl $@ | nvim '+set ft=log' -R
+}
+
+CONFIGDIR="${XDG_CONFIG_HOME:-$HOME/.config}/zsh"
+mkprojdir() {
+	mkdir -p $CONFIGDIR
+	echo $(pwd) > "$CONFIGDIR/projdir"
+}
+cdproj() {
+	if [[ -e "$CONFIGDIR/projdir" ]]; then
+		cd $(cat "$CONFIGDIR/projdir")
+	else
+		echo 'No project directory set. Use mkprojdir to set your cwd as one'
+	fi
+}
+
+PROMPT=' %F{5}%(!.#.$)%f '
+RPROMPT='%F{6}%~%f %F{4}%D{%T}%f %(?..%B%F{3}%?%f%b)'

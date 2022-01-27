@@ -1,0 +1,39 @@
+{
+	"layer": "top",
+	"position": "top",
+	"mode": "dock",
+	"height": 32,
+	"spacing": 2,
+	"margin": 0,
+	"modules-left": ["sway/workspaces", "sway/mode"],
+	"modules-center": ["clock"],
+	"modules-right": ["pulseaudio", "cpu", "memory", "temperature", "battery", "tray"],
+	
+	"clock": {
+		"interval": 1,
+		"format": "{:%Y.%m.%d %H:%M:%S}",
+		"tooltip-format": "{calendar}",
+	},
+	"cpu": {
+		"format": "CPU {usage} %",
+	},
+	"memory": {
+		"format": "MEM {percentage} %",
+		"tooltip-format": "{used:0.2f} GiB / {avail:0.2f} GiB",
+	},
+	"temperature": {
+		"format": "TMP {temperatureC}°C",
+		"tooltip": false,
+		"on-click": "lock",
+	},
+	"battery": {
+		"format": "BAT {capacity} %",
+		"tooltip": false,
+		"interval": 10,
+	},
+	"pulseaudio": {
+		"format": "VOL {volume} %",
+		"format-muted": "VOL muted",
+		"smooth-scrolling-threshold": 1.5,
+	}
+}
