@@ -10,7 +10,7 @@ zstyle ':completion:*' list-colors ''
 zstyle ':completion:*' list-prompt %SAt %p: Hit TAB for more, or the character to insert%s
 zstyle ':completion:*' list-suffixes true
 zstyle ':completion:*' matcher-list 'm:{[:lower:]}={[:upper:]}' 'r:|[._-]=** r:|=**' 'l:|=* r:|=*'
-zstyle ':completion:*' menu select=9
+zstyle ':completion:*' menu select=3
 zstyle ':completion:*' original false
 zstyle ':completion:*' preserve-prefix '//[^/]##/'
 zstyle ':completion:*' select-prompt %SScrolling active: current selection at %p%s
@@ -43,6 +43,8 @@ alias sqlite='sqlite3 -box'
 alias R='R --quiet'
 alias evcxr='evcxr --edit-mode vi --opt 2'
 alias pypy='pypy3 -q'
+alias mpv='mpv --hwdec=auto'
+alias scrcpy='scrcpy --max-fps 60'
 
 alias cr='cargo run'
 alias crr='cargo run --release'
@@ -51,29 +53,37 @@ alias cbr='cargo build --release'
 alias cw='cargo watch -c'
 alias ct='cargo test'
 alias ch='cargo check'
+alias ce='cargo expand --bin $(cargo cratename)'
+alias cfg='CARGO_PROFILE_RELEASE_DEBUG=true cargo flamegraph --palette aqua'
 alias docs='cargo doc --open'
+alias rrrr='rr replay -d rust-gdb'
 
+alias todo='edit ~/gen/notes/todo.md'
 alias docx2pdf='libreoffice --headless --convert-to pdf'
 
 export EDITOR="$HOME/info/path/edit"
 export GIT_EDITOR='nvim'
-export MANPAGER='cat'
+export MANPAGER='nvim +Man!'
 export GPG_TTY="$(tty)"
 
-export XDG_CURRENT_DESKTOP='Unity'
+export XDG_CURRENT_DESKTOP='sway'
 export SDL_VIDEODRIVER='wayland'
+export SDL_AUDIODRIVER='pipewire'
 export QT_QPA_PLATFORM='wayland'
-export QT_QPA_PLATFORMTHEME='qt5ct'
 export QT_WAYLAND_DISABLE_WINDOWDECORATION=1
-export QT_WAYLAND_FORCE_DPI='physical'
 export ECORE_EVAS_ENGINE='wayland_egl'
 export ELM_ENGINE='wayland_egl'
 export ELM_DISPLAY='wl'
 export MOZ_ENABLE_WAYLAND=1
+export QT_QPA_PLATFORMTHEME='qt5ct'
 
+export LIBVA_DRIVER_NAME='iHD'
+
+export RUST_BACKTRACE=1
 export DOTNET_CLI_TELEMETRY_OPTOUT=1
 export WINEARCH='win64'
 export STEAM_COMPAT_CLIENT_INSTALL_PATH="$HOME/.steam"
+export PROTON_USER_COMPAT_DATA=1
 export GDK_SCALE=2
 export _JAVA_AWT_WM_NONREPARENTING=1
 unset _JAVA_OPTIONS
@@ -85,6 +95,20 @@ stty lnext undef
 bydir() {
 	dir="$(basename $(pwd))"
 	touch $dir$1
+}
+cwm() {
+	crate="$(cargo cratename)"
+	cargo watch -cx "expand --bin $crate $@"
+}
+manual-repeat() {
+	while do
+		clear
+		$@
+		read -q
+	done
+}
+cdpl() {
+	cd "$HOME/info/playground/$@"
 }
 
 # taken and shortened from https://github.com/jarun/nnn/blob/master/misc/quitcd/quitcd.bash_zsh
@@ -119,3 +143,4 @@ cdproj() {
 
 PROMPT=' %F{5}%(!.#.$)%f '
 RPROMPT='%F{6}%~%f %F{4}%D{%T}%f %(?..%B%F{3}%?%f%b)'
+

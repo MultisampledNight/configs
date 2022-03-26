@@ -24,7 +24,7 @@ set $up k
 set $right l
 
 set $term alacritty
-set $menu bemenu-run --bottom --prompt 'launch whatever'
+set $menu fuzzel
 set $lock lock
 set $gammastep toggle-gammastep
 set $screenshot_folder "$HOME/gen/pics/screenshots"
@@ -41,6 +41,7 @@ default_border pixel
 output * bg $HOME/gen/pics/wallpaper/building-complex-unsweetened.png fill
 
 # You can get the names of your outputs by running: swaymsg -t get_outputs
+output eDP-1 position 0,0
 
 input type:keyboard {
 	xkb_model "asus_laptop"
@@ -64,16 +65,26 @@ bindsym $mod+Shift+q kill
 bindsym $mod+d exec $menu
 bindsym $mod+Shift+x exec $lock
 bindsym $mod+F12 exec $screenshot
+bindsym $mod+y input type:keyboard xkb_variant "bone"
+bindsym $mod+z input type:keyboard xkb_variant "neo_qwertz"
 
 bindsym XF86MonBrightnessDown exec brightnessctl --exponent set 5%-
-bindsym XF86MonBrightnessUp exec brightnessctl --exponent set 5%+
+bindsym XF86MonBrightnessUp exec brightnessctl --exponent set 3%+
 
 bindsym $mod+Shift+o exec firefox
 bindsym $mod+Shift+u exec discord --kiosk
 bindsym $mod+Shift+d exec discord
 bindsym $mod+Shift+g exec github
+bindsym $mod+Shift+p exec spotify --kiosk
 
 bindsym $mod+Shift+b exec blender
+
+bindsym --locked XF86AudioPlay exec playerctl play-pause
+bindsym --locked XF86AudioNext exec playerctl next
+bindsym --locked XF86AudioPrev exec playerctl previous
+bindsym --locked XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle
+bindsym --locked XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -1%
+bindsym --locked XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +1%
 
 floating_modifier $mod normal
 
