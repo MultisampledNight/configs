@@ -1,0 +1,6 @@
+# vim:ft=sh
+
+# client.<role> <border> <background> <text> <indicator>
+client.focused '#171c1c' '#171c1c' '#c7c1c7' '#333e3e'
+client.focused_inactive '#171c1c' '#171c1c' '#b8b2b8' '#333e3e'
+client.unfocused '#171c1c' '#171c1c' '#a8a3a8' '#171c1c'

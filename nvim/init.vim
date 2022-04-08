@@ -4,6 +4,13 @@ Plug 'MultisampledNight/unsweetened'
 Plug 'MultisampledNight/silentmission'
 Plug 'MultisampledNight/samplednight'
 
+Plug 'hrsh7th/nvim-cmp'
+Plug 'hrsh7th/cmp-path'
+Plug 'hrsh7th/cmp-nvim-lsp'
+
+Plug 'neovim/nvim-lspconfig'
+Plug 'folke/trouble.nvim'
+
 Plug 'mfussenegger/nvim-dap'
 Plug 'rcarriga/nvim-dap-ui'
 
@@ -28,9 +35,10 @@ set titlestring=%m%h%w%F
 set titlelen=0
 set linebreak
 
+set autochdir
 set clipboard+=unnamedplus
+set completeopt=menu,menuone,preview,noselect
 set mouse=a
-set completeopt=menuone,noselect
 set ignorecase
 set smartcase
 set scrolloff=2
@@ -63,6 +71,7 @@ nnoremap tc <Cmd>lua require("dap").continue()<CR>
 nnoremap tt <Cmd>lua require("dap").step_over()<CR>
 nnoremap ti <Cmd>lua require("dap").step_into()<CR>
 nnoremap tq <Cmd>lua require("dap").terminate()<CR>
+nnoremap <leader>t <Cmd>TroubleToggle<CR>
 
 nnoremap <F1> <NOP>
 inoremap <F1> <NOP>
@@ -70,6 +79,7 @@ inoremap <F1> <NOP>
 " neovide
 hi! Normal guibg=#171c1c ctermfg=8 guifg=#b8b2b8
 let g:neovide_refresh_rate = 60
+let g:neovide_cursor_unfocused_outline_width = 0.05
 let g:neovide_cursor_animation_length = 0.065
 let g:neovide_cursor_vfx_mode = "pixiedust"
 let g:neovide_cursor_vfx_particle_lifetime = 6.9
@@ -89,6 +99,49 @@ require("nvim-treesitter.configs").setup {
 	highlight = {
 		enable = true,
 	},
+}
+
+local cmp = require("cmp")
+cmp.setup({
+	sources = cmp.config.sources({
+		{ name = "nvim_lsp" },
+		{ name = "path" },
+	}),
+	mapping = {
+		["<Tab>"] = cmp.mapping(cmp.mapping.select_next_item(), { "i", "c" }),
+		["<A-Tab>"] = cmp.mapping(cmp.mapping.select_prev_item(), { "i", "c" }),
+		["<Enter>"] = cmp.mapping(cmp.mapping.confirm(), { "i", "c" }),
+	},
+})
+
+local capabilities = vim.lsp.protocol.make_client_capabilities()
+capabilities = require("cmp_nvim_lsp").update_capabilities(capabilities)
+local lspconfig = require("lspconfig")
+
+lspconfig.rust_analyzer.setup {
+	capabilities = capabilities,
+	filetypes = {
+		"rust",
+		"netrw",
+	},
+	flags = {
+		debounce_text_changes = 150,
+	},
+}
+
+require("trouble").setup {
+	position = "bottom",
+	height = 9,
+	icons = false,
+	fold_closed = "⮞",
+	fold_open = "⮟",
+	signs = {
+		error = "#",
+		warning = "!",
+		hint = "?",
+		information = "/",
+		other = "-",
+	}
 }
 
 local dap = require("dap")
