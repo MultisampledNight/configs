@@ -4,7 +4,7 @@ It's dangerous out there, take this!
 ## Dependencies
 
 ```console
-sudo pacman -S sccache alacritty neovim zsh waybar sway swaybg swaylock grim slurp mako bemenu bemenu-wayland rustup ttf-roboto-mono cantarell-fonts
+sudo pacman -S sccache alacritty neovim zsh waybar sway swaybg swaylock grim slurp mako fuzzel bemenu bemenu-wayland rustup ttf-roboto-mono cantarell-fonts
 rustup install stable
 cargo install evcxr
 ```
