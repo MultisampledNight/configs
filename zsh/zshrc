@@ -28,7 +28,7 @@ unsetopt beep extendedglob nomatch
 bindkey -v
 
 
-alias ls='ls --group-directories-first -th --color=auto'
+alias ls='ls -th --color=auto'
 alias l='ls -Hl'
 alias ll='l -a'
 
@@ -45,6 +45,7 @@ alias evcxr='evcxr --edit-mode vi --opt 2'
 alias pypy='pypy3 -q'
 alias mpv='mpv --hwdec=auto'
 alias scrcpy='scrcpy --max-fps 60'
+alias wine-python='WINEPREFIX=~/gen/wineprefixes/python wine py'
 
 alias cr='cargo run'
 alias crr='cargo run --release'
@@ -53,7 +54,8 @@ alias cbr='cargo build --release'
 alias cw='cargo watch -c'
 alias ct='cargo test'
 alias ch='cargo check'
-alias ce='cargo expand --bin $(cargo cratename)'
+alias cl='cargo clippy'
+alias clp='cargo clippy -- -Wclippy::pedantic'
 alias cfg='CARGO_PROFILE_RELEASE_DEBUG=true cargo flamegraph --palette aqua'
 alias docs='cargo doc --open'
 alias rrrr='rr replay -d rust-gdb'
@@ -63,7 +65,6 @@ alias docx2pdf='libreoffice --headless --convert-to pdf'
 
 export EDITOR="$HOME/info/path/edit"
 export GIT_EDITOR='nvim'
-export MANPAGER='nvim +Man!'
 export GPG_TTY="$(tty)"
 
 export XDG_CURRENT_DESKTOP='sway'
@@ -96,9 +97,18 @@ bydir() {
 	dir="$(basename $(pwd))"
 	touch $dir$1
 }
+mkcd() {
+	mkdir -p $@
+	cd $@
+}
 cwm() {
 	crate="$(cargo cratename)"
 	cargo watch -cx "expand --bin $crate $@"
+}
+ce() {
+	output=$(mktemp)
+	cargo expand --color never $@ >$output
+	edit -R "+set ft=rust" $output
 }
 manual-repeat() {
 	while do
@@ -114,7 +124,7 @@ cdpl() {
 # taken and shortened from https://github.com/jarun/nnn/blob/master/misc/quitcd/quitcd.bash_zsh
 nn() {
 	export NNN_TMPFILE="${XDG_CONFIG_HOME:-$HOME/.config}/nnn/.lastd"
-	nnn -edx "$@"
+	nnn -Cedx "$@"
 	if [ -f "$NNN_TMPFILE" ]; then
 		source "$NNN_TMPFILE"
 		rm -f "$NNN_TMPFILE" > /dev/null
@@ -133,7 +143,7 @@ mkprojdir() {
 	mkdir -p $CONFIGDIR
 	echo $(pwd) > "$CONFIGDIR/projdir"
 }
-cdproj() {
+cdpr() {
 	if [[ -e "$CONFIGDIR/projdir" ]]; then
 		cd $(cat "$CONFIGDIR/projdir")
 	else
