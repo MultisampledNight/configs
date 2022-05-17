@@ -3,13 +3,15 @@ call plug#begin("~/.local/share/nvim/vim-plug")
 Plug 'MultisampledNight/unsweetened'
 Plug 'MultisampledNight/silentmission'
 Plug 'MultisampledNight/samplednight'
+Plug 'MultisampledNight/morphtype'
 
 Plug 'hrsh7th/nvim-cmp'
+Plug 'hrsh7th/vim-vsnip'
+Plug 'hrsh7th/cmp-vsnip'
 Plug 'hrsh7th/cmp-path'
 Plug 'hrsh7th/cmp-nvim-lsp'
 
 Plug 'neovim/nvim-lspconfig'
-Plug 'folke/trouble.nvim'
 
 Plug 'mfussenegger/nvim-dap'
 Plug 'rcarriga/nvim-dap-ui'
@@ -24,12 +26,13 @@ call plug#end()
 
 
 " general settings
-colorscheme unsweetened
+colorscheme morphtype
 
 set guifont=CamingoCode:h11
 set termguicolors
 set number
 set noshowmode
+set signcolumn=yes
 set title
 set titlestring=%m%h%w%F
 set titlelen=0
@@ -71,13 +74,11 @@ nnoremap tc <Cmd>lua require("dap").continue()<CR>
 nnoremap tt <Cmd>lua require("dap").step_over()<CR>
 nnoremap ti <Cmd>lua require("dap").step_into()<CR>
 nnoremap tq <Cmd>lua require("dap").terminate()<CR>
-nnoremap <leader>t <Cmd>TroubleToggle<CR>
 
 nnoremap <F1> <NOP>
 inoremap <F1> <NOP>
 
 " neovide
-hi! Normal guibg=#171c1c ctermfg=8 guifg=#b8b2b8
 let g:neovide_refresh_rate = 60
 let g:neovide_cursor_unfocused_outline_width = 0.05
 let g:neovide_cursor_animation_length = 0.065
@@ -86,13 +87,17 @@ let g:neovide_cursor_vfx_particle_lifetime = 6.9
 let g:neovide_cursor_vfx_particle_speed = 9
 let g:neovide_cursor_vfx_particle_density = 18
 let g:neovide_cursor_vfx_particle_opacity = 30.0
+let g:neovide_floating_blur_amount_x = 15.0
+let g:neovide_floating_blur_amount_y = 15.0
 
 " rust
 let g:rustfmt_autosave = 1
 
-" latex live preview
-let g:livepreview_previewer = "okular"
-let g:livepreview_engine = "latexmk"
+" python
+autocmd BufWritePost *.py,*.pyw call jobstart(["black", expand("%")], { "detach": v:true })
+
+" latex live preview (reimagined)
+autocmd BufWritePost *.tex call jobstart(["pdflatex", expand("%")], { "detach": v:true })
 
 lua <<EOF
 require("nvim-treesitter.configs").setup {
@@ -112,11 +117,34 @@ cmp.setup({
 		["<A-Tab>"] = cmp.mapping(cmp.mapping.select_prev_item(), { "i", "c" }),
 		["<Enter>"] = cmp.mapping(cmp.mapping.confirm(), { "i", "c" }),
 	},
+	snippet = {
+		expand = function(args)
+			vim.fn["vsnip#anonymous"](args.body)
+		end
+	},
+})
+cmp.setup.cmdline(":", {
+	mapping = cmp.mapping.preset.cmdline(),
+	sources = cmp.config.sources({
+		{ name = "path" }
+	}, {
+		{ name = "cmdline" }
+	})
 })
 
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities = require("cmp_nvim_lsp").update_capabilities(capabilities)
 local lspconfig = require("lspconfig")
+
+lspconfig.util.default_config = vim.tbl_extend(
+	"force",
+	lspconfig.util.default_config,
+	{
+			handlers = {
+				["window/showMessage"] = function(err, method, params, client_id) end;
+			}
+	}
+)
 
 lspconfig.rust_analyzer.setup {
 	capabilities = capabilities,
@@ -127,21 +155,12 @@ lspconfig.rust_analyzer.setup {
 	flags = {
 		debounce_text_changes = 150,
 	},
-}
-
-require("trouble").setup {
-	position = "bottom",
-	height = 9,
-	icons = false,
-	fold_closed = "⮞",
-	fold_open = "⮟",
-	signs = {
-		error = "#",
-		warning = "!",
-		hint = "?",
-		information = "/",
-		other = "-",
-	}
+	handlers = {
+		-- You may look at me, asking "but why would you do that"?
+		-- For some reason, I think the diagnostics are overly intrusive and they effectively disturb me
+		-- But other LSP features such as autocompletion are nice to have anyways
+		["textDocument/publishDiagnostics"] = function(...) end
+	},
 }
 
 local dap = require("dap")
