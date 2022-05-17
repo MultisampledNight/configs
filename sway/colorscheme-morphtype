@@ -1,0 +1,5 @@
+# vim:ft=sh
+
+client.focused '#1F1227' '#1F1227' '#BACAC8' '#312339'
+client.focused_inactive '#1F1227' '#1F1227' '#BACAC8' '#312339'
+client.unfocused '#1F1227' '#1F1227' '#92A1A0' '#1F1227'

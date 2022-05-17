@@ -11,7 +11,7 @@ default_floating_border pixel 1
 titlebar_border_thickness 0
 titlebar_padding 5 4
 
-include colorscheme-unsweetened
+include colorscheme-morphtype
 
 set $mod Mod4
 
@@ -25,17 +25,20 @@ set $menu fuzzel
 set $lock lock
 set $gammastep toggle-gammastep
 set $screenshot_folder "$HOME/gen/pics/screenshots"
+# thanks arch wiki
+set $window_screenshot window-screenshot
 set $screenshot\
 	moment="$(date --rfc-3339=seconds -u)" &&\
 	grim -g "$(slurp)" "$screenshot_folder/$moment.png" &&\
 	cp "$screenshot_folder/$moment.png" "$screenshot_folder/unknown.png"
+set $wallpaper $HOME/gen/pics/wallpaper/triangle-rings-morphtype.png
 
 exec mako
 exec --no-startup-id $gammastep
 
 default_border pixel
 
-output * bg $HOME/gen/pics/wallpaper/building-complex-unsweetened.png fill
+output * bg $wallpaper fill
 
 # You can get the names of your outputs by running: swaymsg -t get_outputs
 output eDP-1 position 0,0
@@ -44,6 +47,11 @@ input type:keyboard {
 	xkb_model "asus_laptop"
 	xkb_layout "de"
 	xkb_variant "bone"
+}
+
+input type:pointer {
+	accel_profile flat
+	pointer_accel 0.76
 }
 
 input type:touchpad {
@@ -61,17 +69,17 @@ bindsym $mod+Return exec $term
 bindsym $mod+Shift+q kill
 bindsym $mod+d exec $menu
 bindsym $mod+Shift+x exec $lock
+bindsym $mod+F11 exec $window_screenshot
 bindsym $mod+F12 exec $screenshot
 bindsym $mod+y input type:keyboard xkb_variant "bone"
 bindsym $mod+z input type:keyboard xkb_variant "neo_qwertz"
 
 bindsym XF86MonBrightnessDown exec brightnessctl --exponent set 5%-
 bindsym XF86MonBrightnessUp exec brightnessctl --exponent set 3%+
+bindsym $mod+Shift+f exec brightnessctl --exponent set 5%-
+bindsym $mod+Shift+v exec brightnessctl --exponent set 3%+
 
 bindsym $mod+Shift+o exec firefox
-bindsym $mod+Shift+u exec discord --kiosk
-bindsym $mod+Shift+d exec discord
-bindsym $mod+Shift+g exec github
 bindsym $mod+Shift+p exec spotify --kiosk
 
 bindsym $mod+Shift+b exec blender
