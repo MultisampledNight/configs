@@ -75,6 +75,8 @@ nnoremap tt <Cmd>lua require("dap").step_over()<CR>
 nnoremap ti <Cmd>lua require("dap").step_into()<CR>
 nnoremap tq <Cmd>lua require("dap").terminate()<CR>
 
+nnoremap <C-k> <Cmd>call jobstart(["term"], { "detach": v:true })<CR>
+
 nnoremap <F1> <NOP>
 inoremap <F1> <NOP>
 
@@ -87,8 +89,8 @@ let g:neovide_cursor_vfx_particle_lifetime = 6.9
 let g:neovide_cursor_vfx_particle_speed = 9
 let g:neovide_cursor_vfx_particle_density = 18
 let g:neovide_cursor_vfx_particle_opacity = 30.0
-let g:neovide_floating_blur_amount_x = 15.0
-let g:neovide_floating_blur_amount_y = 15.0
+let g:neovide_floating_blur_amount_x = 8.0
+let g:neovide_floating_blur_amount_y = 8.0
 
 " rust
 let g:rustfmt_autosave = 1
@@ -167,18 +169,26 @@ local dap = require("dap")
 local dapui = require("dapui")
 dapui.setup({
 	icons = { collapsed = "⮞", expanded = "⮟" },
-	sidebar = {
-		elements = {
-			{ id = "breakpoints", size = 0.1 },
-			{ id = "stacks", size = 0.25 },
-			{ id = "watches", size = 0.1 },
-			{ id = "scopes", size = 0.55 },
+	layouts = {
+		{
+			elements = {
+				{ id = "breakpoints", size = 0.1 },
+				{ id = "stacks", size = 0.25 },
+				{ id = "watches", size = 0.1 },
+				{ id = "scopes", size = 0.55 },
+			},
+			size = 42,
+			position = "left",
 		},
-		size = 42,
-		tray = {
+		{
+			elements = {
+				"repl",
+				"console",
+			},
 			size = 6,
+			position = "bottom",
 		},
-	}
+	},
 })
 
 dap.listeners.after.event_initialized["dapui_config"] = function()
