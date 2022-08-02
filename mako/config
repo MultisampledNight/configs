@@ -8,9 +8,6 @@ on-button-middle=exec makoctl menu -n "$id" bemenu --list 6 --bottom --prompt "s
 on-button-right=invoke-default-action
 
 font=Cantarell 10
-background-color=#171c1c
-text-color=#c7c1c7
-progress-color=source #45dec2
 
 border-size=1
 border-color=#333e3e
@@ -25,14 +22,21 @@ max-visible=4
 anchor=top-right
 layer=overlay
 
-[urgency=low]
-border-color=#171c1c
 
-[urgency=normal]
-border-color=#333e3e
+# base16 stuff
+background-color=#001E1B
+text-color=#AFB8DB
+border-color=#9FD6FF
+
+[urgency=low]
+background-color=#001E1B
+text-color=#D9D086
+border-color=#9FD6FF
 
 [urgency=high]
-border-color=#fffc4f
+background-color=#001E1B
+text-color=#FFBDCA
+border-color=#9FD6FF
 
 
 [mode=do-not-disturb]

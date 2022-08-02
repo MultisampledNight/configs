@@ -1,6 +1,6 @@
 # vim:ft=sh
 
-xwayland disable
+xwayland enable
 font pango:Cantarell 10
 
 gaps inner 2
@@ -11,7 +11,7 @@ default_floating_border pixel 1
 titlebar_border_thickness 0
 titlebar_padding 5 4
 
-include colorscheme-morphtype
+include colorscheme-abnormalize
 
 set $mod Mod4
 
@@ -31,20 +31,21 @@ set $screenshot\
 	moment="$(date --rfc-3339=seconds -u)" &&\
 	grim -g "$(slurp)" "$screenshot_folder/$moment.png" &&\
 	cp "$screenshot_folder/$moment.png" "$screenshot_folder/unknown.png"
-set $wallpaper $HOME/gen/pics/wallpaper/triangle-rings-morphtype.png
+set $wallpaper $HOME/gen/pics/wallpaper/abnormalize-prerel-curves.png
 
 exec mako
 exec --no-startup-id $gammastep
+
 
 default_border pixel
 
 output * bg $wallpaper fill
 
 # You can get the names of your outputs by running: swaymsg -t get_outputs
-output eDP-1 position 0,0
+output HDMI-A-1 position 0,0
+output eDP-1 position 1920,600
 
 input type:keyboard {
-	xkb_model "asus_laptop"
 	xkb_layout "de"
 	xkb_variant "bone"
 }

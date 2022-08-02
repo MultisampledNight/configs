@@ -1,5 +1,5 @@
 import:
-  - ~/info/projects/colo/unsweetened/alacritty-colors.yml
+  - ~/.config/alacritty/base16-abnormalize-alt.yml
 
 window:
   dynamic_padding: true
@@ -7,9 +7,9 @@ window:
 
 font:
   normal:
-    family: Roboto Mono
+    family: CamingoCode
 
-  size: 11.0
+  size: 11
 
 cursor:
   style:
@@ -18,5 +18,8 @@ cursor:
 
 mouse:
   hide_when_typing: true
+
+key_bindings:
+  - { key: K, mods: Control, command: { program: "term" }}
 
 ipc_socket: false

@@ -1,9 +1,6 @@
 call plug#begin("~/.local/share/nvim/vim-plug")
 
-Plug 'MultisampledNight/unsweetened'
-Plug 'MultisampledNight/silentmission'
-Plug 'MultisampledNight/samplednight'
-Plug 'MultisampledNight/morphtype'
+Plug 'MultisampledNight/colorschemes'
 
 Plug 'hrsh7th/nvim-cmp'
 Plug 'hrsh7th/vim-vsnip'
@@ -20,13 +17,12 @@ Plug 'DingDean/wgsl.vim'
 Plug 'ap/vim-css-color'
 Plug 'nvim-treesitter/nvim-treesitter'
 Plug 'sheerun/vim-polyglot'
-Plug 'xuhdev/vim-latex-live-preview'
 
 call plug#end()
 
 
 " general settings
-colorscheme morphtype
+colorscheme base16-abnormalize-alt
 
 set guifont=CamingoCode:h11
 set termguicolors
@@ -37,6 +33,7 @@ set title
 set titlestring=%m%h%w%F
 set titlelen=0
 set linebreak
+set undofile
 
 set autochdir
 set clipboard+=unnamedplus
@@ -83,22 +80,23 @@ inoremap <F1> <NOP>
 " neovide
 let g:neovide_refresh_rate = 60
 let g:neovide_cursor_unfocused_outline_width = 0.05
-let g:neovide_cursor_animation_length = 0.065
+let g:neovide_cursor_animation_length = 0.08
 let g:neovide_cursor_vfx_mode = "pixiedust"
-let g:neovide_cursor_vfx_particle_lifetime = 6.9
-let g:neovide_cursor_vfx_particle_speed = 9
+let g:neovide_cursor_vfx_particle_lifetime = 3.4
+let g:neovide_cursor_vfx_particle_speed = 7
 let g:neovide_cursor_vfx_particle_density = 18
-let g:neovide_cursor_vfx_particle_opacity = 30.0
-let g:neovide_floating_blur_amount_x = 8.0
-let g:neovide_floating_blur_amount_y = 8.0
+let g:neovide_floating_blur_amount_x = 6.0
+let g:neovide_floating_blur_amount_y = 6.0
+
 
 " rust
 let g:rustfmt_autosave = 1
 
 " python
-autocmd BufWritePost *.py,*.pyw call jobstart(["black", expand("%")], { "detach": v:true })
+autocmd BufWritePost *.py,*.pyw call jobstart(["black", expand("%")], { "detach": v:false })
 
 " latex live preview (reimagined)
+autocmd BufRead *.tex set filetype=latex
 autocmd BufWritePost *.tex call jobstart(["pdflatex", expand("%")], { "detach": v:true })
 
 lua <<EOF

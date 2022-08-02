@@ -1,0 +1,5 @@
+include base16-abnormalize
+
+client.focused $base00 $base00 $base04 $base02
+client.focused_inactive $base00 $base00 $base03 $base02
+client.unfocused $base00 $base00 $base03 $base00

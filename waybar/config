@@ -12,22 +12,22 @@
 	"clock": {
 		"interval": 1,
 		"format": "{:%Y.%m.%d %H:%M:%S}",
-		"tooltip-format": "{calendar}",
+		"tooltip": false,
 	},
 	"cpu": {
 		"format": "CPU {usage} %",
+		"tooltip": false,
 	},
 	"memory": {
 		"format": "MEM {percentage} %",
-		"tooltip-format": "{used:0.2f} GiB / {avail:0.2f} GiB",
+		"tooltip": false,
 	},
 	"temperature": {
 		"format": "TMP {temperatureC}°C",
 		"tooltip": false,
-		"on-click": "lock",
 	},
 	"battery": {
-		"format": "BAT {capacity} %",
+		"format": "BAT {capacity} %  {time}",
 		"tooltip": false,
 		"interval": 10,
 	},
@@ -35,5 +35,6 @@
 		"format": "VOL {volume} %",
 		"format-muted": "VOL muted",
 		"smooth-scrolling-threshold": 1.5,
+		"tooltip": false,
 	}
 }

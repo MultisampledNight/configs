@@ -1,0 +1,36 @@
+# Base16 abnormalize-alt - alacritty color config
+# MultisampledNight
+colors:
+  # Default colors
+  primary:
+    background: '#001E1B'
+    foreground: '#C5CEF2'
+
+  # Colors the cursor will use if `custom_cursor_colors` is true
+  cursor:
+    text: '#001E1B'
+    cursor: '#C5CEF2'
+
+  # Normal colors
+  normal:
+    black:   '#001E1B'
+    red:     '#FFBDCA'
+    green:   '#8BE1B1'
+    yellow:  '#D9D086'
+    blue:    '#9FD6FF'
+    magenta: '#E1C3FF'
+    cyan:    '#6AE3D6'
+    white:   '#C5CEF2'
+
+  # Bright colors
+  bright:
+    black:   '#003833'
+    red:     '#FFBDCA'
+    green:   '#8BE1B1'
+    yellow:  '#F9C48D'
+    blue:    '#9FD6FF'
+    magenta: '#FFB9E9'
+    cyan:    '#6AE3D6'
+    white:   '#DBE2FF'
+
+draw_bold_text_with_bright_colors: false

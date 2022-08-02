@@ -28,7 +28,7 @@ unsetopt beep extendedglob nomatch
 bindkey -v
 
 
-alias ls='ls -th --color=auto'
+alias ls='ls -vh --group-directories-first --color=auto'
 alias l='ls -Hl'
 alias ll='l -a'
 
@@ -46,11 +46,13 @@ alias pypy='pypy3 -q'
 alias mpv='mpv --hwdec=auto'
 alias scrcpy='scrcpy --max-fps 60'
 alias wine-python='WINEPREFIX=~/gen/wineprefixes/python wine py'
+alias rslog='adb logcat RustStdoutStderr:D *:S'
 
 alias cr='cargo run'
 alias crr='cargo run --release'
 alias cb='cargo build'
 alias cbr='cargo build --release'
+alias ca='cargo apk'
 alias cw='cargo watch -c'
 alias ct='cargo test'
 alias ch='cargo check'
@@ -152,5 +154,5 @@ cdpr() {
 }
 
 PROMPT=' %F{5}%(!.#.$)%f '
-RPROMPT='%F{6}%~%f %F{4}%D{%T}%f %(?..%B%F{3}%?%f%b)'
+RPROMPT='%F{6}%~%f %F{1}%M%f %F{4}%D{%T}%f %(?..%B%F{3}%?%f%b)'
 

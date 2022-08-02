@@ -1,48 +1,63 @@
+@define-color base00 #001E1B;
+@define-color base01 #002724;
+@define-color base02 #003833;
+@define-color base03 #70799A;
+@define-color base04 #8F98BA;
+@define-color base05 #AFB8DB;
+@define-color base06 #C5CEF2;
+@define-color base07 #DBE2FF;
+@define-color base08 #FFBDCA;
+@define-color base09 #F9C48D;
+@define-color base0A #D9D086;
+@define-color base0B #8BE1B1;
+@define-color base0C #6AE3D6;
+@define-color base0D #9FD6FF;
+@define-color base0E #E1C3FF;
+@define-color base0F #FFB9E9;
+
 * {
 	border: none;
 	border-radius: 0;
 	font-family: Roboto Mono, Cantarell;
 	font-size: 9pt;
-	color: #b8b2b8;
+	color: @base04;
 }
 
 window#waybar {
-	background-color: #171c1c;
+	background-color: @base00;
 }
 
 #workspaces button {
 	background-color: transparent;
-	border-radius: 3px;
+	min-width: 28px;
 }
 
 #workspaces button:hover {
-	background: #171c1c;
-	border: #171c1c;
+	background: @base00;
 	text-shadow: inherit;
 	box-shadow: inherit;
 }
 
 #workspaces button.focused {
-	background-color: #333e3e;
-  box-shadow: inset 0 2px #a8a3a8;
+	background-color: @base01;
+  box-shadow: inset 0 0.5px @base04;
 }
 
 
 #clock, #battery, #cpu, #memory, #temperature, #backlight, #pulseaudio, #mode {
 	padding: 0 9px;
-	border-radius: 3px;
 }
 
 #mode {
-	background-color: #333e3e;
-	color: #c7c1c7;
+	background-color: @base02;
+	color: @base04;
 	margin-left: 20px;
 }
 
 #clock {
-	box-shadow: inset 0 1px #a8a3a8;
+	box-shadow: inset 0 0.5px @base04;
 }
 
 #clock, #battery, #cpu, #memory, #temperature, #pulseaudio {
-	 color: #a8a3a8;
+	 color: @base04;
 }

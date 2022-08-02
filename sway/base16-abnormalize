@@ -1,0 +1,19 @@
+## Base16 abnormalize
+# Author: MultisampledNight
+
+set $base00 '#001E1B'
+set $base01 '#002724'
+set $base02 '#003833'
+set $base03 '#70799A'
+set $base04 '#8F98BA'
+set $base05 '#AFB8DB'
+set $base06 '#C5CEF2'
+set $base07 '#DBE2FF'
+set $base08 '#FFBDCA'
+set $base09 '#F9C48D'
+set $base0A '#D9D086'
+set $base0B '#8BE1B1'
+set $base0C '#6AE3D6'
+set $base0D '#9FD6FF'
+set $base0E '#E1C3FF'
+set $base0F '#FFB9E9'
