@@ -12,15 +12,19 @@ Plug 'neovim/nvim-lspconfig'
 Plug 'folke/trouble.nvim'
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim', { 'branch': '0.1.x' }
+Plug 'nvim-telescope/telescope-ui-select.nvim'
+Plug 'wincent/ferret'
 
 Plug 'mfussenegger/nvim-dap'
 Plug 'rcarriga/nvim-dap-ui'
 
 Plug 'DingDean/wgsl.vim'
+Plug 'imsnif/kdl.vim'
 Plug 'ap/vim-css-color'
 Plug 'nvim-treesitter/nvim-treesitter'
 Plug 'nvim-treesitter/playground'
 Plug 'sheerun/vim-polyglot'
+Plug 'mhinz/vim-signify'
 
 call plug#end()
 
@@ -45,7 +49,7 @@ if $TERM ==# "linux"
 	nnoremap <A-S-f> <Cmd>silent !brightnessctl --exponent set 5\%-<CR>
 	nnoremap <A-S-v> <Cmd>silent !brightnessctl --exponent set 3\%+<CR>
 else
-	colorscheme base16-efficiency-alt
+	colorscheme base16-white-on-black
 	set termguicolors
 	set winblend=60
 	set pumblend=60
@@ -79,7 +83,11 @@ lua <<EOF
 					granularity = {
 						group = "crate",
 					},
-				}
+				},
+				checkOnSave = {
+					command = "clippy",
+					-- extraArgs = {"--", "-Wclippy::pedantic"},
+				},
 			}
 		}
 	}
@@ -109,9 +117,10 @@ EOF
 
 endif
 
-set guifont=Roboto_Mono:h15
+set guifont=Roboto_Mono:h15:#e-subpixelantialias
 set number
 set noshowmode
+set breakindent
 set signcolumn=yes
 set title
 set titlestring=%m%h%w%F
@@ -125,6 +134,7 @@ set clipboard+=unnamedplus
 set completeopt=menu,menuone,preview,noselect
 set mouse=a
 set mousemodel=extend
+set mousescroll=ver:4,hor:0
 set ignorecase
 set smartcase
 set scrolloff=2
@@ -157,8 +167,8 @@ vnoremap <LeftRelease> <Cmd>call SelectionToClipboard()<cr>
 " all over the place: they're made for the Bone layout, not Qwerty
 tnoremap <A-Esc> <C-\><C-N>
 
-nnoremap j gj
-nnoremap k gk
+nnoremap <silent> j gj
+nnoremap <silent> k gk
 nnoremap gn n<Cmd>noh<CR>
 nnoremap gN N<Cmd>noh<CR>
 
@@ -169,9 +179,23 @@ vnoremap gN N<Cmd>noh<CR>
 
 vnoremap <S-k> <Cmd>lua require("dapui").eval()<CR>
 
+function TelescopeOnToplevel(command)
+	let toplevel = trim(system("cargo metadata --format-version=1 --offline --no-deps"))
+	if v:shell_error == 0
+		let toplevel = json_decode(toplevel)["workspace_root"]
+	else
+		let git_repo_root = trim(system("git rev-parse --show-toplevel"))
+		if v:shell_error != 0
+			let toplevel = getcwd()
+		endif
+	endif
+
+	exe "Telescope " . a:command . " cwd=" . toplevel
+endfunction
+
 nnoremap tt <Cmd>Telescope resume<CR> 
-nnoremap ti <Cmd>execute "Telescope find_files cwd=" . fnameescape(g:git_repo_root)<CR> 
-nnoremap te <Cmd>execute "Telescope live_grep cwd=" . fnameescape(g:git_repo_root)<CR> 
+nnoremap ti <Cmd>call TelescopeOnToplevel("find_files")<CR> 
+nnoremap te <Cmd>call TelescopeOnToplevel("live_grep")<CR> 
 nnoremap td <Cmd>Telescope lsp_definitions<CR>
 nnoremap tu <Cmd>Telescope lsp_references<CR>
 nnoremap ta <Cmd>Telescope lsp_implementations<CR>
@@ -188,18 +212,17 @@ nnoremap tl <Cmd>Telescope treesitter<CR>
 nnoremap tm <Cmd>Telescope man_pages<CR> 
 nnoremap tw <Cmd>Telescope keymaps<CR> 
 
-nnoremap tz <Cmd>Telescope git_commits<CR>
-nnoremap t, <Cmd>Telescope git_status<CR>
-nnoremap t. <Cmd>Telescope git_branches<CR>
-nnoremap tk <Cmd>Telescope git_bcommits<CR>
+nnoremap ty <Cmd>SignifyDiff<CR>
+nnoremap tz <Cmd>Telescope git_status<CR>
+nnoremap t, <Plug>(signify-prev-hunk)
+nnoremap t. <Plug>(signify-next-hunk)
+nnoremap tk <Cmd>Telescope git_commits<CR>
 
 nnoremap tf <Cmd>lua require("dap").toggle_breakpoint()<CR>
 nnoremap tv <Cmd>lua require("dap").step_over()<CR>
 nnoremap tü <Cmd>lua require("dap").step_into()<CR>
 nnoremap tä <Cmd>lua require("dap").continue()<CR>
 nnoremap tö <Cmd>lua require("dap").terminate()<CR>
-
-nnoremap <C-k> <Cmd>call jobstart(["term"], { "detach": v:true })<CR>
 
 nnoremap <F1> <NOP>
 inoremap <F1> <NOP>
@@ -212,24 +235,22 @@ let g:neovide_cursor_vfx_mode = "pixiedust"
 let g:neovide_cursor_vfx_particle_lifetime = 3.4
 let g:neovide_cursor_vfx_particle_speed = 7
 let g:neovide_cursor_vfx_particle_density = 0
-let g:neovide_floating_blur_amount_x = 9.0
-let g:neovide_floating_blur_amount_y = 9.0
+let g:neovide_floating_blur_amount_x = 6.0
+let g:neovide_floating_blur_amount_y = 6.0
 let g:neovide_underline_automatic_scaling = v:true
 let g:neovide_hide_mouse_when_typing = v:true
 
-
 " rust
 let g:rustfmt_autosave = 1
-let g:git_repo_root = trim(system("git rev-parse --show-toplevel"))
-if v:shell_error != 0
-	let g:git_repo_root = getcwd()
-endif
 
 " markdown
-autocmd BufNewFile,BufRead *.md set tw=80 sw=2 ts=2 sts=0 et
+autocmd BufNewFile,BufRead *.md set tw=0 sw=2 ts=2 sts=0 et
 
 " python
 autocmd BufWritePost *.py,*.pyw call jobstart(["black", expand("%")], { "detach": v:false })
+
+" sql
+autocmd BufNewFile,BufRead *.sql set sw=4 ts=4 sts=0 et
 
 " latex live preview (reimagined)
 function LaunchZathura()
@@ -237,37 +258,31 @@ function LaunchZathura()
 	call StopZathura()
 	let g:zathura_id = jobstart(["zathura", expand("%:r") . ".pdf"], { "detach": v:true })
 endfunction
+
 function StopZathura()
 	if exists("g:zathura_id")
 		call jobstop(g:zathura_id)
 	endif
 endfunction
-" :update but not since :update doesn't have any feedback
-" returns whether the file was actually written
-function WriteIfModified()
-	if &modified
-		silent write
-		return v:true
-	else
-		return v:false
-	endif
-endfunction
-function RecompileIfModified()
-	if WriteIfModified()
-		call jobstart(["pdflatex", "-shell-escape", expand("%")], { "detach": v:true })
-	endif
+
+function RecompileLatex()
+	silent update
+	call jobstart(["pdflatex", "-shell-escape", expand("%")], { "detach": v:true })
 endfunction
 
 autocmd BufNewFile,BufRead *.tex
   \	set filetype=latex sw=2 ts=2 sts=0 et
-	\|call LaunchZathura()
+  \|nmap <Tab>1 <Cmd>call RecompileLatex()<CR>
+  \|imap <Tab>1 <Cmd>call RecompileLatex()<CR>
+  \|nmap <Tab>2 <Cmd>call LaunchZathura()<CR>
+  \|imap <Tab>2 <Cmd>call LaunchZathura()<CR>
 autocmd VimLeavePre *.tex
-	\	call StopZathura()
+  \	call StopZathura()
 
 " can't combine into one since update //might// write, but it doesn't have to
 " (avoid recompiling unless truly needed, helps avoid CPU abuse and also
 " flicker in zathura)
-autocmd CursorHold,CursorHoldI *.tex call RecompileIfModified()
+"autocmd CursorHold,CursorHoldI *.tex call RecompileIfModified()
 
 " optional helper commands, if sensible for the current buffer
 function AutoWriteToggle()
@@ -284,6 +299,7 @@ function AutoWriteToggle()
 	augroup END
 endfunction
 command AutoWrite call AutoWriteToggle()
+autocmd FocusGained * checktime
 
 
 " some hi magic since base16's vim theme isn't quite there and I'm too lazy to
@@ -500,8 +516,14 @@ telescope.setup({
 				height = 0.975,
 			}
 		}
-	}
+	},
+	extensions = {
+		["ui-select"] = {
+			require("telescope.themes").get_dropdown {}
+		}
+	},
 })
+telescope.load_extension("ui-select")
 
 EOF
 
