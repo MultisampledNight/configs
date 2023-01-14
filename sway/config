@@ -3,10 +3,9 @@
 xwayland enable
 font pango:Cantarell 10
 
-gaps inner 2
 smart_gaps on
 smart_borders on
-default_border pixel 1
+default_border pixel 0
 default_floating_border pixel 1
 titlebar_border_thickness 0
 titlebar_padding 5 4
@@ -27,11 +26,8 @@ set $gammastep toggle-gammastep
 set $screenshot_folder "$HOME/gen/pics/screenshots"
 # thanks arch wiki
 set $window_screenshot window-screenshot
-set $screenshot\
-	moment="$(date --rfc-3339=seconds -u)" &&\
-	grim -g "$(slurp)" "$screenshot_folder/$moment.png" &&\
-	cp "$screenshot_folder/$moment.png" "$screenshot_folder/unknown.png"
-set $wallpaper $HOME/gen/pics/wallpaper/abnormalize-prerel-curves.png
+set $screenshot screenshot
+set $wallpaper $HOME/.wallpaper
 
 exec mako
 exec --no-startup-id $gammastep
@@ -43,11 +39,21 @@ output * bg $wallpaper fill
 
 # You can get the names of your outputs by running: swaymsg -t get_outputs
 output HDMI-A-1 position 0,0
-output eDP-1 position 1920,600
+output DP-1 position 0,0
+output DP-2 position 0,0
+output eDP-1 position 440,1200
+#output eDP-1 position 1128,1200
+output eDP-1 scale 2
+
+output * max_render_time 6
+
+seat seat0 hide_cursor 8000
 
 input type:keyboard {
 	xkb_layout "de"
 	xkb_variant "bone"
+	repeat_rate 30
+	repeat_delay 260
 }
 
 input type:pointer {
@@ -66,6 +72,10 @@ input type:touchpad {
 	pointer_accel 0.9
 }
 
+input type:touch map_to_output eDP-1
+input type:tablet_tool map_to_output eDP-1
+input type:tablet_pad map_to_output eDP-1
+
 bindsym $mod+Return exec $term
 bindsym $mod+Shift+q kill
 bindsym $mod+d exec $menu
@@ -79,6 +89,7 @@ bindsym XF86MonBrightnessDown exec brightnessctl --exponent set 5%-
 bindsym XF86MonBrightnessUp exec brightnessctl --exponent set 3%+
 bindsym $mod+Shift+f exec brightnessctl --exponent set 5%-
 bindsym $mod+Shift+v exec brightnessctl --exponent set 3%+
+bindsym $mod+t output eDP-1 transform 90 clockwise
 
 bindsym $mod+Shift+o exec firefox
 bindsym $mod+Shift+p exec spotify --kiosk
