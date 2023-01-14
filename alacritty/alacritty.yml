@@ -7,9 +7,9 @@ window:
 
 font:
   normal:
-    family: CamingoCode
+    family: Roboto Mono
 
-  size: 11
+  size: 15
 
 cursor:
   style:
@@ -18,8 +18,5 @@ cursor:
 
 mouse:
   hide_when_typing: true
-
-key_bindings:
-  - { key: K, mods: Control, command: { program: "term" }}
 
 ipc_socket: false

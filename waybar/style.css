@@ -1,3 +1,22 @@
+/* efficiency
+@define-color base00 #01172A;
+@define-color base01 #0D2135;
+@define-color base02 #182C40;
+@define-color base03 #73869F;
+@define-color base04 #7D90A9;
+@define-color base05 #889BB4;
+@define-color base06 #9AADC8;
+@define-color base07 #ADC0DB;
+@define-color base08 #DF9799;
+@define-color base09 #D69E82;
+@define-color base0A #C1A775;
+@define-color base0B #6FB18D;
+@define-color base0C #5DBABE;
+@define-color base0D #87AFE1;
+@define-color base0E #C99DCE;
+@define-color base0F #DB97B5;
+*/
+/* abnormalize */
 @define-color base00 #001E1B;
 @define-color base01 #002724;
 @define-color base02 #003833;
@@ -19,6 +38,7 @@
 	border: none;
 	border-radius: 0;
 	font-family: Roboto Mono, Cantarell;
+	font-weight: normal;
 	font-size: 9pt;
 	color: @base04;
 }
@@ -29,7 +49,7 @@ window#waybar {
 
 #workspaces button {
 	background-color: transparent;
-	min-width: 28px;
+	min-width: 52px;
 }
 
 #workspaces button:hover {

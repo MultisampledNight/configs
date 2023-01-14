@@ -49,7 +49,7 @@ if $TERM ==# "linux"
 	nnoremap <A-S-f> <Cmd>silent !brightnessctl --exponent set 5\%-<CR>
 	nnoremap <A-S-v> <Cmd>silent !brightnessctl --exponent set 3\%+<CR>
 else
-	colorscheme base16-white-on-black
+	colorscheme base16-abnormalize-alt
 	set termguicolors
 	set winblend=60
 	set pumblend=60
