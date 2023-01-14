@@ -31,22 +31,24 @@ bindkey -v
 alias ls='ls -vh --group-directories-first --color=auto'
 alias l='ls -Hl'
 alias ll='l -a'
+alias help='man'
 
 alias -g ...='../..'
 alias -g ....='../../..'
 alias -g .....='../../../..'
 
-alias neovide='neovide --multigrid'
+alias neovide='WAYLAND_DISPLAY= neovide --multigrid --novsync'
 alias nvide='neovide'
 alias sqlite='sqlite3 -box'
 
 alias R='R --quiet'
-alias evcxr='evcxr --edit-mode vi --opt 2'
+alias evcxr='evcxr --edit-mode vi'
 alias pypy='pypy3 -q'
 alias mpv='mpv --hwdec=auto'
 alias scrcpy='scrcpy --max-fps 60'
 alias wine-python='WINEPREFIX=~/gen/wineprefixes/python wine py'
 alias rslog='adb logcat RustStdoutStderr:D *:S'
+alias bctl='brightnessctl --exponent'
 
 alias cr='cargo run'
 alias crr='cargo run --release'
@@ -100,8 +102,7 @@ bydir() {
 	touch $dir$1
 }
 mkcd() {
-	mkdir -p $@
-	cd $@
+	mkdir -p $@ && cd $@
 }
 cwm() {
 	crate="$(cargo cratename)"
@@ -153,6 +154,8 @@ cdpr() {
 	fi
 }
 
+eval "$(zoxide init zsh --cmd cd)"
+
 PROMPT=' %F{5}%(!.#.$)%f '
-RPROMPT='%F{6}%~%f %F{1}%M%f %F{4}%D{%T}%f %(?..%B%F{3}%?%f%b)'
+RPROMPT='%F{6}%~%f %F{4}%D{%T}%f on %M %(?..%B%F{3}%?%f%b)'
 
