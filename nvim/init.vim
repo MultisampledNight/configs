@@ -15,11 +15,6 @@ Plug 'nvim-telescope/telescope.nvim', { 'branch': '0.1.x' }
 Plug 'nvim-telescope/telescope-ui-select.nvim'
 Plug 'wincent/ferret'
 
-Plug 'mfussenegger/nvim-dap'
-Plug 'rcarriga/nvim-dap-ui'
-
-Plug 'DingDean/wgsl.vim'
-Plug 'imsnif/kdl.vim'
 Plug 'ap/vim-css-color'
 Plug 'nvim-treesitter/nvim-treesitter'
 Plug 'nvim-treesitter/playground'
@@ -28,6 +23,18 @@ Plug 'mhinz/vim-signify'
 
 call plug#end()
 
+function ProjectToplevel()
+	let toplevel = trim(system("cargo metadata --format-version=1 --offline --no-deps"))
+	if v:shell_error == 0
+		let toplevel = json_decode(toplevel)["workspace_root"]
+	else
+		let toplevel = trim(system("git rev-parse --show-toplevel"))
+		if v:shell_error != 0
+			let toplevel = getcwd()
+		endif
+	endif
+	return toplevel
+endfunction
 
 " general settings
 if $TERM ==# "linux"
@@ -51,8 +58,14 @@ if $TERM ==# "linux"
 else
 	colorscheme base16-abnormalize-alt
 	set termguicolors
-	set winblend=60
-	set pumblend=60
+
+	if exists("g:neovide")
+		set winblend=50
+		set pumblend=50
+	else
+		set winblend=20
+		set pumblend=20
+	endif
 
 lua <<EOF
 	local capabilities = require("cmp_nvim_lsp").default_capabilities()
@@ -129,7 +142,8 @@ set linebreak
 set undofile
 set shortmess+=W
 
-set autochdir
+" smarter autochdir
+exe "cd " . ProjectToplevel()
 set clipboard+=unnamedplus
 set completeopt=menu,menuone,preview,noselect
 set mouse=a
@@ -140,6 +154,10 @@ set smartcase
 set scrolloff=2
 set sidescrolloff=6
 set tabstop=4
+
+set foldmethod=expr
+set foldexpr=nvim_treesitter#foldexpr()
+set nofoldenable
 
 let mapleader = " "
 let localleader = " "
@@ -180,17 +198,7 @@ vnoremap gN N<Cmd>noh<CR>
 vnoremap <S-k> <Cmd>lua require("dapui").eval()<CR>
 
 function TelescopeOnToplevel(command)
-	let toplevel = trim(system("cargo metadata --format-version=1 --offline --no-deps"))
-	if v:shell_error == 0
-		let toplevel = json_decode(toplevel)["workspace_root"]
-	else
-		let git_repo_root = trim(system("git rev-parse --show-toplevel"))
-		if v:shell_error != 0
-			let toplevel = getcwd()
-		endif
-	endif
-
-	exe "Telescope " . a:command . " cwd=" . toplevel
+	exe "Telescope " . a:command . " cwd=" . ProjectToplevel()
 endfunction
 
 nnoremap tt <Cmd>Telescope resume<CR> 
@@ -242,15 +250,22 @@ let g:neovide_hide_mouse_when_typing = v:true
 
 " rust
 let g:rustfmt_autosave = 1
+autocmd BufNewFile,BufRead *.rs set equalprg=rustfmt
 
 " markdown
 autocmd BufNewFile,BufRead *.md set tw=0 sw=2 ts=2 sts=0 et
 
 " python
-autocmd BufWritePost *.py,*.pyw call jobstart(["black", expand("%")], { "detach": v:false })
+autocmd BufWritePost *.py,*.pyw call jobstart(["black", expand("%")], { "detach": v:false }) | set equalprg=black
 
 " sql
 autocmd BufNewFile,BufRead *.sql set sw=4 ts=4 sts=0 et
+
+" kdl
+autocmd BufNewFile,BufRead *.kdl set ft=kdl
+
+" scm (treesitter queries)
+autocmd BufNewFile,BufRead *.scm set ft=scm
 
 " latex live preview (reimagined)
 function LaunchZathura()
@@ -267,7 +282,7 @@ endfunction
 
 function RecompileLatex()
 	silent update
-	call jobstart(["pdflatex", "-shell-escape", expand("%")], { "detach": v:true })
+	call jobstart(["pdflatex", "-halt-on-error", expand("%")], { "detach": v:true })
 endfunction
 
 autocmd BufNewFile,BufRead *.tex
@@ -306,9 +321,9 @@ autocmd FocusGained * checktime
 " change that
 for level in ["Error", "Warn", "Info", "Hint"]
 	for part in ["", "VirtualText", "Floating", "Sign"]
-		execute "hi! Diagnostic" . part . level . " guifg=#70799A"
+		execute "hi! Diagnostic" . part . level . " guifg=#001E1B"
 	endfor
-	execute "hi! DiagnosticUnderline" . level . " guisp=#01172A"
+	execute "hi! DiagnosticUnderline" . level . " guisp=#003833 guibg=#003833"
 endfor
 
 lua <<EOF
@@ -316,6 +331,7 @@ require("nvim-treesitter.configs").setup {
 	highlight = {
 		enable = true,
 	},
+
 	playground = {
 		enable = true,
 	},
@@ -364,147 +380,6 @@ cmp.setup.cmdline(":", {
 	})
 })
 
-
-local dap = require("dap")
-local dapui = require("dapui")
-dapui.setup({
-	icons = { collapsed = "⮞", expanded = "⮟" },
-	layouts = {
-		{
-			elements = {
-				{ id = "breakpoints", size = 0.1 },
-				{ id = "stacks", size = 0.25 },
-				{ id = "watches", size = 0.1 },
-				{ id = "scopes", size = 0.55 },
-			},
-			size = 42,
-			position = "left",
-		},
-		{
-			elements = {
-				"repl",
-				"console",
-			},
-			size = 6,
-			position = "bottom",
-		},
-	},
-})
-
-dap.listeners.after.event_initialized["dapui_config"] = function()
-	dapui.open()
-end
-dap.listeners.before.event_terminated["dapui_config"] = function()
-	dapui.close()
-end
-dap.listeners.before.event_exited["dapui_config"] = function()
-	dapui.close()
-end
-
-dap.adapters.python = {
-	type = "executable";
-	command = "python";
-	args = { "-m", "debugpy.adapter" };
-}
-dap.configurations.python = {
-	{
-		type = "python";
-		request = "launch";
-		name = "Launch file";
-
-		program = "${file}";
-		pythonPath = "/usr/bin/python";
-	},
-}
-
-local extension_path = vim.fn.expand "~/info/lurk/codelldb/extension/"
-local codelldb_path = extension_path .. "adapter/codelldb"
-local liblldb_path = extension_path .. "lldb/lib/liblldb.so"
-
-dap.adapters.codelldb = function(callback, _)
-	local stdout = vim.loop.new_pipe(false)
-	local stderr = vim.loop.new_pipe(false)
-	local handle
-	local pid_or_err
-	local port
-	local error_message = ""
-
-	local opts = {
-		stdio = { nil, stdout, stderr },
-		args = { "--liblldb", liblldb_path },
-		detached = true,
-	}
-
-	handle, pid_or_err = vim.loop.spawn(codelldb_path, opts, function(code)
-		stdout:close()
-		stderr:close()
-		handle:close()
-		if code ~= 0 then
-			print("codelldb exited with code", code)
-			print("error message", error_message)
-		end
-	end)
-
-	assert(handle, "Error running codelldb: " .. tostring(pid_or_err))
-
-	stdout:read_start(function(err, chunk)
-		assert(not err, err)
-		if chunk then
-			if not port then
-				local chunks = {}
-				for substring in chunk:gmatch "%S+" do
-					table.insert(chunks, substring)
-				end
-				port = tonumber(chunks[#chunks])
-				vim.schedule(function()
-					callback {
-						type = "server",
-						host = "127.0.0.1",
-						port = port,
-					}
-				end)
-			else
-				vim.schedule(function()
-					require("dap.repl").append(chunk)
-				end)
-			end
-		end
-	end)
-	stderr:read_start(function(_, chunk)
-		if chunk then
-			error_message = error_message .. chunk
-
-			vim.schedule(function()
-				require("dap.repl").append(chunk)
-			end)
-		end
-	end)
-end
-
-dap.configurations.rust = {
-	{
-		name = "Launch file",
-		type = "codelldb",
-		request = "launch",
-		program = function()
-			local handle = io.popen("cargo exepath")
-			local result = handle:read("*a")
-			handle:close()
-			return string.gsub(result, "[\n]+", "") 
-		end,
-		args = function()
-			local args_iter = string.gmatch(vim.fn.input("launch args> ", "", "file"), "([^ ]+)")
-			local args = {}
-
-			for arg in args_iter do
-				table.insert(args, arg)
-			end
-
-			return args
-		end,
-		cwd = "${workspaceFolder}",
-	},
-}
 
 local telescope = require("telescope")
 telescope.setup({
