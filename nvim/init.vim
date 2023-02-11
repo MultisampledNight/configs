@@ -250,7 +250,7 @@ let g:neovide_hide_mouse_when_typing = v:true
 
 " rust
 let g:rustfmt_autosave = 1
-autocmd BufNewFile,BufRead *.rs set equalprg=rustfmt
+autocmd BufNewFile,BufRead *.rs set equalprg=rustfmt formatprg=rustfmt
 
 " markdown
 autocmd BufNewFile,BufRead *.md set tw=0 sw=2 ts=2 sts=0 et
