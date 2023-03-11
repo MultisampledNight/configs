@@ -4,7 +4,7 @@ pkgs.mkShell rec {
   buildInputs = with pkgs; [
     clang llvmPackages_latest.lld llvmPackages.libclang
     openssl pkg-config webkitgtk.dev
-    rustup wasm-pack rust-analyzer
+    rustup wasm-pack rust-analyzer evcxr
 
     python3 valgrind
   ];
