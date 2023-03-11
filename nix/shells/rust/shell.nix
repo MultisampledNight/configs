@@ -5,7 +5,8 @@ pkgs.mkShell rec {
     clang llvmPackages_latest.lld llvmPackages.libclang
     openssl pkg-config webkitgtk.dev
     rustup wasm-pack rust-analyzer
-    python3
+
+    python3 valgrind
   ];
 
   RUSTC_VERSION = pkgs.lib.strings.removeSuffix "\n" (
