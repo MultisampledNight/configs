@@ -13,9 +13,7 @@ Plug 'folke/trouble.nvim'
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim', { 'branch': '0.1.x' }
 Plug 'nvim-telescope/telescope-ui-select.nvim'
-Plug 'wincent/ferret'
 
-Plug 'ap/vim-css-color'
 Plug 'nvim-treesitter/nvim-treesitter'
 Plug 'nvim-treesitter/playground'
 Plug 'sheerun/vim-polyglot'
@@ -24,7 +22,7 @@ Plug 'mhinz/vim-signify'
 call plug#end()
 
 function ProjectToplevel()
-	let toplevel = trim(system("cargo metadata --format-version=1 --offline --no-deps"))
+	let toplevel = trim(system("cargo metadata --format-version=1 --offline --no-deps 2>/dev/null"))
 	if v:shell_error == 0
 		let toplevel = json_decode(toplevel)["workspace_root"]
 	else
@@ -111,6 +109,7 @@ lua <<EOF
 			"latex",
 		},
 	}
+	lspconfig.tsserver.setup {}
 
 	require("trouble").setup({
 		position = "bottom",
@@ -131,6 +130,7 @@ EOF
 endif
 
 set guifont=Roboto_Mono:h15:#e-subpixelantialias
+set linespace=2
 set number
 set noshowmode
 set breakindent
@@ -198,33 +198,38 @@ vnoremap gN N<Cmd>noh<CR>
 vnoremap <S-k> <Cmd>lua require("dapui").eval()<CR>
 
 function TelescopeOnToplevel(command)
+	silent update
 	exe "Telescope " . a:command . " cwd=" . ProjectToplevel()
 endfunction
 
-nnoremap tt <Cmd>Telescope resume<CR> 
-nnoremap ti <Cmd>call TelescopeOnToplevel("find_files")<CR> 
+nnoremap tt <Cmd>Telescope resume<CR>
+nnoremap ti <Cmd>call TelescopeOnToplevel("find_files")<CR>
 nnoremap te <Cmd>call TelescopeOnToplevel("live_grep")<CR> 
-nnoremap td <Cmd>Telescope lsp_definitions<CR>
-nnoremap tu <Cmd>Telescope lsp_references<CR>
-nnoremap ta <Cmd>Telescope lsp_implementations<CR>
+nnoremap td <Cmd>call TelescopeOnToplevel("lsp_definitions")<CR>
+nnoremap tu <Cmd>call TelescopeOnToplevel("lsp_references")<CR>
+nnoremap ta <Cmd>call TelescopeOnToplevel("lsp_implementations")<CR>
 
-nnoremap tb <Cmd>TroubleToggle<CR>
-nnoremap tn <Cmd>lua vim.lsp.buf.hover()<CR>
-nnoremap tr <Cmd>lua vim.lsp.buf.rename()<CR>
-nnoremap ts <Cmd>lua vim.lsp.buf.code_action()<CR>
-vnoremap ts <Cmd>lua vim.lsp.buf.code_action()<CR>
-nnoremap tg <Cmd>Telescope lsp_workspace_symbols<CR>
+nnoremap to <Cmd>TroubleToggle<CR>
+nnoremap tb <Cmd>update \| Trouble<CR>
 
-nnoremap th <Cmd>Telescope lsp_document_symbols<CR> 
-nnoremap tl <Cmd>Telescope treesitter<CR> 
-nnoremap tm <Cmd>Telescope man_pages<CR> 
-nnoremap tw <Cmd>Telescope keymaps<CR> 
+nnoremap tn <Cmd>update \| lua vim.lsp.buf.hover()<CR>
+nnoremap tr <Cmd>update \| lua vim.lsp.buf.rename()<CR>
+nnoremap ts <Cmd>update \| lua vim.lsp.buf.code_action()<CR>
+vnoremap ts <Cmd>update \| lua vim.lsp.buf.code_action()<CR>
+nnoremap tg <Cmd>call TelescopeOnToplevel("lsp_workspace_symbols")<CR>
+
+nnoremap th <Cmd>call TelescopeOnToplevel("lsp_document_symbols")<CR>
+nnoremap tl <Cmd>call TelescopeOnToplevel("treesitter")<CR>
+nnoremap tm <Cmd>call TelescopeOnToplevel("man_pages")<CR>
+nnoremap tw <Cmd>call TelescopeOnToplevel("keymaps")<CR>
 
 nnoremap ty <Cmd>SignifyDiff<CR>
-nnoremap tz <Cmd>Telescope git_status<CR>
+nnoremap tz <Cmd>call TelescopeOnToplevel("git_status")<CR>
 nnoremap t, <Plug>(signify-prev-hunk)
 nnoremap t. <Plug>(signify-next-hunk)
-nnoremap tk <Cmd>Telescope git_commits<CR>
+nnoremap tk <Cmd>call TelescopeOnToplevel("git_commits")<CR>
+
+nnoremap tq <Cmd>call jobstart("cargo fmt")<CR>
 
 nnoremap tf <Cmd>lua require("dap").toggle_breakpoint()<CR>
 nnoremap tv <Cmd>lua require("dap").step_over()<CR>
@@ -237,6 +242,7 @@ inoremap <F1> <NOP>
 
 " neovide
 let g:neovide_refresh_rate = 60
+let g:neovide_refresh_rate_idle = 60
 let g:neovide_cursor_unfocused_outline_width = 0.05
 let g:neovide_cursor_animation_length = 0.08
 let g:neovide_cursor_vfx_mode = "pixiedust"
@@ -249,14 +255,13 @@ let g:neovide_underline_automatic_scaling = v:true
 let g:neovide_hide_mouse_when_typing = v:true
 
 " rust
-let g:rustfmt_autosave = 1
 autocmd BufNewFile,BufRead *.rs set equalprg=rustfmt formatprg=rustfmt
 
 " markdown
 autocmd BufNewFile,BufRead *.md set tw=0 sw=2 ts=2 sts=0 et
 
 " python
-autocmd BufWritePost *.py,*.pyw call jobstart(["black", expand("%")], { "detach": v:false }) | set equalprg=black
+autocmd BufWritePost *.py,*.pyw call jobstart(["black", expand("%")], { "detach": v:false }) \| set equalprg=black
 
 " sql
 autocmd BufNewFile,BufRead *.sql set sw=4 ts=4 sts=0 et
@@ -282,7 +287,9 @@ endfunction
 
 function RecompileLatex()
 	silent update
+	exe "cd " . expand("%:p:h")
 	call jobstart(["pdflatex", "-halt-on-error", expand("%")], { "detach": v:true })
+	cd -
 endfunction
 
 autocmd BufNewFile,BufRead *.tex
