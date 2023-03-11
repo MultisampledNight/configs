@@ -28,7 +28,7 @@ unsetopt beep extendedglob nomatch
 bindkey -v
 
 
-alias ls='ls -vh --group-directories-first --color=auto'
+alias ls='ls -vh --group-directories-first'
 alias l='ls -Hl'
 alias ll='l -a'
 alias help='man'
@@ -37,7 +37,7 @@ alias -g ...='../..'
 alias -g ....='../../..'
 alias -g .....='../../../..'
 
-alias neovide='WAYLAND_DISPLAY= neovide --multigrid --novsync'
+alias neovide='WINIT_UNIX_BACKEND=x11 neovide --multigrid --novsync'
 alias nvide='neovide'
 alias sqlite='sqlite3 -box'
 
@@ -49,6 +49,7 @@ alias scrcpy='scrcpy --max-fps 60'
 alias wine-python='WINEPREFIX=~/gen/wineprefixes/python wine py'
 alias rslog='adb logcat RustStdoutStderr:D *:S'
 alias bctl='brightnessctl --exponent'
+alias sshfs='sshfs -o reconnect,idmap=user,max_conns=16,ServerAliveInterval=20'
 
 alias cr='cargo run'
 alias crr='cargo run --release'
@@ -60,8 +61,10 @@ alias ct='cargo test'
 alias ch='cargo check'
 alias cl='cargo clippy'
 alias clp='cargo clippy -- -Wclippy::pedantic'
+alias cf='cargo fmt'
 alias cfg='CARGO_PROFILE_RELEASE_DEBUG=true cargo flamegraph --palette aqua'
-alias docs='cargo doc --open'
+alias docs='cargo doc && firefox -p view-docs file://$(pwd)/target/doc/help.html &disown'
+alias rdocs='firefox -p view-docs file:///home/multisn8/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/share/doc/rust/html/std/index.html &disown'
 alias rrrr='rr replay -d rust-gdb'
 
 alias todo='edit ~/gen/notes/todo.md'
@@ -84,7 +87,6 @@ export QT_QPA_PLATFORMTHEME='qt5ct'
 
 export LIBVA_DRIVER_NAME='iHD'
 
-export RUST_BACKTRACE=1
 export DOTNET_CLI_TELEMETRY_OPTOUT=1
 export WINEARCH='win64'
 export STEAM_COMPAT_CLIENT_INSTALL_PATH="$HOME/.steam"
@@ -124,16 +126,6 @@ cdpl() {
 	cd "$HOME/info/playground/$@"
 }
 
-# taken and shortened from https://github.com/jarun/nnn/blob/master/misc/quitcd/quitcd.bash_zsh
-nn() {
-	export NNN_TMPFILE="${XDG_CONFIG_HOME:-$HOME/.config}/nnn/.lastd"
-	nnn -Cedx "$@"
-	if [ -f "$NNN_TMPFILE" ]; then
-		source "$NNN_TMPFILE"
-		rm -f "$NNN_TMPFILE" > /dev/null
-	fi
-}
-
 man() {
 	/usr/bin/env man $@ | nvim +Man!
 }
@@ -154,8 +146,48 @@ cdpr() {
 	fi
 }
 
+# wrapper for nix-shell to make it launch zsh and cause less friction in my workflow
+nix-shell() {
+	SHELL_NAME="${SHELL_NAME:+SHELL_NAME/}$@" \
+		command nix-shell $@ \
+			--command "SHELL=$(command which zsh) exec $(command which zsh) -i"
+}
+shell() {
+	ALL_SHELLDEFS_PATH="$HOME/system/configs/nix/shells"
+
+	if [[ -z $1 ]]; then
+		# either recursion of multiple args complete or no args given
+		return
+	fi
+
+	if [[ ! -d "$ALL_SHELLDEFS_PATH/$1" ]]; then
+		echo "shell definition path '$1' not found"
+		return
+	fi
+
+	if [[ -z $2 ]]; then
+		# finally launch zsh
+		inner_cmd="SHELL=$(command which zsh) exec $(command which zsh) -i"
+	else
+		# recurse further to handle rest of the given shells
+		inner_cmd="exec $(command which zsh) -ic \"$funcstack[1] $argv[2,-1]\""
+	fi
+
+	before=$(pwd)
+	cd "$ALL_SHELLDEFS_PATH/$1"
+
+	# no magic variable, just set here for the prompt below
+	# **do note this doesn't know of standalone nix-shells**
+	SHELL_NAME="${SHELL_NAME:+$SHELL_NAME/}$1" \
+		command nix-shell --command "cd $before; $inner_cmd"
+
+	cd $before
+}
+
+TIME_LEFT=$(time-left)
+
+setopt prompt_subst
+PROMPT=' %5F%(!.#.$)%f '
+RPROMPT='%2F%~%f %6F%D{%T}%f ${SHELL_NAME:+using %1F${SHELL_NAME}%f }${TIME_LEFT:+left %5F${TIME_LEFT}%f }on %3F%M%f %(?..%B%3F%?%f%b)'
+
 eval "$(zoxide init zsh --cmd cd)"
-
-PROMPT=' %F{5}%(!.#.$)%f '
-RPROMPT='%F{6}%~%f %F{4}%D{%T}%f on %M %(?..%B%F{3}%?%f%b)'
-
