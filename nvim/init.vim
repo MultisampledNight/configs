@@ -13,7 +13,9 @@ Plug 'folke/trouble.nvim'
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim', { 'branch': '0.1.x' }
 Plug 'nvim-telescope/telescope-ui-select.nvim'
+"Plug 'wincent/ferret'
 
+"Plug 'ap/vim-css-color'
 Plug 'nvim-treesitter/nvim-treesitter'
 Plug 'nvim-treesitter/playground'
 Plug 'sheerun/vim-polyglot'
@@ -195,8 +197,6 @@ vnoremap k gk
 vnoremap gn n<Cmd>noh<CR>
 vnoremap gN N<Cmd>noh<CR>
 
-vnoremap <S-k> <Cmd>lua require("dapui").eval()<CR>
-
 function TelescopeOnToplevel(command)
 	silent update
 	exe "Telescope " . a:command . " cwd=" . ProjectToplevel()
@@ -229,7 +229,7 @@ nnoremap t, <Plug>(signify-prev-hunk)
 nnoremap t. <Plug>(signify-next-hunk)
 nnoremap tk <Cmd>call TelescopeOnToplevel("git_commits")<CR>
 
-nnoremap tq <Cmd>call jobstart("cargo fmt")<CR>
+nnoremap tq <Cmd>update \| call jobstart("cargo fmt")<CR>
 
 nnoremap tf <Cmd>lua require("dap").toggle_breakpoint()<CR>
 nnoremap tv <Cmd>lua require("dap").step_over()<CR>
@@ -261,7 +261,7 @@ autocmd BufNewFile,BufRead *.rs set equalprg=rustfmt formatprg=rustfmt
 autocmd BufNewFile,BufRead *.md set tw=0 sw=2 ts=2 sts=0 et
 
 " python
-autocmd BufWritePost *.py,*.pyw call jobstart(["black", expand("%")], { "detach": v:false }) \| set equalprg=black
+autocmd BufWritePost *.py,*.pyw call jobstart(["black", expand("%")], { "detach": v:false })
 
 " sql
 autocmd BufNewFile,BufRead *.sql set sw=4 ts=4 sts=0 et
@@ -294,10 +294,10 @@ endfunction
 
 autocmd BufNewFile,BufRead *.tex
   \	set filetype=latex sw=2 ts=2 sts=0 et
-  \|nmap <Tab>1 <Cmd>call RecompileLatex()<CR>
-  \|imap <Tab>1 <Cmd>call RecompileLatex()<CR>
-  \|nmap <Tab>2 <Cmd>call LaunchZathura()<CR>
-  \|imap <Tab>2 <Cmd>call LaunchZathura()<CR>
+  \|nnoremap <buffer> <Tab>1 <Cmd>call RecompileLatex()<CR>
+  \|inoremap <buffer> <Tab>1 <Cmd>call RecompileLatex()<CR>
+  \|nnoremap <buffer> <Tab>2 <Cmd>call LaunchZathura()<CR>
+  \|inoremap <buffer> <Tab>2 <Cmd>call LaunchZathura()<CR>
 autocmd VimLeavePre *.tex
   \	call StopZathura()
 
