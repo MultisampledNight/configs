@@ -18,16 +18,14 @@ CONFIG_DESTINATIONS = {
     "sway": "~/.config/sway",
     "waybar": "~/.config/waybar",
     "zsh/zshrc": "~/.zshrc",
-
     # system wide stuff
     "nixos": "/etc/nixos",
 }
 
 
-def distribute_symlinks(destinations = CONFIG_DESTINATIONS,
-                        backup_dir = BACKUP_DIR):
+def distribute_symlinks(destinations=CONFIG_DESTINATIONS, backup_dir=BACKUP_DIR):
     backup_dir = expanduser(backup_dir)
-    backup_dir.mkdir(exist_ok=True)
+    backup_dir.mkdir(parents=True, exist_ok=True)
     repo_root = Path(__file__).resolve().parent
 
     for repo_subpath, link_name in destinations.items():
@@ -41,7 +39,7 @@ def distribute_symlinks(destinations = CONFIG_DESTINATIONS,
             pass
 
         # then actually create the link
-        link_name.parent.mkdir(exist_ok=True)
+        link_name.parent.mkdir(parents=True, exist_ok=True)
         link_name.symlink_to(link_target)
 
 
