@@ -22,7 +22,7 @@ unsetopt autocd beep extendedglob nomatch
 bindkey -v
 
 alias c='clear'
-alias nv='neovide --multigrid'
+alias nv='neovide'
 alias l='ls -l'
 alias ll='l -a'
 

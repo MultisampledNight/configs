@@ -7,9 +7,9 @@ window:
 
 font:
   normal:
-    family: Roboto Mono
+    family: IBM Plex Mono
 
-  size: 15
+  size: 14
 
 cursor:
   style:

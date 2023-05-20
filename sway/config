@@ -1,81 +1,49 @@
-# vim:ft=sh
-
-xwayland enable
-font pango:Cantarell 10
-
-smart_gaps on
-smart_borders on
-default_border pixel 0
-default_floating_border pixel 1
-titlebar_border_thickness 0
-titlebar_padding 5 4
-
-include colorscheme-abnormalize
+xwayland disable
+font pango:IBM Plex Sans 10
 
 set $mod Mod4
 
-set $left h
-set $down j
-set $up k
-set $right l
+set $left  n
+set $down  r
+set $up    s
+set $right g
 
 set $term alacritty
 set $menu fuzzel
-set $lock lock
-set $gammastep toggle-gammastep
-set $screenshot_folder "$HOME/gen/pics/screenshots"
-# thanks arch wiki
-set $window_screenshot window-screenshot
-set $screenshot screenshot
-set $wallpaper $HOME/.wallpaper
-
-exec mako
-
-
-default_border pixel
-
-output * bg $wallpaper fill
-
-# You can get the names of your outputs by running: swaymsg -t get_outputs
-output HDMI-A-1 position 0,0
-output DP-1 position 0,0
-output DP-2 position 0,0
-output eDP-1 position 440,1200
-#output eDP-1 position 1128,1200
-output eDP-1 scale 2
 
 output * max_render_time 6
 
-seat seat0 hide_cursor 8000
+seat seat0 {
+    hide_cursor 8000
+    xcursor_theme volantes_cursors 48
+}
+floating_modifier $mod normal
 
 input type:keyboard {
-	xkb_layout "de"
-	xkb_variant "bone"
-	repeat_rate 30
-	repeat_delay 260
+    xkb_layout "de"
+    xkb_variant "bone"
+    repeat_rate 30
+    repeat_delay 260
 }
 
 input type:pointer {
-	accel_profile flat
-	pointer_accel 0.76
+    accel_profile flat
+    pointer_accel 0.76
 }
 
 input type:touchpad {
-	accel_profile flat
-	click_method clickfinger
-	drag disabled
-	dwt enabled
-	tap enabled
-	natural_scroll enabled
-	middle_emulation disabled
-	pointer_accel 0.9
+    accel_profile flat
+    click_method clickfinger
+    drag disabled
+    dwt enabled
+    tap enabled
+    natural_scroll enabled
+    middle_emulation disabled
+    pointer_accel 0.9
 }
 
-input type:touch map_to_output eDP-1
-input type:tablet_tool map_to_output eDP-1
-input type:tablet_pad map_to_output eDP-1
-
 bindsym $mod+Return exec $term
+bindsym $mod+u exec firefox
 bindsym $mod+Shift+q kill
 bindsym $mod+d exec $menu
 bindsym $mod+Shift+x exec $lock
@@ -90,25 +58,9 @@ bindsym $mod+Shift+f exec brightnessctl --exponent set 5%-
 bindsym $mod+Shift+v exec brightnessctl --exponent set 3%+
 bindsym $mod+t output eDP-1 transform 90 clockwise
 
-bindsym $mod+Shift+o exec firefox
-bindsym $mod+Shift+p exec spotify --kiosk
-
-bindsym $mod+Shift+b exec blender
-
-bindsym --locked XF86AudioPlay exec playerctl play-pause
-bindsym --locked XF86AudioNext exec playerctl next
-bindsym --locked XF86AudioPrev exec playerctl previous
-bindsym --locked XF86AudioMute exec wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
-bindsym --locked XF86AudioLowerVolume exec wpctl set-volume @DEFAULT_AUDIO_SINK@ 1%-
-bindsym --locked XF86AudioRaiseVolume exec wpctl set-volume @DEFAULT_AUDIO_SINK@ 1%+
-
-floating_modifier $mod normal
-
-# Reload the configuration file
 bindsym $mod+Shift+c reload
 
-# Exit sway (logs you out of your Wayland session)
-bindsym $mod+Shift+e exec swaynag -t warning -m 'yo dude u really wanna exit?' -b 'yeah sure' 'swaymsg exit'
+bindsym $mod+Shift+e exec swaynag -t warning -m 'Really exit?' -b 'Exit the WM' 'swaymsg exit'
 
 # Move your focus around
 bindsym $mod+$left focus left
@@ -144,60 +96,31 @@ bindsym $mod+Shift+7 move container to workspace number 7
 bindsym $mod+Shift+8 move container to workspace number 8
 bindsym $mod+Shift+9 move container to workspace number 9
 bindsym $mod+Shift+0 move container to workspace number 10
-# Note: workspaces can have any name you want, not just numbers.
-# We just use 1-10 as the default.
 
-# You can "split" the current object of your focus with
-# $mod+b or $mod+v, for horizontal and vertical splits
-# respectively.
-bindsym $mod+b splith
-bindsym $mod+v splitv
+bindsym $mod+w fullscreen
+bindsym $mod+l layout tabbed
+bindsym $mod+m layout toggle split
 
-# Switch the current container between different layout styles
-bindsym $mod+s layout stacking
-bindsym $mod+w layout tabbed
-bindsym $mod+e layout toggle split
+bindsym $mod+o splith
+bindsym $mod+e splitv
 
-# Make the current focus fullscreen
-bindsym $mod+f fullscreen
-
-# Toggle the current focus between tiling and floating mode
 bindsym $mod+Shift+space floating toggle
-
-# Swap focus between the tiling area and the floating area
 bindsym $mod+space focus mode_toggle
-
-# Move focus to the parent container
 bindsym $mod+a focus parent
-
-# Sway has a "scratchpad", which is a bag of holding for windows.
-# You can send windows there and get them back later.
-
-# Move the currently focused window to the scratchpad
 bindsym $mod+Shift+minus move scratchpad
-
-# Show the next scratchpad window or hide the focused scratchpad window.
-# If there are multiple scratchpad windows, this command cycles through them.
 bindsym $mod+minus scratchpad show
 
 mode "resize" {
-    # left will shrink the containers width
-    # right will grow the containers width
-    # up will shrink the containers height
-    # down will grow the containers height
     bindsym $left resize shrink width 10px
     bindsym $down resize grow height 10px
     bindsym $up resize shrink height 10px
     bindsym $right resize grow width 10px
 
-    # Return to default mode
     bindsym Return mode "default"
     bindsym Escape mode "default"
 }
-bindsym $mod+r mode "resize"
+bindsym $mod+h mode "resize"
 
 bar {
-	swaybar_command waybar
+    swaybar_command waybar
 }
-
-include /etc/sway/config.d/*
