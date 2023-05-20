@@ -11,7 +11,8 @@ If you already have a running NixOS installation, great! A lovely script can tak
 ```console
 git clone https://github.com/MultisampledNight/configs
 cd configs
-./distribute_symlinks.py
+sudo ./distribute_symlinks.py
+sudo nixos-rebuild switch
 ```
 
 If you don't have a running NixOS installation, you can set up a minimal one with only bootloader, and then run the same inside of its chroot with `nixos-enter`.
