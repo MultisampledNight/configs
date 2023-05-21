@@ -6,8 +6,8 @@ import shutil
 import sys
 from pathlib import Path
 
-
-HOME_DIR = "/home/multisn8"
+USER = "multisn8"
+HOME_DIR = f"/home/{USER}"
 BACKUP_DIR = "~/_archive/backup"
 CONFIG_DESTINATIONS = {
     # user stuff
@@ -47,17 +47,17 @@ def expanduser(path):
     return Path(str(path).replace("~", HOME_DIR))
 
 
-def ensure_root():
+def ensure_root(msg="Must be run as root."):
     if os.geteuid() != 0:
         print(
-            "Must be run as root, since it also symlinks /etc/nixos",
+            msg,
             file=sys.stderr,
         )
         sys.exit(1)
 
 
 def main():
-    ensure_root()
+    ensure_root("Must be run as root, since it also symlinks /etc/nixos")
     distribute_symlinks()
 
 

@@ -1,2 +1,3 @@
+**/__pycache__
 nixos/configuration.nix
 nixos/hardware-configuration.nix
