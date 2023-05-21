@@ -1,5 +1,5 @@
 import:
-  - ~/.config/alacritty/base16-abnormalize-alt.yml
+  - ~/.config/alacritty/duality.yml
 
 window:
   dynamic_padding: true

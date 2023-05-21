@@ -21,10 +21,20 @@ setopt notify
 unsetopt autocd beep extendedglob nomatch
 bindkey -v
 
+path=("$HOME/zukunftslosigkeit/scripts" $path)
+export PATH
+
 alias c='clear'
 alias nv='neovide --multigrid'
 alias l='ls -l'
 alias ll='l -a'
+alias help='man'
 
-path=("$HOME/zukunftslosigkeit/scripts" $path)
-export PATH
+man() {
+  if [[ ! -n $1 ]]; then
+	echo "which manual page do you want?"
+	return 1
+  fi
+
+  nv -- -c "Man $*" -c only
+}

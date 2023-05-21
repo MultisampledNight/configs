@@ -1,0 +1,7 @@
+#!/bin/sh
+screenshot_folder="$HOME/media/pic/screenshots"
+moment="$(date --rfc-3339=seconds -u)" &&\
+selection="$(slurp)"
+
+grim -g "$selection" "$screenshot_folder/$moment.png" &&\
+cp "$screenshot_folder/$moment.png" "$screenshot_folder/unknown.png"

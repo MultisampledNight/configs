@@ -8,16 +8,34 @@ set $down  r
 set $up    s
 set $right g
 
-set $term alacritty
-set $menu fuzzel
 
-output * max_render_time 6
+client.focused "#212224" "#212224" "#B6B3B4" "#B6B3B4" "#B6B3B4"
+client.focused_inactive "#212224" "#212224" "#B6B3B4" "#212224"
+client.unfocused "#212224" "#212224" "#B6B3B4" "#212224"
+client.urgent "#212224" "#212224" "#B6B3B4" "#212224"
+
+default_border pixel 1
+hide_edge_borders smart
+
+bindgesture swipe:right workspace prev
+bindgesture swipe:left workspace next
+
+output * {
+    bg ~/.wallpaper fill
+    max_render_time 6
+}
+output HDMI-A-1 position 0,0
+output eDP-1 position 440,1080
 
 seat seat0 {
     hide_cursor 8000
     xcursor_theme volantes_cursors 48
 }
 floating_modifier $mod normal
+
+input type:touch map_to_output eDP-1
+input type:tablet_tool map_to_output eDP-1
+input type:tablet_pad map_to_output eDP-1
 
 input type:keyboard {
     xkb_layout "de"
@@ -42,13 +60,22 @@ input type:touchpad {
     pointer_accel 0.9
 }
 
-bindsym $mod+Return exec $term
-bindsym $mod+u exec firefox
+bindsym $mod+Tab exec fuzzel
+bindsym $mod+d exec firefox
+bindsym $mod+u exec discord
+bindsym $mod+a exec github
+
+bindsym $mod+i exec obsidian
+
+bindsym $mod+f exec blender
+bindsym $mod+v exec inkscape
+bindsym $mod+udiaeresis exec gimp
+
+bindsym $mod+Return exec alacritty
 bindsym $mod+Shift+q kill
-bindsym $mod+d exec $menu
-bindsym $mod+Shift+x exec $lock
-bindsym $mod+F11 exec $window_screenshot
-bindsym $mod+F12 exec $screenshot
+bindsym $mod+Shift+x exec swaylock
+bindsym $mod+F11 exec window-screenshot
+bindsym $mod+F12 exec screenshot
 bindsym $mod+y input type:keyboard xkb_variant "bone"
 bindsym $mod+z input type:keyboard xkb_variant "neo_qwertz"
 
@@ -106,7 +133,7 @@ bindsym $mod+e splitv
 
 bindsym $mod+Shift+space floating toggle
 bindsym $mod+space focus mode_toggle
-bindsym $mod+a focus parent
+bindsym $mod+b focus parent
 bindsym $mod+Shift+minus move scratchpad
 bindsym $mod+minus scratchpad show
 

@@ -152,8 +152,8 @@ in
         enable = true;
         autosuggestions.enable = true;
         promptInit = ''
-          PROMPT='%(?..%F{11}%?%f) %(!.%F{09}#%f.%F{05}$%f) '
-          RPROMPT='%F{14}%~%f %F{02}%T%f %F{06}%n%f %F{07}on %M%f'
+          PROMPT=' %T %F{6}%(!.#.=)%f '
+          RPROMPT='%F{5}%~%f %F{4}@%M%f'
         '';
       };
     };

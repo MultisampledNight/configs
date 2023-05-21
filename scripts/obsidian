@@ -1,0 +1,19 @@
+#!/usr/bin/env sh
+
+GDK_SCALE= firejail \
+  --noprofile \
+  --net=none \
+  --whitelist=/nix/store \
+  --whitelist=$HOME/notes \
+  --whitelist=$HOME/media/pic/screenshots \
+  --whitelist=$HOME/.icons \
+  --whitelist=$HOME/.config/obsidian \
+  --whitelist=$HOME/.config/chromium \
+  --whitelist=$HOME/.config/gtk-3.0 \
+  --whitelist=$HOME/.config/Electron \
+  --whitelist=$HOME/.cache/electron \
+  --whitelist=$HOME/.cache/electron-builder \
+  --whitelist=$HOME/.cache/chromium \
+  --whitelist=$HOME/.cache/typescript \
+  --whitelist=$HOME/.electron-gyp \
+  /run/current-system/sw/bin/obsidian --ozone-platform=wayland $@

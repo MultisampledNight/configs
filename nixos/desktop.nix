@@ -169,6 +169,7 @@ in
 
     neovim = {
       enable = true;
+      defaultEditor = !cfg.forTheGeneralPublic;
       vimAlias = true;
       viAlias = true;
       withNodeJs = true;
@@ -192,10 +193,19 @@ in
 
     sway = {
       enable = cfg.wayland;
+      wrapperFeatures.gtk = true;
       extraPackages = with pkgs; [
         fuzzel waybar mako grim slurp swappy gammastep
         swaybg swaylock wl-clipboard
       ];
+      extraSessionCommands = ''
+        export SDL_VIDEODRIVER=wayland
+        export QT_QPA_PLATFORM=wayland-egl
+        export QT_WAYLAND_FORCE_DPI=physical
+        export ECORE_EVAS_ENGINE=wayland_egl
+        export ELM_ENGINE=wayland_egl
+        export _JAVA_AWT_WM_NONREPARENTING=1
+      '';
     };
   };
 
