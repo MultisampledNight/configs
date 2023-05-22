@@ -240,7 +240,7 @@ inoremap <F1> <NOP>
 
 " neovide
 let g:neovide_refresh_rate = 60
-let g:neovide_refresh_rate_idle = 60
+let g:neovide_refresh_rate_idle = 5
 let g:neovide_cursor_unfocused_outline_width = 0.05
 let g:neovide_cursor_animation_length = 0.08
 let g:neovide_cursor_vfx_mode = "pixiedust"

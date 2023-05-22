@@ -136,8 +136,9 @@ in
       libsForQt5.kdenlive
     ] else []);
 
-    variables = {
+    sessionVariables = {
       NEOVIDE_MULTIGRID = "true";
+      NIXOS_OZONE_WL = "1";
     }
     // (mkIf (cfg.videoDriver == "nvidia") {
       # both required for blender
@@ -160,6 +161,7 @@ in
   };
 
   programs = {
+    adb.enable = true;
     firejail.enable = true;
 
     git.lfs = {

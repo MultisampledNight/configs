@@ -116,7 +116,8 @@ in
       users = {
         multisn8 = {
           isNormalUser = true;
-          extraGroups = ["wheel"] ++ (if cfg.wayland || cfg.xorg then ["input"] else []);
+          extraGroups = ["wheel" "adbusers"]
+            ++ (if cfg.wayland || cfg.xorg then ["input"] else []);
           shell = pkgs.zsh;
           packages = with pkgs; [zoxide];
         };
