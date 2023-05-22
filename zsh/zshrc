@@ -21,14 +21,36 @@ setopt notify
 unsetopt autocd beep extendedglob nomatch
 bindkey -v
 
+stty start undef
+stty stop undef
+stty lnext undef
+
 path=("$HOME/zukunftslosigkeit/scripts" $path)
 export PATH
 
 alias c='clear'
-alias nv='neovide --multigrid'
+alias help='man'
+
 alias l='ls -l'
 alias ll='l -a'
-alias help='man'
+alias evcxr='evcxr --edit-mode vi'
+alias nv='neovide --multigrid'
+alias sqlite='sqlite3 -box'
+
+alias cr='cargo run'
+alias crr='cargo run --release'
+alias cb='cargo build'
+alias cbr='cargo build --release'
+alias ch='cargo check'
+alias cl='cargo clippy'
+alias clp='cargo clippy -- -Wclippy::pedantic'
+alias cw='cargo watch -c'
+alias cf='cargo fmt'
+alias ct='cargo test'
+alias docs='cargo doc --open'
+alias cm='cargo miri'
+alias ca='cargo apk'
+alias cfg='CARGO_PROFILE_RELEASE_DEBUG=true cargo flamegraph --palette aqua'
 
 man() {
   if [[ ! -n $1 ]]; then
@@ -38,3 +60,49 @@ man() {
 
   nv -- -c "Man $*" -c only
 }
+
+bydir() {
+	dir="$(basename $(pwd))"
+	touch $dir$1
+}
+
+# wrapper for nix-shell to make it launch zsh and cause less friction in my workflow
+nix-shell() {
+	SHELL_NAME="${SHELL_NAME:+SHELL_NAME/}$@" \
+		command nix-shell $@ \
+			--command "SHELL=$(command which zsh) exec $(command which zsh) -i"
+}
+shell() {
+	ALL_SHELLDEFS_PATH="$HOME/zukunftslosigkeit/configs/nix/shells"
+
+	if [[ -z $1 ]]; then
+		# either recursion of multiple args complete or no args given
+		return
+	fi
+
+	if [[ ! -d "$ALL_SHELLDEFS_PATH/$1" ]]; then
+		echo "shell definition path '$1' not found"
+		return
+	fi
+
+	if [[ -z $2 ]]; then
+		# finally launch zsh
+		inner_cmd="SHELL=$(command which zsh) exec $(command which zsh) -i"
+	else
+		# recurse further to handle rest of the given shells
+		inner_cmd="exec $(command which zsh) -ic \"$funcstack[1] $argv[2,-1]\""
+	fi
+
+	before=$(pwd)
+	cd "$ALL_SHELLDEFS_PATH/$1"
+
+	# no magic variable, just set here for the prompt below
+	# **do note this doesn't know of standalone nix-shells**
+	SHELL_NAME="${SHELL_NAME:+$SHELL_NAME/}$1" \
+		command nix-shell --command "cd $before; $inner_cmd"
+
+	cd $before
+}
+
+setopt prompt_subst
+RPROMPT=$RPROMPT'${SHELL_NAME:+ %2F\$${SHELL_NAME}%f}'

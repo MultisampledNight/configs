@@ -13,7 +13,7 @@ in
     console.font = "ter-132b";
     services.logind = {
       lidSwitchExternalPower = "ignore";
-      lidSwitch = "hibernate";
+      lidSwitch = "suspend";
       extraConfig = ''
         HandlePowerKey=ignore
         HandleSuspendKey=hibernate

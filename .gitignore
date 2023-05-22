@@ -1,3 +1,4 @@
 **/__pycache__
+evcxr/history.txt
 nixos/configuration.nix
 nixos/hardware-configuration.nix

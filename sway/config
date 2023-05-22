@@ -65,7 +65,8 @@ bindsym $mod+d exec firefox
 bindsym $mod+u exec discord
 bindsym $mod+a exec github
 
-bindsym $mod+i exec obsidian
+bindsym $mod+t exec obsidian
+bindsym $mod+i exec xournalpp
 
 bindsym $mod+f exec blender
 bindsym $mod+v exec inkscape
@@ -83,7 +84,7 @@ bindsym XF86MonBrightnessDown exec brightnessctl --exponent set 5%-
 bindsym XF86MonBrightnessUp exec brightnessctl --exponent set 3%+
 bindsym $mod+Shift+f exec brightnessctl --exponent set 5%-
 bindsym $mod+Shift+v exec brightnessctl --exponent set 3%+
-bindsym $mod+t output eDP-1 transform 90 clockwise
+bindsym $mod+odiaeresis output eDP-1 transform 90 clockwise
 
 bindsym $mod+Shift+c reload
 
