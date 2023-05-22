@@ -138,7 +138,7 @@ in
 
     environment = {
       systemPackages = with pkgs; [
-        curl git rsync magic-wormhole-rs
+        curl rsync magic-wormhole-rs
         fd ripgrep
       ];
 
@@ -147,6 +147,25 @@ in
     };
 
     programs = {
+      git = {
+        enable = true;
+        config = {
+          init.defaultBranch = "main";
+          commit.gpgsign = true;
+          core = {
+            pager = "${pkgs.neovim} -R";
+            editor = "${pkgs.neovim}";
+          };
+          color.pager = "off";
+        };
+      };
+
+      neovim = {
+        enable = true;
+        vimAlias = true;
+        viAlias = true;
+      };
+
       # shell
       zsh = {
         enable = true;

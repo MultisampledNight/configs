@@ -162,16 +162,17 @@ in
   programs = {
     firejail.enable = true;
 
+    git.lfs = {
+      enable = true;
+    };
+
     gnupg.agent = {
       enable = true;
       enableSSHSupport = true;
     };
 
     neovim = {
-      enable = true;
       defaultEditor = !cfg.forTheGeneralPublic;
-      vimAlias = true;
-      viAlias = true;
       withNodeJs = true;
 
       configure = {
