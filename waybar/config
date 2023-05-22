@@ -7,11 +7,11 @@
 	"margin": 0,
 	"modules-left": ["sway/workspaces", "sway/mode"],
 	"modules-center": ["clock"],
-	"modules-right": ["pulseaudio", "cpu", "memory", "temperature", "battery", "tray"],
+	"modules-right": ["battery", "tray"],
 	
 	"clock": {
 		"interval": 1,
-		"format": "{:%Y.%m.%d %H:%M:%S}",
+		"format": "{:%Y %m %d  %H %M %S}",
 		"tooltip": false,
 	},
 	"cpu": {

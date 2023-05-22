@@ -106,7 +106,7 @@ in
 
     console = {
       font = mkDefault "Lat2-Terminus16";
-      keyMap = if cfg.forTheGeneralPublic then "en" else cfg.layout;
+      keyMap = if cfg.forTheGeneralPublic then "de" else cfg.layout;
     };
 
     users = {
@@ -153,8 +153,8 @@ in
           init.defaultBranch = "main";
           commit.gpgsign = true;
           core = {
-            pager = "${pkgs.neovim} -R";
-            editor = "${pkgs.neovim}";
+            pager = "nvim -R";
+            editor = "nvim";
           };
           color.pager = "off";
         };
@@ -171,7 +171,7 @@ in
         enable = true;
         autosuggestions.enable = true;
         promptInit = ''
-          PROMPT=' %T %F{6}%(!.#.=)%f '
+          PROMPT=' %D{%H %M} %F{6}%(!.#.=)%f '
           RPROMPT='%F{5}%~%f %F{4}@%M%f'
         '';
       };
