@@ -85,7 +85,7 @@ in
       vulkan-tools pciutils
 
       # tools
-      file pv ffmpeg
+      file pv btop ffmpeg
       alacritty xclip
       inotify-tools
       pulseaudio-ctl playerctl
@@ -99,7 +99,7 @@ in
       # languages (for Rust it's probably better to directly use a shell.nix instead)
       python3 black
       llvmPackages_latest.llvm llvmPackages_latest.bintools llvmPackages_latest.lld
-      clang sccache texlive.combined.scheme-medium texlab
+      clang sccache texlive.combined.scheme-full texlab
 
       # dev applications
       ghidra

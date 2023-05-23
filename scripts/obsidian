@@ -10,6 +10,7 @@ GDK_SCALE= firejail \
   --whitelist=$HOME/.config/obsidian \
   --whitelist=$HOME/.config/chromium \
   --whitelist=$HOME/.config/gtk-3.0 \
+  --whitelist=$HOME/.config/dconf/user \
   --whitelist=$HOME/.config/Electron \
   --whitelist=$HOME/.cache/electron \
   --whitelist=$HOME/.cache/electron-builder \

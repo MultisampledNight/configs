@@ -113,7 +113,7 @@ in
       defaultUserShell = pkgs.zsh;
       mutableUsers = true; # needed for passwd changes to persist
 
-      users = {
+      users = if cfg.forMulti then {
         multisn8 = {
           isNormalUser = true;
           extraGroups = ["wheel" "adbusers"]
@@ -122,7 +122,7 @@ in
           packages = with pkgs; [zoxide];
         };
       };
-    };
+    } else {};
 
     services = {
       openssh = {
