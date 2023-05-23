@@ -200,6 +200,18 @@ function TelescopeOnToplevel(command)
   exe "Telescope " . a:command . " cwd=" . ProjectToplevel()
 endfunction
 
+function CreateNewFile()
+  let sub_path = trim(input("New file name: ", expand("<cword>"), "file"))
+  if sub_path == ""
+    return
+  endif
+
+  let full_path = expand("%:p:h") . "/" . sub_path
+  call mkdir(fnamemodify(full_path, ":h"), "p")
+  exe "edit " . full_path
+  write
+endfunction
+
 nnoremap tt <Cmd>Telescope resume<CR>
 nnoremap ti <Cmd>call TelescopeOnToplevel("find_files")<CR>
 nnoremap te <Cmd>call TelescopeOnToplevel("live_grep")<CR> 
@@ -225,7 +237,7 @@ nnoremap ty <Cmd>SignifyDiff<CR>
 nnoremap tz <Cmd>call TelescopeOnToplevel("git_status")<CR>
 nnoremap t, <Plug>(signify-prev-hunk)
 nnoremap t. <Plug>(signify-next-hunk)
-nnoremap tk <Cmd>call TelescopeOnToplevel("git_commits")<CR>
+nnoremap tk <Cmd>call CreateNewFile()<CR>
 
 nnoremap tq <Cmd>update \| call jobstart("cargo fmt")<CR>
 
