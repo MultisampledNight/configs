@@ -121,8 +121,8 @@ in
           shell = pkgs.zsh;
           packages = with pkgs; [zoxide];
         };
-      };
-    } else {};
+      } else {};
+    };
 
     services = {
       openssh = {
