@@ -15,6 +15,7 @@ CONFIG_DESTINATIONS = {
     "alacritty": "~/.config/alacritty",
     "evcxr": "~/.config/evcxr",
     "git/gitignore-global": "~/.gitignore-global",
+    "git/gitconfig": "~/.gitconfig",
     "gtk-3.0": "~/.config/gtk-3.0",
     "mako": "~/.config/mako",
     "nvim": "~/.config/nvim",

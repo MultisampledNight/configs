@@ -90,8 +90,8 @@ in
       clinfo vulkan-tools pciutils
 
       # tools
-      file pv btop ffmpeg
-      alacritty xclip
+      file pv btop ffmpeg jq
+      alacritty xclip delta
       inotify-tools
       pulseaudio-ctl playerctl
       sshfs vde2 linuxKernel.packages.linux_zen.usbip lm_sensors

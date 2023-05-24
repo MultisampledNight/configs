@@ -1,0 +1,18 @@
+[include]
+	path = ~/.gitconfig-machine-specific
+
+[user]
+	name = MultisampledNight
+
+[core]
+	excludesfile = ~/.gitignore-global
+	pager = "DELTA_PAGER='less -R' delta"
+
+[interactive]
+	diffFilter = delta --color-only
+
+[merge]
+	conflictstyle = diff3
+
+[diff]
+	colorMoved = true
