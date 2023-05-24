@@ -143,7 +143,6 @@ set undofile
 set shortmess+=W
 
 " smarter autochdir
-exe "cd " . ProjectToplevel()
 set clipboard+=unnamedplus
 set completeopt=menu,menuone,preview,noselect
 set mouse=a
@@ -263,6 +262,13 @@ let g:neovide_floating_blur_amount_x = 6.0
 let g:neovide_floating_blur_amount_y = 6.0
 let g:neovide_underline_automatic_scaling = v:true
 let g:neovide_hide_mouse_when_typing = v:true
+
+" global
+" hacky and bound to interfere with the latex or typst machinery, but it works
+function CdProjectToplevel(_timer_id)
+  exe "cd " . ProjectToplevel()
+endfunction
+autocmd BufEnter * call timer_start(50, "CdProjectToplevel")
 
 " rust
 autocmd BufNewFile,BufRead *.rs set equalprg=rustfmt formatprg=rustfmt

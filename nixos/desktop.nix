@@ -17,7 +17,12 @@ in
 
   hardware = {
     pulseaudio.enable = false; # handled by pipewire-pulse instead
-    opengl.enable = true;
+    opengl = {
+      enable = true;
+      extraPackages = if cfg.videoDriver == "intel"
+        then with pkgs; [intel-media-driver intel-compute-runtime]
+        else [];
+    };
   };
 
   sound.enable = true;
@@ -82,7 +87,7 @@ in
   environment = {
     systemPackages = with pkgs; [
       # system debugging tools
-      vulkan-tools pciutils
+      clinfo vulkan-tools pciutils
 
       # tools
       file pv btop ffmpeg
@@ -236,7 +241,7 @@ in
       defaultFonts = {
         serif = [ "IBM Plex Serif" ];
         sansSerif = [ "IBM Plex Sans" ];
-        monospace = [ "Roboto Mono" ];
+        monospace = [ "IBM Plex Mono" ];
       };
     };
   };
