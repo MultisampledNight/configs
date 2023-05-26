@@ -2,7 +2,7 @@ daemonize
 hide-keyboard-layout
 indicator-caps-lock
 
-image=~/.wallpaper
+image=~/.background-image
 scaling=fill
 
 indicator-radius=60
