@@ -21,7 +21,7 @@ bindgesture swipe:right workspace prev
 bindgesture swipe:left workspace next
 
 output * {
-    bg ~/.wallpaper fill
+    bg ~/.background-image fill
     max_render_time 6
 }
 output HDMI-A-1 position 0,0
