@@ -22,6 +22,7 @@ CONFIG_DESTINATIONS = {
     "scripts": "~/zukunftslosigkeit/scripts",
     "sway": "~/.config/sway",
     "swaylock": "~/.config/swaylock",
+    "wallpapers/wallpaper": "~/.wallpaper",
     "waybar": "~/.config/waybar",
     "zsh/zshrc": "~/.zshrc",
     # system wide stuff
