@@ -122,7 +122,7 @@ in
       dunst
     ]
     ++ (if cfg.xorg then [
-      xorg.xauth rofi
+      xorg.xauth rofi flameshot
     ] else [])
     ++ (if cfg.videoDriver == "nvidia" then [
       cudatoolkit
@@ -145,13 +145,15 @@ in
 
     sessionVariables = {
       NEOVIDE_MULTIGRID = "true";
-      NIXOS_OZONE_WL = "1";
     }
-    // (mkIf (cfg.videoDriver == "nvidia") {
+    // (if cfg.videoDriver == "nvidia" then {
       # both required for blender
       CUDA_PATH = "${pkgs.cudatoolkit}";
       CYCLES_CUDA_EXTRA_CFLAGS = "-I${pkgs.cudatoolkit}/targets/x86_64-linux/include";
-    });
+    } else {})
+    // (if cfg.wayland then {
+      NIXOS_OZONE_WL = "1";
+    } else {});
 
     extraInit = (if cfg.videoDriver == "nvidia" && cfg.xorg then ''
       export LD_LIBRARY_PATH="${pkgs.linuxPackages.nvidia_x11}/lib"

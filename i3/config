@@ -7,6 +7,9 @@ set $down  r
 set $up    s
 set $right g
 
+exec dunst
+exec flameshot
+
 
 client.focused "#212224" "#212224" "#B6B3B4" "#B6B3B4" "#B6B3B4"
 client.focused_inactive "#212224" "#212224" "#B6B3B4" "#212224"
@@ -33,8 +36,8 @@ bindsym $mod+udiaeresis exec gimp
 bindsym $mod+Return exec alacritty
 bindsym $mod+Shift+q kill
 bindsym $mod+Shift+x exec swaylock
-bindsym $mod+F11 exec window-screenshot
-bindsym $mod+F12 exec screenshot
+bindsym $mod+F11 exec flameshot launcher
+bindsym $mod+F12 exec flameshot gui
 bindsym $mod+y input type:keyboard xkb_variant "bone"
 bindsym $mod+z input type:keyboard xkb_variant "neo_qwertz"
 
