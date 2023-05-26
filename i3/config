@@ -1,0 +1,120 @@
+font pango:IBM Plex Sans 10
+
+set $mod Mod4
+
+set $left  n
+set $down  r
+set $up    s
+set $right g
+
+
+client.focused "#212224" "#212224" "#B6B3B4" "#B6B3B4" "#B6B3B4"
+client.focused_inactive "#212224" "#212224" "#B6B3B4" "#212224"
+client.unfocused "#212224" "#212224" "#B6B3B4" "#212224"
+client.urgent "#212224" "#212224" "#B6B3B4" "#212224"
+
+default_border pixel 1
+hide_edge_borders smart
+
+floating_modifier $mod
+
+bindsym $mod+Tab exec fuzzel
+bindsym $mod+d exec firefox
+bindsym $mod+u exec discord
+bindsym $mod+a exec github
+
+bindsym $mod+t exec obsidian
+bindsym $mod+i exec xournalpp
+
+bindsym $mod+f exec blender
+bindsym $mod+v exec inkscape
+bindsym $mod+udiaeresis exec gimp
+
+bindsym $mod+Return exec alacritty
+bindsym $mod+Shift+q kill
+bindsym $mod+Shift+x exec swaylock
+bindsym $mod+F11 exec window-screenshot
+bindsym $mod+F12 exec screenshot
+bindsym $mod+y input type:keyboard xkb_variant "bone"
+bindsym $mod+z input type:keyboard xkb_variant "neo_qwertz"
+
+bindsym XF86MonBrightnessDown exec brightnessctl --exponent set 5%-
+bindsym XF86MonBrightnessUp exec brightnessctl --exponent set 3%+
+bindsym $mod+Shift+f exec brightnessctl --exponent set 5%-
+bindsym $mod+Shift+v exec brightnessctl --exponent set 3%+
+
+bindsym XF86AudioPlay exec playerctl play-pause
+bindsym XF86AudioNext exec playerctl next
+bindsym XF86AudioPrev exec playerctl previous
+bindsym XF86AudioMute exec wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
+bindsym XF86AudioLowerVolume exec wpctl set-volume @DEFAULT_AUDIO_SINK@ 1%-
+bindsym XF86AudioRaiseVolume exec wpctl set-volume @DEFAULT_AUDIO_SINK@ 1%+
+
+bindsym $mod+Shift+c reload
+
+bindsym $mod+Shift+e exec i3-nagbar -t warning -m 'Really exit?' -b 'Exit the WM' 'i3-msg exit'
+
+# Move your focus around
+bindsym $mod+$left focus left
+bindsym $mod+$down focus down
+bindsym $mod+$up focus up
+bindsym $mod+$right focus right
+
+# Move the focused window with the same, but add Shift
+bindsym $mod+Shift+$left move left
+bindsym $mod+Shift+$down move down
+bindsym $mod+Shift+$up move up
+bindsym $mod+Shift+$right move right
+
+# Switch to workspace
+bindsym $mod+1 workspace number 1
+bindsym $mod+2 workspace number 2
+bindsym $mod+3 workspace number 3
+bindsym $mod+4 workspace number 4
+bindsym $mod+5 workspace number 5
+bindsym $mod+6 workspace number 6
+bindsym $mod+7 workspace number 7
+bindsym $mod+8 workspace number 8
+bindsym $mod+9 workspace number 9
+bindsym $mod+0 workspace number 10
+# Move focused container to workspace
+bindsym $mod+Shift+1 move container to workspace number 1
+bindsym $mod+Shift+2 move container to workspace number 2
+bindsym $mod+Shift+3 move container to workspace number 3
+bindsym $mod+Shift+4 move container to workspace number 4
+bindsym $mod+Shift+5 move container to workspace number 5
+bindsym $mod+Shift+6 move container to workspace number 6
+bindsym $mod+Shift+7 move container to workspace number 7
+bindsym $mod+Shift+8 move container to workspace number 8
+bindsym $mod+Shift+9 move container to workspace number 9
+bindsym $mod+Shift+0 move container to workspace number 10
+
+bindsym $mod+w fullscreen
+bindsym $mod+l layout tabbed
+bindsym $mod+m layout toggle split
+
+bindsym $mod+o splith
+bindsym $mod+e splitv
+
+bindsym $mod+Shift+space floating toggle
+bindsym $mod+space focus mode_toggle
+bindsym $mod+b focus parent
+bindsym $mod+Shift+minus move scratchpad
+bindsym $mod+minus scratchpad show
+
+mode "resize" {
+    bindsym $left resize shrink width 10px
+    bindsym $down resize grow height 10px
+    bindsym $up resize shrink height 10px
+    bindsym $right resize grow width 10px
+
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
+bindsym $mod+h mode "resize"
+
+bar {
+    status_command i3status
+}
+
+# vim: ft=sh

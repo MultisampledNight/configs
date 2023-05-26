@@ -73,7 +73,7 @@ in
         gnome.enable = cfg.forTheGeneralPublic;
         wallpaper = {
           mode = "fill";
-          combineScreens = true;
+          combineScreens = false;
         };
       };
       windowManager = {
@@ -118,9 +118,10 @@ in
       firefox thunderbird okular blender gimp inkscape obsidian libreoffice-fresh zathura
       pavucontrol carla
       mpv mate.eom
+      dunst
     ]
     ++ (if cfg.xorg then [
-      xorg.xauth
+      xorg.xauth rofi
     ] else [])
     ++ (if cfg.videoDriver == "nvidia" then [
       cudatoolkit
