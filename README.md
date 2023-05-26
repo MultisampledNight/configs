@@ -19,4 +19,4 @@ However, you still need to create a suitable `configuration.nix` in (the now sym
 
 Afterwards, run `sudo nixos-rebuild switch`, and you're good to go!
 
-If you don't have a running NixOS installation, you can set up a minimal one with only bootloader, and then run the same inside of its chroot with `nixos-enter`.
+If you don't have a running NixOS installation, you can set up a minimal one with only the bootloader, and then run the same inside of its chroot with `nixos-enter`.

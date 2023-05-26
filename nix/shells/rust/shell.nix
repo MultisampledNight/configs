@@ -5,10 +5,11 @@ pkgs.mkShell rec {
     clang llvmPackages_latest.lld llvmPackages.libclang
     openssl pkg-config webkitgtk.dev
     rustup wasm-pack rust-analyzer evcxr
+    libGL libxkbcommon
+    wayland xorg.libX11 xorg.libXcursor xorg.libXrandr xorg.libXi
 
-    python3 valgrind
+    python3 valgrind gdb rr
   ];
-
   RUSTC_VERSION = pkgs.lib.strings.removeSuffix "\n" (
     pkgs.lib.readFile ./rust-toolchain
   );
@@ -21,5 +22,6 @@ pkgs.mkShell rec {
   shellHook = ''
     export PATH=$PATH:''${CARGO_HOME:-~/.cargo}/bin
     export PATH=$PATH:''${RUSTUP_HOME:-~/.rustup}/toolchains/$RUSTC_VERSION-x86_64-unknown-linux-gnu/bin
+    export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:${builtins.toString (pkgs.lib.makeLibraryPath buildInputs)}";
   '';
 }
