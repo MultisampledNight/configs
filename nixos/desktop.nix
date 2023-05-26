@@ -3,6 +3,7 @@
 with lib;
 let
   cfg = config.generalized;
+  neovideSmooth = pkgs.callPackage ./neovide/default.nix {};
 in
 {
   boot.kernelPackages = mkDefault (
@@ -108,7 +109,7 @@ in
 
       # dev applications
       ghidra
-      neovide sqlitebrowser
+      neovideSmooth sqlitebrowser
       direnv
 
       # gamedev
