@@ -17,6 +17,7 @@ CONFIG_DESTINATIONS = {
     "git/gitignore-global": "~/.gitignore-global",
     "git/gitconfig": "~/.gitconfig",
     "gtk-3.0": "~/.config/gtk-3.0",
+    "i3": "~/.config/i3",
     "mako": "~/.config/mako",
     "nvim": "~/.config/nvim",
     "scripts": "~/zukunftslosigkeit/scripts",
