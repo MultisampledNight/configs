@@ -38,8 +38,8 @@ bindsym $mod+Shift+q kill
 bindsym $mod+Shift+x exec i3lock --image ~/.background-image
 bindsym $mod+F11 exec flameshot launcher
 bindsym $mod+F12 exec flameshot gui
-bindsym $mod+y setxkbmap de bone
-bindsym $mod+z setxkbmap de neoqwertz
+bindsym $mod+y exec setxkbmap de bone
+bindsym $mod+z exec setxkbmap de neo_qwertz
 
 bindsym XF86MonBrightnessDown exec brightnessctl --exponent set 5%-
 bindsym XF86MonBrightnessUp exec brightnessctl --exponent set 3%+
