@@ -21,7 +21,7 @@ hide_edge_borders smart
 
 floating_modifier $mod
 
-bindsym $mod+Tab exec fuzzel
+bindsym $mod+Tab exec rofi -run dmenu
 bindsym $mod+d exec firefox
 bindsym $mod+u exec discord
 bindsym $mod+a exec github
