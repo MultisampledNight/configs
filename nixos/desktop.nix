@@ -30,6 +30,15 @@ in
 
   security.rtkit.enable = true;
 
+  users.users =
+    if cfg.gaming then {
+      nichthemeron = {
+        isNormalUser = true;
+        extraGroups = if cfg.wayland || cfg.xorg then ["input"] else [];
+        shell = pkgs.zsh;
+      };
+    } else {};
+
   services = {
     # audio server
     pipewire = {
@@ -64,8 +73,8 @@ in
 
       displayManager = {
         defaultSession = if cfg.forTheGeneralPublic then "gnome"
-          else if cfg.wayland then "sway"
-          else "i3";
+          else if cfg.wayland then "Sway"
+          else "none+i3";
         gdm.enable = cfg.xorg;
       };
 

@@ -113,15 +113,16 @@ in
       defaultUserShell = pkgs.zsh;
       mutableUsers = true; # needed for passwd changes to persist
 
-      users = if cfg.forMulti then {
-        multisn8 = {
-          isNormalUser = true;
-          extraGroups = ["wheel" "adbusers"]
-            ++ (if cfg.wayland || cfg.xorg then ["input"] else []);
-          shell = pkgs.zsh;
-          packages = with pkgs; [zoxide];
-        };
-      } else {};
+      users =
+        if cfg.forMulti then {
+          multisn8 = {
+            isNormalUser = true;
+            extraGroups = ["wheel" "adbusers"]
+              ++ (if cfg.wayland || cfg.xorg then ["input"] else []);
+            shell = pkgs.zsh;
+            packages = with pkgs; [zoxide];
+          };
+        } else {};
     };
 
     services = {
