@@ -64,6 +64,8 @@ bindsym $mod+Tab exec fuzzel
 bindsym $mod+d exec firefox
 bindsym $mod+u exec discord
 bindsym $mod+a exec github
+bindsym $mod+x exec thunderbird
+bindsym $mod+p exec spotify
 
 bindsym $mod+t exec obsidian
 bindsym $mod+i exec xournalpp
