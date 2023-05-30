@@ -31,13 +31,13 @@ rustPlatform.buildRustPackage.override { stdenv = clangStdenv; } rec {
     owner = "fredizzimo";
     repo = "neovide";
     rev = "fsundvik/improve-render-loop";
-    sha256 = "sha256-uDeRlHjihOWJsWVUDiSTnD/c1keT1xDaLLMqFITi9oA=";
+    sha256 = "sha256-+y4qjjv0OiKlDop9ma0WfY0jxrkWyFgNvDRBOeiYNBk=";
   };
 
   cargoLock = {
     lockFile = ./Cargo.lock;
     outputHashes = {
-      "winit-0.28.6" = "sha256-FEBcMTRVubT4Nn5Yyk2X4nrjrQtz10FBSD1888tn3eY=";
+      "winit-0.28.6" = "sha256-6YK4hmogBZ3Nchrz8aE865UyvOIa5Ul969T4R0GG8xA=";
       "xkbcommon-dl-0.1.0" = "sha256-ojokJF7ivN8JpXo+JAfX3kUOeXneNek7pzIy8D1n4oU=";
     };
   };
