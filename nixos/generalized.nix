@@ -174,7 +174,7 @@ in
         autosuggestions.enable = true;
         promptInit = ''
           PROMPT=' %D{%H %M} %F{6}%(!.#.=)%f '
-          RPROMPT='%F{5}%~%f %F{4}@%M%f'
+          RPROMPT='%(?..%F{1}%?%f) %F{5}%~%f %F{4}@%M%f'
         '';
       };
     };
