@@ -154,6 +154,10 @@ in
 
     sessionVariables = {
       NEOVIDE_MULTIGRID = "true";
+      TYPST_FONT_PATHS =
+        if config.fonts.fontDir.enable
+        then "/run/current-system/sw/share/X11/fonts"  # not sure if I should upstream this
+        else "";
     }
     // (if cfg.videoDriver == "nvidia" then {
       # both required for blender
@@ -244,6 +248,7 @@ in
       ubuntu_font_family
     ];
 
+    fontDir.enable = true;
     # this adds a few commonly expected fonts like liberation...
     enableDefaultFonts = true;
 
