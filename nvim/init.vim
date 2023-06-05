@@ -2,10 +2,12 @@ call plug#begin("~/.local/share/nvim/vim-plug")
 
 Plug 'MultisampledNight/colorschemes'
 
+Plug 'SirVer/ultisnips'
+
 Plug 'hrsh7th/nvim-cmp'
-Plug 'hrsh7th/vim-vsnip'
-Plug 'hrsh7th/cmp-vsnip'
+Plug 'quangnguyen30192/cmp-nvim-ultisnips'
 Plug 'hrsh7th/cmp-path'
+Plug 'hrsh7th/cmp-cmdline'
 Plug 'hrsh7th/cmp-nvim-lsp'
 
 Plug 'neovim/nvim-lspconfig'
@@ -44,6 +46,7 @@ if $TERM ==# "linux"
   hi! Keyword ctermfg=red
   hi! Conditional ctermfg=red
   hi! Repeat ctermfg=red
+  hi! SignColumn ctermbg=black
 
   hi! LineNr ctermfg=grey
   hi! StatusLine ctermfg=blue ctermbg=black
@@ -263,12 +266,21 @@ let g:neovide_floating_blur_amount_y = 6.0
 let g:neovide_underline_automatic_scaling = v:true
 let g:neovide_hide_mouse_when_typing = v:true
 
+" ultisnips
+let g:UltiSnipsEditSplit = "vertical"
+let g:UltiSnipsExpandTrigger = "<Tab>"
+let g:UltiSnipsJumpForwardTrigger = "<Tab>"
+let g:UltiSnipsJumpBackwardTrigger = "<NOP>"
+
 " global
 " hacky and bound to interfere with the latex or typst machinery, but it works
 function CdProjectToplevel(_timer_id)
   exe "cd " . ProjectToplevel()
 endfunction
 autocmd BufEnter * call timer_start(50, "CdProjectToplevel")
+
+" UltiSnips snippet files
+autocmd BufNewFile,BufRead *.snippets set ts=4 sw=4 sts=0 et
 
 " rust
 autocmd BufNewFile,BufRead *.rs set equalprg=rustfmt formatprg=rustfmt
@@ -404,29 +416,33 @@ local feedkey = function(key, mode)
   vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(key, true, true, true), mode, true)
 end
 
+local cmp_ultisnips = require("cmp_nvim_ultisnips")
+local cmp_ultisnips_mappings = require("cmp_nvim_ultisnips.mappings")
 local cmp = require("cmp")
 cmp.setup({
   sources = cmp.config.sources({
     { name = "nvim_lsp" },
     { name = "path" },
+    { name = "ultisnips" }
   }),
   mapping = {
-    -- blatantly taken from https://github.com/hrsh7th/nvim-cmp/wiki/Example-mappings
     ["<Tab>"] = cmp.mapping(function(fallback)
+      cmp_ultisnips_mappings.expand_or_jump_forwards(fallback)
+    end, { "i", "c", "s" }),
+
+    ["<C-Enter>"] = cmp.mapping(function(fallback)
       if cmp.visible() then
-        cmp.select_next_item()
-      elseif vim.fn["vsnip#available"](1) == 1 then
-        feedkey("<Plug>(vsnip-expand-or-jump)", "")
+        cmp.select_prev_item()
       else
         fallback()
       end
     end, { "i", "c", "s" }),
 
-    ["<S-Tab>"] = cmp.mapping(function()
+    ["<S-Enter>"] = cmp.mapping(function(fallback)
       if cmp.visible() then
-        cmp.select_prev_item()
-      elseif vim.fn["vsnip#jumpable"](-1) == 1 then
-        feedkey("<Plug>(vsnip-jump-prev)", "")
+        cmp.select_next_item()
+      else
+        fallback()
       end
     end, { "i", "c", "s" }),
 
@@ -439,15 +455,13 @@ cmp.setup({
   },
   snippet = {
     expand = function(args)
-      vim.fn["vsnip#anonymous"](args.body)
+      vim.fn["UltiSnips#Anon"](args.body)
     end
   },
 })
 cmp.setup.cmdline(":", {
   mapping = cmp.mapping.preset.cmdline(),
   sources = cmp.config.sources({
-    { name = "path" }
-  }, {
     { name = "cmdline" }
   })
 })

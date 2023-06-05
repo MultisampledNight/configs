@@ -1,0 +1,2 @@
+#!/usr/bin/env sh
+GDK_SCALE=0.9 /run/current-system/sw/bin/inkscape

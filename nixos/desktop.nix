@@ -11,6 +11,25 @@ in
     else pkgs.linuxKernel.packages.linux_zen
   );
 
+  console.colors = [
+    "212224" # black
+    "ff9365" # red
+    "11d396" # green
+    "c7b700" # yellow
+    "00c7f7" # blue
+    "fa86ce" # magenta
+    "aaa9ff" # cyan
+    "b6b3b4" # white
+    "7f7dcc" # bright black aka grey
+    "ff9365" # bright red
+    "11d396" # bright green
+    "c7b700" # bright yellow
+    "00c7f7" # bright blue
+    "fa86ce" # bright magenta
+    "aaa9ff" # bright cyan
+    "b6b3b4" # bright white
+  ];
+
   documentation = {
     enable = true;
     man.generateCaches = true;
@@ -29,6 +48,7 @@ in
   sound.enable = true;
   security.rtkit.enable = true;
   networking.dhcpcd.wait = "background"; # saves like 5 seconds of startup time
+  xdg.portal.enable = false;
 
   users.users =
     if cfg.gaming then {
@@ -51,7 +71,6 @@ in
     };
 
     udisks2.enable = true;
-
     printing.enable = true;
 
     # hide the mouse cursor when not moved
@@ -232,6 +251,8 @@ in
         export _JAVA_AWT_WM_NONREPARENTING=1
       '';
     };
+
+    xwayland.enable = false;  # enabled by default by sway, but I don't need it
   };
 
   fonts = {

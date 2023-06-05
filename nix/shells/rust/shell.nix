@@ -8,7 +8,7 @@ pkgs.mkShell rec {
     libGL libxkbcommon
     wayland xorg.libX11 xorg.libXcursor xorg.libXrandr xorg.libXi
 
-    python3 valgrind gdb rr
+    python3 valgrind lldb rr
   ];
   RUSTC_VERSION = pkgs.lib.strings.removeSuffix "\n" (
     pkgs.lib.readFile ./rust-toolchain

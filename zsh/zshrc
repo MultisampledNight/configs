@@ -35,6 +35,7 @@ alias l='ls -lh --group-directories-first --sort ext'
 alias ll='l -a'
 alias evcxr='evcxr --edit-mode vi'
 alias nv='neovide --multigrid --noidle'
+alias wh='wormhole-rs'
 alias sqlite='sqlite3 -box'
 
 alias cr='cargo run'
@@ -68,7 +69,7 @@ bydir() {
 
 # wrapper for nix-shell to make it launch zsh and cause less friction in my workflow
 nix-shell() {
-	SHELL_NAME="${SHELL_NAME:+SHELL_NAME/}$@" \
+	SHELL_NAME="${SHELL_NAME:+$SHELL_NAME/}$@" \
 		command nix-shell $@ \
 			--command "SHELL=$(command which zsh) exec $(command which zsh) -i"
 }
