@@ -48,7 +48,7 @@ in
   sound.enable = true;
   security.rtkit.enable = true;
   networking.dhcpcd.wait = "background"; # saves like 5 seconds of startup time
-  xdg.portal.enable = false;
+  xdg.portal.enable = lib.mkForce false;
 
   users.users =
     if cfg.gaming then {
