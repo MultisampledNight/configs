@@ -255,10 +255,11 @@ in
       enable = cfg.wayland;
       wrapperFeatures.gtk = true;
       extraPackages = with pkgs; [
-        fuzzel waybar mako grim slurp swappy gammastep
+        fuzzel waybar mako grim slurp swappy hyprpicker gammastep
         swaybg swaylock wl-clipboard
       ];
       extraSessionCommands = ''
+        export PATH=$HOME/zukunftslosigkeit/scripts:$PATH
         export SDL_VIDEODRIVER=wayland
         export QT_QPA_PLATFORM=wayland-egl
         export QT_WAYLAND_FORCE_DPI=physical
@@ -335,6 +336,14 @@ in
         blender = prev.blender.override {
           cudaSupport = true;
         };
+      } else {})
+      (final: prev: if (cfg.videoDriver == "nvidia" && cfg.wayland) then {
+        # blatantly taken from https://wiki.hyprland.org/hyprland-wiki/pages/Nvidia/
+        wlroots = prev.wlroots.overrideAttrs (finalAttrs: prevAttrs: {
+          postPatch = (prev.postPatch or "") + ''
+            substituteInPlace render/gles2/renderer.c --replace "glFlush();" "glFinish();"
+          '';
+        });
       } else {})
       (final: prev: if cfg.profileGuided then {
         godot_4 = prev.godot_4.override {

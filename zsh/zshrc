@@ -34,7 +34,7 @@ alias help='man'
 alias l='ls -lh --group-directories-first --sort ext'
 alias ll='l -a'
 alias evcxr='evcxr --edit-mode vi'
-alias nv='neovide --multigrid --noidle'
+alias nv='neovide --multigrid'
 alias wh='wormhole-rs'
 alias sqlite='sqlite3 -box'
 
