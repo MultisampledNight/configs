@@ -51,6 +51,13 @@ in
         then with pkgs; [intel-media-driver intel-compute-runtime]
         else [];
     };
+
+    nvidia = if cfg.videoDriver == "nvidia"
+      then {
+        modesetting.enable = true;
+        open = true;
+      }
+      else {};
   };
 
   sound.enable = true;
@@ -181,6 +188,7 @@ in
 
     sessionVariables = {
       NEOVIDE_MULTIGRID = "true";
+      WLR_NO_HARDWARE_CURSORS = "true";
       TYPST_FONT_PATHS =
         if config.fonts.fontDir.enable
         then "/run/current-system/sw/share/X11/fonts"  # not sure if I should upstream this
@@ -258,6 +266,10 @@ in
         export ELM_ENGINE=wayland_egl
         export _JAVA_AWT_WM_NONREPARENTING=1
       '';
+
+      extraOptions = if cfg.videoDriver == "nvidia"
+        then ["--unsupported-gpu"]
+        else [];
     };
 
     xwayland.enable = false;  # enabled by default by sway, but I don't need it
@@ -286,9 +298,9 @@ in
 
       # ...while this one sets the actually in-place default fonts
       defaultFonts = {
-        serif = [ "IBM Plex Serif" ];
-        sansSerif = [ "IBM Plex Sans" ];
-        monospace = [ "IBM Plex Mono" ];
+        serif = ["IBM Plex Serif"];
+        sansSerif = ["IBM Plex Sans"];
+        monospace = ["IBM Plex Mono"];
       };
     };
   };
