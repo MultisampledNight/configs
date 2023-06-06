@@ -159,7 +159,7 @@ in
       godot_4
 
       # normal applications
-      firefox thunderbird okular blender gimp inkscape obsidian libreoffice-fresh zathura
+      configuredFirefox thunderbird okular blender gimp inkscape obsidian libreoffice-fresh zathura
       pavucontrol carla
       mpv mate.eom
       dunst
@@ -188,7 +188,7 @@ in
 
     sessionVariables = {
       NEOVIDE_MULTIGRID = "true";
-      WLR_NO_HARDWARE_CURSORS = "true";
+      WLR_NO_HARDWARE_CURSORS = "1";
       TYPST_FONT_PATHS =
         if config.fonts.fontDir.enable
         then "/run/current-system/sw/share/X11/fonts"  # not sure if I should upstream this
@@ -309,6 +309,28 @@ in
     config.allowUnfree = true;
 
     overlays = [
+      (final: prev: {
+        configuredFirefox = pkgs.wrapFirefox pkgs.firefox-unwrapped {
+          extraPolicies = {
+            DisableFirefoxStudies = true;
+            DisablePocket = true;
+            DisableTelemetry = true;
+            DisableFirefoxAccounts = true;
+            DisplayBookmarksToolbar = "never";
+            FirefoxHome = {
+              Pocket = false;
+              Snippets = false;
+            };
+            NoDefaultBookmarks = true;
+            OfferToSaveLogins = false;
+            SearchSuggestEnabled = false;
+            UserMessaging = {
+              ExtensionsRecommendations = false;
+              SkipOnboarding = true;
+            };
+          };
+        };
+      })
       (final: prev: if (cfg.videoDriver == "nvidia") then {
         blender = prev.blender.override {
           cudaSupport = true;
