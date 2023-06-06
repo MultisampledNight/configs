@@ -31,7 +31,7 @@ rustPlatform.buildRustPackage.override { stdenv = clangStdenv; } rec {
     owner = "fredizzimo";
     repo = "neovide";
     rev = "fsundvik/improve-render-loop";
-    sha256 = "sha256-+y4qjjv0OiKlDop9ma0WfY0jxrkWyFgNvDRBOeiYNBk=";
+    sha256 = "sha256-RxRPnFrgZ+m67NuPaWkhXYDGq1QFUJoSv2Gmb6lwmec=";
   };
 
   cargoLock = {
