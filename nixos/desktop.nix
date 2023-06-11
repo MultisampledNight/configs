@@ -107,7 +107,7 @@ in
 
       displayManager = {
         defaultSession = if cfg.forTheGeneralPublic then "gnome"
-          else if cfg.wayland then "Sway"
+          else if cfg.wayland then "sway"
           else "none+i3";
         gdm.enable = cfg.xorg;
       };
