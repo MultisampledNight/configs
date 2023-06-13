@@ -419,6 +419,23 @@ end
 local cmp_ultisnips = require("cmp_nvim_ultisnips")
 local cmp_ultisnips_mappings = require("cmp_nvim_ultisnips.mappings")
 local cmp = require("cmp")
+
+local function next_item(fallback)
+  if cmp.visible() then
+    cmp.select_next_item()
+  else
+    fallback()
+  end
+end
+
+local function prev_item(fallback)
+  if cmp.visible() then
+    cmp.select_prev_item()
+  else
+    fallback()
+  end
+end
+
 cmp.setup({
   sources = cmp.config.sources({
     { name = "nvim_lsp" },
@@ -430,21 +447,9 @@ cmp.setup({
       cmp_ultisnips_mappings.expand_or_jump_forwards(fallback)
     end, { "i", "c", "s" }),
 
-    ["<C-Enter>"] = cmp.mapping(function(fallback)
-      if cmp.visible() then
-        cmp.select_prev_item()
-      else
-        fallback()
-      end
-    end, { "i", "c", "s" }),
+    ["<S-Enter>"] = cmp.mapping(prev_item, { "i", "c", "s" }),
 
-    ["<S-Enter>"] = cmp.mapping(function(fallback)
-      if cmp.visible() then
-        cmp.select_next_item()
-      else
-        fallback()
-      end
-    end, { "i", "c", "s" }),
+    ["<C-Enter>"] = cmp.mapping(next_item, { "i", "c", "s" }),
 
     ["<Enter>"] = cmp.mapping(
       cmp.mapping.confirm({
