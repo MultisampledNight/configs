@@ -234,8 +234,6 @@ in
     neovim = {
       defaultEditor = !cfg.forTheGeneralPublic;
       withNodeJs = true;
-      # temporary until https://github.com/NixOS/nixpkgs/pull/237357 hits unstable
-      withPython3 = false;
 
       configure = {
         customRC = ''

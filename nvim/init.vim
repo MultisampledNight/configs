@@ -2,10 +2,10 @@ call plug#begin("~/.local/share/nvim/vim-plug")
 
 Plug 'MultisampledNight/colorschemes'
 
-"Plug 'SirVer/ultisnips'
+Plug 'SirVer/ultisnips'
 
 Plug 'hrsh7th/nvim-cmp'
-"Plug 'quangnguyen30192/cmp-nvim-ultisnips'
+Plug 'quangnguyen30192/cmp-nvim-ultisnips'
 Plug 'hrsh7th/cmp-path'
 Plug 'hrsh7th/cmp-cmdline'
 Plug 'hrsh7th/cmp-nvim-lsp'
@@ -420,8 +420,8 @@ local feedkey = function(key, mode)
   vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(key, true, true, true), mode, true)
 end
 
---local cmp_ultisnips = require("cmp_nvim_ultisnips")
---local cmp_ultisnips_mappings = require("cmp_nvim_ultisnips.mappings")
+local cmp_ultisnips = require("cmp_nvim_ultisnips")
+local cmp_ultisnips_mappings = require("cmp_nvim_ultisnips.mappings")
 local cmp = require("cmp")
 
 local function next_item(fallback)
@@ -444,11 +444,11 @@ cmp.setup({
   sources = cmp.config.sources({
     { name = "nvim_lsp" },
     { name = "path" },
-    --{ name = "ultisnips" }
+    { name = "ultisnips" }
   }),
   mapping = {
     ["<Tab>"] = cmp.mapping(function(fallback)
-      --cmp_ultisnips_mappings.expand_or_jump_forwards(fallback)
+      cmp_ultisnips_mappings.expand_or_jump_forwards(fallback)
       fallback()
     end, { "i", "c", "s" }),
 
@@ -465,7 +465,7 @@ cmp.setup({
   },
   snippet = {
     expand = function(args)
-      --vim.fn["UltiSnips#Anon"](args.body)
+      vim.fn["UltiSnips#Anon"](args.body)
     end
   },
 })
