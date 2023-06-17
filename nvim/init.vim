@@ -24,16 +24,20 @@ Plug 'mhinz/vim-signify'
 call plug#end()
 
 function ProjectToplevel()
+  " is this a rust project?
   let toplevel = trim(system("cargo metadata --format-version=1 --offline --no-deps 2>/dev/null"))
   if v:shell_error == 0
-    let toplevel = json_decode(toplevel)["workspace_root"]
-  else
-    let toplevel = trim(system("git rev-parse --show-toplevel"))
-    if v:shell_error != 0
-      let toplevel = getcwd()
-    endif
+    return json_decode(toplevel)["workspace_root"]
   endif
-  return toplevel
+
+  " nope, is this a git repo?
+  let toplevel = trim(system("git rev-parse --show-toplevel"))
+  if v:shell_error == 0
+    return toplevel
+  endif
+
+  " nope, fall back to the cwd
+  return getcwd()
 endfunction
 
 " general settings
@@ -275,7 +279,7 @@ let g:UltiSnipsJumpBackwardTrigger = "<NOP>"
 " global
 " hacky and bound to interfere with the latex or typst machinery, but it works
 function CdProjectToplevel(_timer_id)
-  exe "cd " . ProjectToplevel()
+  exe "tcd " . ProjectToplevel()
 endfunction
 autocmd BufEnter * call timer_start(50, "CdProjectToplevel")
 
@@ -367,9 +371,9 @@ endfunction
 function ExecAtFile(command)
   silent update
 
-  exe "cd " . expand("%:p:h")
+  exe "lcd " . expand("%:p:h")
   let job_id = jobstart(a:command, { "detach": v:true })
-  cd -
+  lcd -
 
   return job_id
 endfunction

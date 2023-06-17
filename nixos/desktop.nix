@@ -187,6 +187,7 @@ in
     ] else []);
 
     sessionVariables = {
+      BROWSER = "firefox";
       NEOVIDE_MULTIGRID = "true";
       WLR_NO_HARDWARE_CURSORS = "1";
       TYPST_FONT_PATHS =
