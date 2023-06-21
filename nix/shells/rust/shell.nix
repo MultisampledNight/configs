@@ -3,9 +3,10 @@
 pkgs.mkShell rec {
   buildInputs = with pkgs; [
     clang llvmPackages_latest.lld llvmPackages.libclang
-    openssl pkg-config webkitgtk.dev
+    openssl pkg-config
     rustup wasm-pack evcxr tokei
-    libGL libxkbcommon
+    libGL directx-shader-compiler
+    libxkbcommon
     wayland xorg.libX11 xorg.libXcursor xorg.libXrandr xorg.libXi
 
     python3 valgrind lldb rr
