@@ -6,7 +6,7 @@
 
 [core]
 	excludesfile = ~/.gitignore-global
-	pager = "DELTA_PAGER='less -R' delta"
+	pager = "DELTA_PAGER='less -R --mouse' delta"
 
 [interactive]
 	diffFilter = delta --color-only

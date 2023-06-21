@@ -28,13 +28,18 @@ stty lnext undef
 path=("$HOME/zukunftslosigkeit/scripts" $path)
 export PATH
 
+export ALL_SHELLDEFS_PATH="$HOME/zukunftslosigkeit/configs/nix/shells"
+export NIX_PATH="$NIX_PATH:$ALL_SHELLDEFS_PATH"
+
+export PAGER='less --mouse'
+
 alias c='clear'
 alias help='man'
 
 alias l='ls -lh --group-directories-first --sort ext'
 alias ll='l -a'
 alias evcxr='evcxr --edit-mode vi'
-alias nv='neovide --multigrid'
+alias nv='neovide --multigrid --noidle'
 alias wh='wormhole-rs'
 alias sqlite='sqlite3 -box'
 
@@ -74,10 +79,9 @@ nix-shell() {
 			--command "SHELL=$(command which zsh) exec $(command which zsh) -i"
 }
 shell() {
-	ALL_SHELLDEFS_PATH="$HOME/zukunftslosigkeit/configs/nix/shells"
-
+	inner_cmd="SHELL=$(command which zsh) "
 	if [[ -z $1 ]]; then
-		# either recursion of multiple args complete or no args given
+		# no args given and nothing to do by "default"
 		return
 	fi
 
