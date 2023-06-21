@@ -135,6 +135,7 @@ in
 
       # tools
       file pv btop ffmpeg jq
+      unzip zip
       alacritty xclip delta
       inotify-tools
       pulseaudio-ctl playerctl
@@ -159,7 +160,8 @@ in
       godot_4
 
       # normal applications
-      configuredFirefox thunderbird okular blender gimp inkscape obsidian libreoffice-fresh zathura
+      configuredFirefox tor-browser-bundle-bin thunderbird
+      okular zathura blender gimp inkscape obsidian libreoffice-fresh
       pavucontrol carla
       mpv mate.eom
       dunst

@@ -103,7 +103,7 @@ shell() {
 
 	# no magic variable, just set here for the prompt below
 	# **do note this doesn't know of standalone nix-shells**
-	SHELL_NAME="${SHELL_NAME:+$SHELL_NAME/}$1" \
+	SHELL_NAME="${SHELL_NAME:+$SHELL_NAME/}<$1>" \
 		command nix-shell --command "cd $before; $inner_cmd"
 
 	cd $before
