@@ -9,6 +9,8 @@ pkgs.mkShell rec {
     libxkbcommon
     wayland xorg.libX11 xorg.libXcursor xorg.libXrandr xorg.libXi
 
+    mdbook mdbook-linkcheck mdbook-pagetoc
+
     python3 valgrind lldb rr
   ];
   RUSTC_VERSION = pkgs.lib.strings.removeSuffix "\n" (
