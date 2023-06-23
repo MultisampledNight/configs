@@ -298,7 +298,7 @@ in
     enableDefaultFonts = true;
 
     fontconfig = {
-      hinting.style = "hintfull";
+      hinting.style = "full";
 
       # ...while this one sets the actually in-place default fonts
       defaultFonts = {
