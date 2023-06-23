@@ -35,6 +35,11 @@ in
       system.nixos.tags = ["kmscon" "hardened"];
       boot.kernelPackages = pkgs.linuxKernel.packages.linux_hardened;
 
+      generalized = {
+        wayland = lib.mkForce false;
+        xorg = lib.mkForce false;
+      };
+
       services = {
         kmscon = {
           enable = true;
