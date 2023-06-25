@@ -136,7 +136,7 @@ EOF
 
 endif
 
-set guifont=IBM_Plex_Mono:h14
+set guifont=IBM_Plex_Mono:h14:#h-slight
 set linespace=2
 set number
 set noshowmode
