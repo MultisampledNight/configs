@@ -40,6 +40,7 @@ in
 
   documentation = {
     enable = true;
+    dev.enable = true;
     man.generateCaches = true;
   };
 
@@ -64,6 +65,10 @@ in
   security.rtkit.enable = true;
   networking.dhcpcd.wait = "background"; # saves like 5 seconds of startup time
   xdg.portal.enable = lib.mkForce false;
+  qt = {
+    enable = true;
+    platformTheme = "qt5ct";
+  };
 
   users.users =
     if cfg.gaming then {
@@ -139,6 +144,7 @@ in
       alacritty xclip delta
       inotify-tools
       pulseaudio-ctl playerctl
+      qt5ct
       sshfs vde2 linuxKernel.packages.linux_zen.usbip lm_sensors
       geoipWithDatabase
 
@@ -161,7 +167,9 @@ in
 
       # normal applications
       configuredFirefox tor-browser-bundle-bin thunderbird
-      okular zathura blender gimp inkscape obsidian libreoffice-fresh
+      okular zathura
+      blender gimp inkscape musescore
+      obsidian libreoffice-fresh
       pavucontrol carla
       mpv mate.eom
       dunst
