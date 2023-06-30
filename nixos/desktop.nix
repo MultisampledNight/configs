@@ -292,6 +292,7 @@ in
       hack-font
       roboto roboto-mono
       ibm-plex
+      manrope
       source-code-pro
 
       cantarell-fonts
