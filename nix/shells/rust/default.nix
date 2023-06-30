@@ -8,6 +8,7 @@ pkgs.mkShell rec {
     libGL directx-shader-compiler
     libxkbcommon
     wayland xorg.libX11 xorg.libXcursor xorg.libXrandr xorg.libXi
+    fontconfig freetype
 
     mdbook mdbook-linkcheck mdbook-pagetoc
 
