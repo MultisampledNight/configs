@@ -138,6 +138,20 @@ in
       };
     };
 
+    systemd.user.tmpfiles.users =
+      if cfg.forMulti then {
+        # syntax (also found in tmpfiles.d(5)):
+        #  type  path  mode  user  group  age  argument
+        multisn8.rules = [
+          "d %h/lab"
+          "d %h/media/downloads"
+          "d %h/notes"
+          "d %h/studio"
+          "d %h/zukunftslosigkeit"
+          "L %h/Downloads - - - - %h/media/downloads"
+        ];
+      } else {};
+
     environment = {
       systemPackages = with pkgs; [
         curl rsync magic-wormhole-rs
