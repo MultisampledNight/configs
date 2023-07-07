@@ -84,15 +84,14 @@ in
   };
 
   config = {
-    boot = {
-      loader = {
-        grub = {
-          device = "nodev";
-          efiSupport = true;
-        };
-
-        efi.canTouchEfiVariables = true;
+    boot.loader = {
+      systemd-boot = {
+        enable = true;
+        editor = false;
+        consoleMode = "auto";
+        configurationLimit = 256;
       };
+      efi.canTouchEfiVariables = true;
     };
 
     networking = {
@@ -137,20 +136,6 @@ in
         };
       };
     };
-
-    systemd.user.tmpfiles.users =
-      if cfg.forMulti then {
-        # syntax (also found in tmpfiles.d(5)):
-        #  type  path  mode  user  group  age  argument
-        multisn8.rules = [
-          "d %h/lab"
-          "d %h/media/downloads"
-          "d %h/notes"
-          "d %h/studio"
-          "d %h/zukunftslosigkeit"
-          "L %h/Downloads - - - - %h/media/downloads"
-        ];
-      } else {};
 
     environment = {
       systemPackages = with pkgs; [
