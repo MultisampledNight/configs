@@ -13,6 +13,7 @@ pkgs.mkShell rec {
     mdbook mdbook-linkcheck mdbook-pagetoc
 
     python3 valgrind lldb rr
+    renderdoc
   ];
   RUSTC_VERSION = pkgs.lib.strings.removeSuffix "\n" (
     pkgs.lib.readFile ./rust-toolchain

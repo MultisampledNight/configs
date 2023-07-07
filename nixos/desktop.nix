@@ -49,7 +49,8 @@ in
     opengl = {
       enable = true;
       extraPackages = if cfg.videoDriver == "intel"
-        then with pkgs; [intel-media-driver intel-compute-runtime]
+        then with pkgs; [mesa.drivers intel-media-driver intel-compute-runtime]
+        # TODO: sometime in future, I suppose also nvidia's ICD belongs here?
         else [];
     };
 
@@ -204,6 +205,11 @@ in
         if config.fonts.fontDir.enable
         then "/run/current-system/sw/share/X11/fonts"  # not sure if I should upstream this
         else "";
+      VK_ICD_FILENAMES =
+        if cfg.videoDriver == "intel"
+        # hacky but who cares, it's semi-ensured to be there through hardware.opengl.extraPackages anyway
+        then "/run/opengl-driver/share/vulkan/icd.d/intel_icd.x86_64.json"
+        else "";
     }
     // (if cfg.videoDriver == "nvidia" then {
       # both required for blender
@@ -316,6 +322,11 @@ in
         monospace = ["IBM Plex Mono"];
       };
     };
+  };
+
+  i18n.inputMethod = {
+    enabled = "ibus";
+    ibus.engines = with pkgs.ibus-engines; [hangul];
   };
 
   nixpkgs = {
