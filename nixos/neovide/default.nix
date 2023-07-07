@@ -31,15 +31,10 @@ rustPlatform.buildRustPackage.override { stdenv = clangStdenv; } rec {
     owner = "fredizzimo";
     repo = "neovide";
     rev = "fsundvik/improve-render-loop";
-    sha256 = "sha256-3Xw0xFr9P6AxvIUacdydK/GqL7/k2fbRufqoTL71I5E=";
+    sha256 = "sha256-kscv1WNHtobqZdrOu8BjFAu7N4PI+FYCQhts9f8gN2I=";
   };
 
-  cargoLock = {
-    lockFile = ./Cargo.lock;
-    outputHashes = {
-      "winit-0.28.6" = "sha256-mxX+v16lMdYahPxVsDg2gMmZtx6qBF4Wu4SlNh4MYY0=";
-    };
-  };
+  cargoLock.lockFile = ./Cargo.lock;
 
   SKIA_SOURCE_DIR =
     let
