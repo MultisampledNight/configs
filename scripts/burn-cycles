@@ -1,0 +1,3 @@
+#!/usr/bin/env nix-shell
+#!nix-shell -p bash hashcash -i bash
+head -c 500000 /dev/urandom | base64 | xargs -n 30 -P 30 hashcash -mb50
