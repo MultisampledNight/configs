@@ -448,8 +448,11 @@ cmp.setup({
   }),
   mapping = {
     ["<Tab>"] = cmp.mapping(function(fallback)
-      cmp_ultisnips_mappings.expand_or_jump_forwards(fallback)
-      fallback()
+      if cmp.visible() then
+        cmp_ultisnips_mappings.expand_or_jump_forwards(fallback)
+      else 
+        fallback()
+      end
     end, { "i", "c", "s" }),
 
     ["<S-Enter>"] = cmp.mapping(prev_item, { "i", "c", "s" }),
