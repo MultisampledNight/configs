@@ -28,6 +28,12 @@ in
       description = "If to enable wireless services through iwd and iwctl.";
     };
 
+    ssd = mkOption {
+      type = types.bool;
+      default = false;
+      description = "If to enable services like fstrim for automatic SSD maintenace.";
+    };
+
     ssh = mkOption {
       type = types.bool;
       default = false;
@@ -125,6 +131,8 @@ in
     };
 
     services = {
+      fstrim.enable = cfg.ssd;
+
       openssh = {
         enable = cfg.ssh;
         startWhenNeeded = true;
