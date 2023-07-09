@@ -72,13 +72,15 @@ in
   };
 
   users.users =
-    if cfg.gaming then {
+    {
+      multisn8.extraGroups = ["libvirtd"];
+    } // (if cfg.gaming then {
       nichthemeron = {
         isNormalUser = true;
-        extraGroups = if cfg.wayland || cfg.xorg then ["input"] else [];
+        extraGroups = if cfg.graphical then ["input"] else [];
         shell = pkgs.zsh;
       };
-    } else {};
+    } else {});
 
   services = {
     # audio server
@@ -135,7 +137,8 @@ in
   };
 
   environment = {
-    systemPackages = with pkgs; [
+    systemPackages = with pkgs;
+    [
       # system debugging tools
       clinfo vulkan-tools pciutils
 
@@ -153,19 +156,6 @@ in
       adapta-gtk-theme adapta-kde-theme adapta-backgrounds
       breeze-icons volantes-cursors
 
-      # languages (for Rust it's probably better to directly use a shell.nix instead)
-      python3 black
-      llvmPackages_latest.llvm llvmPackages_latest.bintools llvmPackages_latest.lld
-      clang sccache texlive.combined.scheme-full texlab
-
-      # dev applications
-      ghidra
-      neovideSmooth sqlitebrowser
-      direnv
-
-      # gamedev
-      godot_4
-
       # normal applications
       configuredFirefox tor-browser-bundle-bin thunderbird
       okular zathura
@@ -173,7 +163,7 @@ in
       obsidian libreoffice-fresh
       pavucontrol carla
       mpv mate.eom
-      dunst
+      dunst virt-manager
     ]
     ++ (if cfg.xorg then [
       xorg.xauth rofi flameshot
@@ -236,6 +226,7 @@ in
 
   programs = {
     adb.enable = true;
+    dconf.enable = true;
     firejail.enable = true;
 
     git.lfs = {
@@ -291,6 +282,11 @@ in
     };
 
     xwayland.enable = false;  # enabled by default by sway, but I don't need it
+  };
+
+  virtualisation.libvirtd = {
+    enable = true;
+    qemu.runAsRoot = false;
   };
 
   fonts = {
