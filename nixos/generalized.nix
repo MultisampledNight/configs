@@ -28,6 +28,12 @@ in
       description = "If to enable wireless services through iwd and iwctl.";
     };
 
+    externalInterface = mkOption {
+      type = types.nullOr types.str;
+      default = null;
+      description = "Which interface is designated to be exposed to the outside world.";
+    };
+
     ssd = mkOption {
       type = types.bool;
       default = false;
@@ -50,6 +56,12 @@ in
       type = types.bool;
       default = false;
       description = "If to enable Wayland as display protocol with sway. Only in effect on non-server setups.";
+    };
+
+    graphical = mkOption {
+      type = types.bool;
+      default = cfg.wayland || cfg.xorg;
+      description = "If to install graphical applications. Automatically enabled if you enable a display protocol.";
     };
 
     profileGuided = mkOption {
@@ -76,16 +88,22 @@ in
       description = "If this system should stay usable to the general public, by forcing common layouts and installing common desktop environments. Setting this to `true` implicitly overrides `layout`.";
     };
 
-    videos = mkOption {
+    development = mkOption {
       type = types.bool;
       default = false;
-      description = "If you want to record and edit videos. Only in effect on non-server setups.";
+      description = "If you want to develop on this machine. Sets up a neat container called `dev` where you can stuff all development stuff, while keeping your secrets out.";
     };
 
     gaming = mkOption {
       type = types.bool;
       default = false;
       description = "If you are the type of person which is colloquially referred to as gamer. Only in effect on non-server setups.";
+    };
+
+    videos = mkOption {
+      type = types.bool;
+      default = false;
+      description = "If you want to record and edit videos. Only in effect on non-server setups.";
     };
   };
 
@@ -123,7 +141,7 @@ in
           multisn8 = {
             isNormalUser = true;
             extraGroups = ["wheel" "adbusers"]
-              ++ (if cfg.wayland || cfg.xorg then ["input"] else []);
+              ++ (if cfg.graphical then ["input"] else []);
             shell = pkgs.zsh;
             packages = with pkgs; [zoxide];
           };
@@ -184,6 +202,28 @@ in
           RPROMPT='%(?..%F{1}%?%f) %F{5}%~%f %F{4}@%M%f'
         '';
       };
+    };
+  };
+
+  containers.dev = {
+    config = { config, pkgs, ... }: {
+      environment.systemPackages = with pkgs;
+      [
+        # languages (for Rust it's probably better to directly use a shell.nix instead)
+        python3 black
+        llvmPackages_latest.llvm llvmPackages_latest.bintools llvmPackages_latest.lld
+        clang sccache texlive.combined.scheme-full texlab
+
+        # gamedev
+        godot_4
+
+        # dev applications
+        direnv
+      ]
+      ++ (if cfg.graphical then [
+        ghidra
+        neovideSmooth sqlitebrowser
+      ] else []);
     };
   };
 }
