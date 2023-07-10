@@ -143,28 +143,44 @@ in
       clinfo vulkan-tools pciutils
 
       # tools
-      file pv btop ffmpeg jq
+      file pv btop ffmpeg mpv jq
       unzip zip
-      alacritty xclip delta
+      xclip delta
       inotify-tools
       pulseaudio-ctl playerctl
-      qt5ct
       sshfs vde2 linuxKernel.packages.linux_zen.usbip lm_sensors
       geoipWithDatabase
 
-      # themes
-      adapta-gtk-theme adapta-kde-theme adapta-backgrounds
-      breeze-icons volantes-cursors
+      # languages (for Rust it's probably better to directly use a shell.nix instead)
+      python3 black
+      llvmPackages_latest.llvm llvmPackages_latest.bintools llvmPackages_latest.lld
+      clang sccache texlive.combined.scheme-full texlab
+
+      # gamedev
+      godot_4
+
+      # dev applications
+      direnv
+    ]
+    ++ (if cfg.graphical then [
+      ghidra
+      neovideSmooth sqlitebrowser
 
       # normal applications
+      alacritty
       configuredFirefox tor-browser-bundle-bin thunderbird
       okular zathura
       blender gimp inkscape musescore
       obsidian libreoffice-fresh
       pavucontrol carla
-      mpv mate.eom
+      mate.eom
       dunst virt-manager
-    ]
+      qt5ct
+
+      # themes
+      adapta-gtk-theme adapta-kde-theme adapta-backgrounds
+      breeze-icons volantes-cursors
+    ] else [])
     ++ (if cfg.xorg then [
       xorg.xauth rofi flameshot
     ] else [])

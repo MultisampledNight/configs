@@ -204,26 +204,4 @@ in
       };
     };
   };
-
-  containers.dev = {
-    config = { config, pkgs, ... }: {
-      environment.systemPackages = with pkgs;
-      [
-        # languages (for Rust it's probably better to directly use a shell.nix instead)
-        python3 black
-        llvmPackages_latest.llvm llvmPackages_latest.bintools llvmPackages_latest.lld
-        clang sccache texlive.combined.scheme-full texlab
-
-        # gamedev
-        godot_4
-
-        # dev applications
-        direnv
-      ]
-      ++ (if cfg.graphical then [
-        ghidra
-        neovideSmooth sqlitebrowser
-      ] else []);
-    };
-  };
 }
