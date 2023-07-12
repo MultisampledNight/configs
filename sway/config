@@ -40,7 +40,7 @@ input type:tablet_pad map_to_output eDP-1
 input type:keyboard {
     xkb_layout "de"
     xkb_variant "bone"
-    repeat_rate 30
+    repeat_rate 60
     repeat_delay 260
 }
 

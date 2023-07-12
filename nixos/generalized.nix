@@ -108,14 +108,23 @@ in
   };
 
   config = {
-    boot.loader = {
-      systemd-boot = {
-        enable = true;
-        editor = false;
-        consoleMode = "auto";
-        configurationLimit = 256;
+    boot = {
+      loader = {
+        systemd-boot = {
+          enable = true;
+          editor = false;
+          consoleMode = "auto";
+          configurationLimit = 256;
+        };
+        grub.enable = false;
+        efi.canTouchEfiVariables = true;
       };
-      efi.canTouchEfiVariables = true;
+
+      kernelPackages = mkDefault (
+        if cfg.profileGuided
+        then pkgs.linuxZenFast
+        else pkgs.linuxKernel.packages.linux_zen
+      );
     };
 
     networking = {
@@ -134,7 +143,7 @@ in
 
     users = {
       defaultUserShell = pkgs.zsh;
-      mutableUsers = true; # needed for passwd changes to persist
+      mutableUsers = mkDefault true; # needed for passwd changes to persist
 
       users =
         if cfg.forMulti then {
@@ -203,5 +212,7 @@ in
         '';
       };
     };
+
+    nix.settings.auto-optimise-store = true;
   };
 }
