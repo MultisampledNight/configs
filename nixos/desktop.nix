@@ -6,19 +6,6 @@ let
   neovideSmooth = pkgs.callPackage ./neovide/default.nix {};
 in
 {
-  boot = {
-    kernelPackages = mkDefault (
-      if cfg.profileGuided
-      then pkgs.linuxZenFast
-      else pkgs.linuxKernel.packages.linux_zen
-    );
-
-    loader.grub = {
-      font = "${pkgs.ibm-plex}/share/fonts/opentype/IBMPlexMono-Medium.otf";
-      fontSize = 25;
-    };
-  };
-
   console.colors = [
     "212224" # black
     "ff9365" # red
@@ -147,6 +134,7 @@ in
       unzip zip
       xclip delta
       inotify-tools
+      bubblewrap
       pulseaudio-ctl playerctl
       sshfs vde2 linuxKernel.packages.linux_zen.usbip lm_sensors
       geoipWithDatabase

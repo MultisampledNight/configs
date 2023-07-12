@@ -1,0 +1,41 @@
+#! /usr/bin/env nix-shell
+#! nix-shell -p bash nixos-generators -i bash
+# vim: ft=bash
+set -eu
+
+if (( $# != 1 )); then
+  echo "takes 1 argument: what project to open in an elusive instance" 1>&2
+  exit 1
+fi
+
+project_path=$(realpath -- $1)
+project_name=$(basename -- $project_path)
+
+# pure nonexhaustive sanity check: make sure the path is actually to a project
+if [[ ! ($project_path == $HOME/studio/*/* || $project_path == $HOME/lab/*/*) ]]; then
+  echo "path would be $project_path when fully expanded; which doesn't look like a path to a project" 1>&2
+  echo "projects are defined as subfolders in folders in ~/studio or ~/lab" 1>&2
+  exit 2
+fi
+
+base_image="$HOME/zukunftslosigkeit/state/elusive/elusive-base"
+overlay_image="$HOME/zukunftslosigkeit/state/elusive/$project_name/overlay.qcow2"
+
+# set up the overlay image first, if not already done
+if [[ ! -f $overlay_image ]]; then
+  echo "creating overlay at $overlay_image since it doesn't exist yet"
+  mkdir -p $(dirname -- $overlay_image)
+  qemu-img create \
+    -o backing_file=$base_image,backing_fmt=raw \
+    -f qcow2 $overlay_image
+fi
+
+# everything's ready, launch
+qemu-system-x86_64 \
+  $overlay_image \
+  -name "elusive-$project_name" \
+  -machine q35 \
+  -m size=512M,slots=15,maxmem=8G \
+  -nic user,restrict=off,hostfwd=tcp::50022-:22 \
+  -nographic \
+  -accel kvm
