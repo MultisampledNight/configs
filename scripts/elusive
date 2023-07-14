@@ -1,6 +1,6 @@
 #! /usr/bin/env nix-shell
-#! nix-shell -p bash nixos-generators -i bash
-# vim: ft=bash
+#! nix-shell -p zsh qemu_kvm -i zsh
+# vim: ft=zsh
 set -eu
 
 if (( $# != 1 )); then
@@ -8,8 +8,8 @@ if (( $# != 1 )); then
   exit 1
 fi
 
-project_path=$(realpath -- $1)
-project_name=$(basename -- $project_path)
+project_path=$(realpath -- "$1")
+project_name=$(basename -- "$project_path")
 
 # pure nonexhaustive sanity check: make sure the path is actually to a project
 if [[ ! ($project_path == $HOME/studio/*/* || $project_path == $HOME/lab/*/*) ]]; then
@@ -18,13 +18,16 @@ if [[ ! ($project_path == $HOME/studio/*/* || $project_path == $HOME/lab/*/*) ]]
   exit 2
 fi
 
-base_image="$HOME/zukunftslosigkeit/state/elusive/elusive-base"
+base_image=$(readlink -- "/nix/var/nix/gcroots/per-user/$USER/elusive-base")
 overlay_image="$HOME/zukunftslosigkeit/state/elusive/$project_name/overlay.qcow2"
 
 # set up the overlay image first, if not already done
+# it's actually pretty much useless for now since the iso is fully live, i.e. doesn't remember
+# but qemu really really wants the main disk to be rw-able, so I'm giving it exactly that
+# all interesting accesses should be done via virtfs anyway
 if [[ ! -f $overlay_image ]]; then
   echo "creating overlay at $overlay_image since it doesn't exist yet"
-  mkdir -p $(dirname -- $overlay_image)
+  mkdir -p $(dirname -- "$overlay_image")
   qemu-img create \
     -o backing_file=$base_image,backing_fmt=raw \
     -f qcow2 $overlay_image
@@ -35,7 +38,7 @@ qemu-system-x86_64 \
   $overlay_image \
   -name "elusive-$project_name" \
   -machine q35 \
-  -m size=512M,slots=15,maxmem=8G \
+  -m size=8G \
   -nic user,restrict=off,hostfwd=tcp::50022-:22 \
   -nographic \
   -accel kvm
