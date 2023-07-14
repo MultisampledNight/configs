@@ -32,6 +32,11 @@ let
         --root "$out" --user multisn8 \
         --actually-install --exclude-nixos --no-backup &>/dev/null
   '';
+  shellDir = ../../nix/shells;
+  shells =
+    lib.mapAttrsToList
+      (name: _: pkgs.callPackage (shellDir + "/${name}/default.nix") {})
+      (lib.filterAttrs (_: type: type == "directory") (builtins.readDir shellDir));
 in {
   fileSystems."/" = {
     device = "/dev/disk/by-label/nixos";
@@ -66,6 +71,7 @@ in {
         group = "users";
       }
     ];
+    additionalPaths = shells;
   };
 
   formatAttr = "raw";
