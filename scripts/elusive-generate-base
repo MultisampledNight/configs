@@ -29,6 +29,6 @@ if [[ -h $old_in_store ]]; then
 		echo $project
 		qemu-img rebase -p -b "$image_in_store" -F raw "$state_dir/$project/overlay.qcow2"
 	done
-	rm "/nix/var/nix/gcroots/per-user/multisn8/elusive-base-old"
+	rm "/nix/var/nix/gcroots/per-user/$USER/elusive-base-old"
 fi
 
