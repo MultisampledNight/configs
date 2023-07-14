@@ -1,28 +1,3 @@
-call plug#begin("~/.local/share/nvim/vim-plug")
-
-Plug 'MultisampledNight/colorschemes'
-
-Plug 'SirVer/ultisnips'
-
-Plug 'hrsh7th/nvim-cmp'
-Plug 'quangnguyen30192/cmp-nvim-ultisnips'
-Plug 'hrsh7th/cmp-path'
-Plug 'hrsh7th/cmp-cmdline'
-Plug 'hrsh7th/cmp-nvim-lsp'
-
-Plug 'neovim/nvim-lspconfig'
-Plug 'folke/trouble.nvim'
-Plug 'nvim-lua/plenary.nvim'
-Plug 'nvim-telescope/telescope.nvim', { 'branch': '0.1.x' }
-Plug 'nvim-telescope/telescope-ui-select.nvim'
-
-Plug 'nvim-treesitter/nvim-treesitter'
-Plug 'nvim-treesitter/playground'
-Plug 'sheerun/vim-polyglot'
-Plug 'mhinz/vim-signify'
-
-call plug#end()
-
 function ProjectToplevel()
   " is this a rust project?
   let toplevel = trim(system("cargo metadata --format-version=1 --offline --no-deps 2>/dev/null"))
@@ -270,21 +245,12 @@ let g:neovide_floating_blur_amount_y = 6.0
 let g:neovide_underline_automatic_scaling = v:true
 let g:neovide_hide_mouse_when_typing = v:true
 
-" ultisnips
-let g:UltiSnipsEditSplit = "vertical"
-let g:UltiSnipsExpandTrigger = "<Tab>"
-let g:UltiSnipsJumpForwardTrigger = "<Tab>"
-let g:UltiSnipsJumpBackwardTrigger = "<NOP>"
-
 " global
 " hacky and bound to interfere with the latex or typst machinery, but it works
 function CdProjectToplevel(_timer_id)
   exe "tcd " . ProjectToplevel()
 endfunction
 autocmd BufEnter * call timer_start(50, "CdProjectToplevel")
-
-" UltiSnips snippet files
-autocmd BufNewFile,BufRead *.snippets set ts=4 sw=4 sts=0 et
 
 " rust
 autocmd BufNewFile,BufRead *.rs set equalprg=rustfmt formatprg=rustfmt
@@ -420,8 +386,6 @@ local feedkey = function(key, mode)
   vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(key, true, true, true), mode, true)
 end
 
-local cmp_ultisnips = require("cmp_nvim_ultisnips")
-local cmp_ultisnips_mappings = require("cmp_nvim_ultisnips.mappings")
 local cmp = require("cmp")
 
 local function next_item(fallback)
@@ -444,17 +408,8 @@ cmp.setup({
   sources = cmp.config.sources({
     { name = "nvim_lsp" },
     { name = "path" },
-    { name = "ultisnips" }
   }),
   mapping = {
-    ["<Tab>"] = cmp.mapping(function(fallback)
-      if cmp.visible() then
-        cmp_ultisnips_mappings.expand_or_jump_forwards(fallback)
-      else 
-        fallback()
-      end
-    end, { "i", "c", "s" }),
-
     ["<S-Enter>"] = cmp.mapping(prev_item, { "i", "c", "s" }),
 
     ["<C-Enter>"] = cmp.mapping(next_item, { "i", "c", "s" }),
@@ -465,11 +420,6 @@ cmp.setup({
       }),
       { "i", "c", "s" }
     ),
-  },
-  snippet = {
-    expand = function(args)
-      vim.fn["UltiSnips#Anon"](args.body)
-    end
   },
 })
 cmp.setup.cmdline(":", {

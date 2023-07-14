@@ -4,6 +4,7 @@ with lib;
 let
   cfg = config.generalized;
   neovideSmooth = pkgs.callPackage ./neovide/default.nix {};
+  customVimPlugins = pkgs.vimPlugins.extend (pkgs.callPackage ./neovim/custom-plugins.nix {});
 in {
   documentation = {
     enable = true;
@@ -71,12 +72,38 @@ in {
     neovim = {
       defaultEditor = !cfg.forTheGeneralPublic;
       withNodeJs = true;
+      withRuby = false;
 
       configure = {
         customRC = ''
-          silent! source ${pkgs.vimPlugins.vim-plug}/plug.vim
           silent! source ~/.config/nvim/init.vim
         '';
+
+        packages.plugins = with customVimPlugins; {
+          start = [
+            multisn8-colorschemes
+
+            nvim-cmp cmp-path cmp-cmdline cmp-nvim-lsp
+            nvim-lspconfig trouble-nvim plenary-nvim
+            telescope-nvim telescope-ui-select-nvim
+            (nvim-treesitter.withPlugins (parsers: with parsers; [
+              arduino c cpp c_sharp elixir gdscript javascript julia haskell
+              ocaml objc lua python r rust swift typescript
+              glsl hlsl wgsl
+              cuda
+              bash
+              gitignore gitcommit git_rebase git_config gitattributes
+              vim nix proto godot_resource
+              kdl ini toml yaml json json5
+              css html
+              sql dot mermaid latex bibtex markdown
+              diff query vimdoc
+            ]))
+            playground # nvim-treesitter's playground
+            vim-polyglot vim-signify
+          ];
+          opt = [];
+        };
       };
     };
 
