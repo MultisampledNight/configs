@@ -193,7 +193,8 @@ in {
         ffmpeg mpv jq unzip zip
         alacritty
         btop
-      ];
+      ]
+      ++ (if cfg.xorg then [xclip] else []);
 
       sessionVariables = {
         TYPST_FONT_PATHS =
@@ -238,7 +239,11 @@ in {
         enable = true;
         autosuggestions.enable = true;
         promptInit = ''
-          PROMPT=' %D{%H %M} %F{6}%(!.#.=)%f '
+          if [[ $HOST == "elusive" ]]; then
+            PROMPT=' %D{%H %M} %F{2}%(!.#.=)%f '
+          else
+            PROMPT=' %D{%H %M} %F{6}%(!.#.=)%f '
+          fi
           RPROMPT='%(?..%F{1}%?%f) %F{5}%~%f %F{4}@%M%f'
         '';
       };
