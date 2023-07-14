@@ -30,7 +30,7 @@ let
     ${pkgs.python3}/bin/python \
         ${configs}/distribute_symlinks.py \
         --root "$out" --user multisn8 \
-        --actually-install --exclude-nixos --no-backup
+        --actually-install --exclude-nixos --no-backup &>/dev/null
   '';
 in {
   fileSystems."/" = {
