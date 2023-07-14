@@ -202,12 +202,12 @@ in {
           else "";
       };
 
-      interactiveShellInit = ''
-        alias l='ls -lh --group-directories-first --sort ext'
-        alias ll='l -a'
-        alias c='clear'
-        alias help='man'
-      '';
+      shellAliases = {
+        l = "ls -lh --group-directories-first --sort ext";
+        ll = "l -a";
+        c = "clear";
+        help = "man";
+      };
 
       gnome.excludePackages = with pkgs.gnome; [cheese epiphany geary tali iagno hitori atomix evince];
       shells = with pkgs; [bashInteractive zsh];

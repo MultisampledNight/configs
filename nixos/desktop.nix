@@ -22,7 +22,7 @@ in {
     nvidia = if cfg.videoDriver == "nvidia"
       then {
         modesetting.enable = true;
-        open = true;
+        open = false;
       }
       else {};
   };
