@@ -1,0 +1,34 @@
+#! /usr/bin/env nix-shell
+#! nix-shell -p zsh nixos-generators -i zsh
+# vim: ft=zsh
+set -euo pipefail
+
+image_target="/nix/var/nix/gcroots/per-user/$USER/elusive-base"
+old_in_store="$(dirname -- "$image_target")/elusive-base-old"
+state_dir="$HOME/zukunftslosigkeit/state/elusive"
+
+# actually generate the image
+image_in_store=$(nixos-generate \
+	--format-path "$HOME/zukunftslosigkeit/configs/nixos/elusive/format.nix" \
+	--configuration "$HOME/zukunftslosigkeit/configs/nixos/elusive/configuration.nix" \
+  | tail --lines 1)
+
+# replace the old image, both in the GC root and the symlink on the disk
+echo "installing symlinks"
+mkdir -p $(dirname -- "$image_target")
+if [[ -h $image_target ]]; then
+	mv $image_target $old_in_store
+fi
+ln -sf "$image_in_store" "$image_target"
+
+# and rebase back again
+if [[ -h $old_in_store ]]; then
+	echo "rebasing from old image onto new image"
+	# agreed that `ls` is suboptimal for "just" globbing, but globbing wouldn't expand if the directory is empty
+	for project in $(ls $state_dir); do
+		echo $project
+		qemu-img rebase -p -b "$image_in_store" -F raw "$state_dir/$project/overlay.qcow2"
+	done
+fi
+
+rm "/nix/var/nix/gcroots/per-user/multisn8/elusive-base-old"

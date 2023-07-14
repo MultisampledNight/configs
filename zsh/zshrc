@@ -30,16 +30,11 @@ stty lnext undef
 path=("$HOME/zukunftslosigkeit/scripts" $path)
 export PATH
 
-export ALL_SHELLDEFS_PATH="$HOME/zukunftslosigkeit/configs/nix/shells"
+export ALL_SHELLDEFS_PATH="$HOME/zukunftslosigkeit/shells"
 export NIX_PATH="$NIX_PATH:$ALL_SHELLDEFS_PATH"
 
 export PAGER='less --mouse'
 
-alias c='clear'
-alias help='man'
-
-alias l='ls -lh --group-directories-first --sort ext'
-alias ll='l -a'
 alias evcxr='evcxr --edit-mode vi'
 alias nv='neovide --multigrid --noidle'
 alias wh='wormhole-rs'
@@ -113,5 +108,3 @@ shell() {
 
 setopt prompt_subst
 RPROMPT=$RPROMPT'${SHELL_NAME:+ %2F\$${SHELL_NAME}%f}'
-
-eval "$(direnv hook zsh)"

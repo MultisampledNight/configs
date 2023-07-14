@@ -5,8 +5,7 @@
 with lib;
 let
   cfg = config.generalized;
-in
-{
+in {
   options.generalized = {
     hostName = mkOption {
       type = types.strMatching
@@ -71,9 +70,9 @@ in
     };
 
     videoDriver = mkOption {
-      type = types.str;
-      default = "intel";
-      description = "What video driver to use for Xorg. Only in effect on non-server setups.";
+      type = types.nullOr types.str;
+      default = null;
+      description = "What video driver to use for Xorg. Only in effect on development setups.";
     };
 
     forMulti = mkOption {
@@ -86,12 +85,6 @@ in
       type = types.bool;
       default = false;
       description = "If this system should stay usable to the general public, by forcing common layouts and installing common desktop environments. Setting this to `true` implicitly overrides `layout`.";
-    };
-
-    development = mkOption {
-      type = types.bool;
-      default = false;
-      description = "If you want to develop on this machine. Sets up a neat container called `dev` where you can stuff all development stuff, while keeping your secrets out.";
     };
 
     gaming = mkOption {
@@ -127,6 +120,25 @@ in
       );
     };
 
+    console.colors = [
+      "212224" # black
+      "ff9365" # red
+      "11d396" # green
+      "c7b700" # yellow
+      "00c7f7" # blue
+      "fa86ce" # magenta
+      "aaa9ff" # cyan
+      "b6b3b4" # white
+      "7f7dcc" # bright black aka grey
+      "ff9365" # bright red
+      "11d396" # bright green
+      "c7b700" # bright yellow
+      "00c7f7" # bright blue
+      "fa86ce" # bright magenta
+      "aaa9ff" # bright cyan
+      "b6b3b4" # bright white
+    ];
+
     networking = {
       hostName = cfg.hostName;
       wireless.iwd.enable = cfg.wireless.wlan;
@@ -149,10 +161,11 @@ in
         if cfg.forMulti then {
           multisn8 = {
             isNormalUser = true;
-            extraGroups = ["wheel" "adbusers"]
-              ++ (if cfg.graphical then ["input"] else []);
+            extraGroups =
+              ["wheel"]
+              ++ (if cfg.graphical then ["input"] else [])
+              ++ (if config.programs.adb.enable then ["adbusers"] else []);
             shell = pkgs.zsh;
-            packages = with pkgs; [zoxide];
           };
         } else {};
     };
@@ -176,7 +189,25 @@ in
       systemPackages = with pkgs; [
         curl rsync magic-wormhole-rs
         fd ripgrep
+        file pv
+        ffmpeg mpv jq unzip zip
+        alacritty
+        btop
       ];
+
+      sessionVariables = {
+        TYPST_FONT_PATHS =
+          if config.fonts.fontDir.enable
+          then "/run/current-system/sw/share/X11/fonts"  # not sure if I should upstream this
+          else "";
+      };
+
+      interactiveShellInit = ''
+        alias l='ls -lh --group-directories-first --sort ext'
+        alias ll='l -a'
+        alias c='clear'
+        alias help='man'
+      '';
 
       gnome.excludePackages = with pkgs.gnome; [cheese epiphany geary tali iagno hitori atomix evince];
       shells = with pkgs; [bashInteractive zsh];

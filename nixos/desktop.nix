@@ -3,33 +3,11 @@
 with lib;
 let
   cfg = config.generalized;
-  neovideSmooth = pkgs.callPackage ./neovide/default.nix {};
-in
-{
-  console.colors = [
-    "212224" # black
-    "ff9365" # red
-    "11d396" # green
-    "c7b700" # yellow
-    "00c7f7" # blue
-    "fa86ce" # magenta
-    "aaa9ff" # cyan
-    "b6b3b4" # white
-    "7f7dcc" # bright black aka grey
-    "ff9365" # bright red
-    "11d396" # bright green
-    "c7b700" # bright yellow
-    "00c7f7" # bright blue
-    "fa86ce" # bright magenta
-    "aaa9ff" # bright cyan
-    "b6b3b4" # bright white
-  ];
-
-  documentation = {
-    enable = true;
-    dev.enable = true;
-    man.generateCaches = true;
-  };
+in {
+  imports =
+    [
+      ./development.nix
+    ];
 
   hardware = {
     pulseaudio.enable = false; # handled by pipewire-pulse instead
@@ -59,15 +37,13 @@ in
   };
 
   users.users =
-    {
-      multisn8.extraGroups = ["libvirtd"];
-    } // (if cfg.gaming then {
+    mkIf cfg.gaming {
       nichthemeron = {
         isNormalUser = true;
         extraGroups = if cfg.graphical then ["input"] else [];
         shell = pkgs.zsh;
       };
-    } else {});
+    };
 
   services = {
     # audio server
@@ -130,39 +106,18 @@ in
       clinfo vulkan-tools pciutils
 
       # tools
-      file pv btop ffmpeg mpv jq
-      unzip zip
-      xclip delta
-      inotify-tools
-      bubblewrap
       pulseaudio-ctl playerctl
-      sshfs vde2 linuxKernel.packages.linux_zen.usbip lm_sensors
-      geoipWithDatabase
-
-      # languages (for Rust it's probably better to directly use a shell.nix instead)
-      python3 black
-      llvmPackages_latest.llvm llvmPackages_latest.bintools llvmPackages_latest.lld
-      clang sccache texlive.combined.scheme-full texlab
-
-      # gamedev
-      godot_4
-
-      # dev applications
-      direnv
+      vde2 linuxKernel.packages.linux_zen.usbip lm_sensors
     ]
     ++ (if cfg.graphical then [
-      ghidra
-      neovideSmooth sqlitebrowser
-
       # normal applications
-      alacritty
       configuredFirefox tor-browser-bundle-bin thunderbird
       okular zathura
       blender gimp inkscape musescore
       obsidian libreoffice-fresh
       pavucontrol carla
       mate.eom
-      dunst virt-manager
+      dunst virt-manager qemu_kvm
       qt5ct
 
       # themes
@@ -171,13 +126,6 @@ in
     ] else [])
     ++ (if cfg.xorg then [
       xorg.xauth rofi flameshot
-    ] else [])
-    ++ (if cfg.videoDriver == "nvidia" then [
-      cudatoolkit
-    ] else [])
-    ++ (if cfg.forTheGeneralPublic then [
-      jetbrains.pycharm-community
-      R nodejs openjdk
     ] else [])
     ++ (if cfg.videos then [
       # OBS Studio and its plugins
@@ -193,39 +141,7 @@ in
 
     sessionVariables = {
       BROWSER = "firefox";
-      NEOVIDE_MULTIGRID = "true";
-      WLR_NO_HARDWARE_CURSORS = "1";
-      TYPST_FONT_PATHS =
-        if config.fonts.fontDir.enable
-        then "/run/current-system/sw/share/X11/fonts"  # not sure if I should upstream this
-        else "";
-      VK_ICD_FILENAMES =
-        if cfg.videoDriver == "intel"
-        # hacky but who cares, it's semi-ensured to be there through hardware.opengl.extraPackages anyway
-        then "/run/opengl-driver/share/vulkan/icd.d/intel_icd.x86_64.json"
-        else "";
-    }
-    // (if cfg.videoDriver == "nvidia" then {
-      # both required for blender
-      CUDA_PATH = "${pkgs.cudatoolkit}";
-      CYCLES_CUDA_EXTRA_CFLAGS = "-I${pkgs.cudatoolkit}/targets/x86_64-linux/include";
-    } else {})
-    // (if cfg.wayland then {
-      NIXOS_OZONE_WL = "1";
-    } else {});
-
-    extraInit = (if cfg.videoDriver == "nvidia" && cfg.xorg then ''
-      export LD_LIBRARY_PATH="${pkgs.linuxPackages.nvidia_x11}/lib"
-    '' else "")
-    + (if cfg.xorg then ''
-      # is X even running yet?
-      if [[ -n $DISPLAY ]]; then
-        # key repeat delay + rate
-        xset r rate 260 30
-        # turn off the bell sound
-        xset b off
-      fi
-    '' else "");
+    };
   };
 
   programs = {
@@ -233,25 +149,9 @@ in
     dconf.enable = true;
     firejail.enable = true;
 
-    git.lfs = {
-      enable = true;
-    };
-
     gnupg.agent = {
       enable = true;
       enableSSHSupport = true;
-    };
-
-    neovim = {
-      defaultEditor = !cfg.forTheGeneralPublic;
-      withNodeJs = true;
-
-      configure = {
-        customRC = ''
-          silent! source ${pkgs.vimPlugins.vim-plug}/plug.vim
-          silent! source ~/.config/nvim/init.vim
-        '';
-      };
     };
 
     ssh = {
@@ -286,47 +186,6 @@ in
     };
 
     xwayland.enable = false;  # enabled by default by sway, but I don't need it
-  };
-
-  virtualisation.libvirtd = {
-    enable = true;
-    qemu.runAsRoot = false;
-  };
-
-  fonts = {
-    fonts = with pkgs; [
-      hack-font
-      roboto roboto-mono
-      ibm-plex
-      manrope
-      source-code-pro
-
-      cantarell-fonts
-      inter
-      overpass
-      ttf_bitstream_vera
-      ubuntu_font_family
-    ];
-
-    fontDir.enable = true;
-    # this adds a few commonly expected fonts like liberation...
-    enableDefaultFonts = true;
-
-    fontconfig = {
-      hinting.style = "hintslight";
-
-      # ...while this one sets the actually in-place default fonts
-      defaultFonts = {
-        serif = ["IBM Plex Serif"];
-        sansSerif = ["IBM Plex Sans"];
-        monospace = ["IBM Plex Mono"];
-      };
-    };
-  };
-
-  i18n.inputMethod = {
-    enabled = "ibus";
-    ibus.engines = with pkgs.ibus-engines; [hangul];
   };
 
   nixpkgs = {

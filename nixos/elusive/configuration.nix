@@ -1,26 +1,38 @@
 { config, pkgs, lib, ... }:
 
-{
+with lib;
+let
+  cfg = config.generalized;
+  resizeSerialConsole = pkgs.writeScriptBin "resize" ''
+    if [ -e /dev/tty ]; then
+      old=$(stty -g)
+      stty raw -echo min 0 time 5
+      printf '\033[18t' > /dev/tty
+      IFS=';t' read -r _ rows cols _ < /dev/tty
+      stty "$old"
+      stty cols "$cols" rows "$rows"
+    fi
+  ''; # https://unix.stackexchange.com/questions/16578/resizable-serial-console-window
+in {
   imports = 
     [
       ./../generalized.nix
+      ./../development.nix
     ];
-
-    isoImage.squashfsCompression = "zstd -Xcompression-level 6";
 
   generalized = {
     hostName = "elusive";
     ssh = true;
+    # note that no display protocol is specified
+    graphical = true;
     forMulti = false;
   };
 
-
-  boot = {
-    loader.timeout = lib.mkForce 1;
-    # nice for debugging, but ssh offers more casual terminal features
-    #kernelParams = ["console=ttyS0"];
+  boot.loader = {
+    systemd-boot.enable = mkForce false;
+    grub.enable = mkForce true;
   };
-  
+
   users = {
     defaultUserShell = pkgs.zsh;
     mutableUsers = false;
@@ -42,12 +54,9 @@
     };
   };
 
-  environment.systemPackages = [
-  ];
+  environment.loginShellInit = "${resizeSerialConsole}/bin/resize";
 
-  security.polkit.enable = true;
-
-  services.openssh.settings = lib.mkForce {
+  services.openssh.settings = mkForce {
     PasswordAuthentication = true;
     KbdInteractiveAuthentication = true;
   };
