@@ -29,7 +29,8 @@ let
   symlinkSkeleton = pkgs.runCommand "elusive-symlink-skeleton" {} ''
     ${pkgs.python3}/bin/python \
         ${configs}/distribute_symlinks.py \
-        --root "$out" --user multisn8 --actually-install --exclude-nixos --no-backup
+        --root "$out" --user multisn8 \
+        --actually-install --exclude-nixos --no-backup
   '';
 in {
   fileSystems."/" = {
@@ -64,17 +65,7 @@ in {
         user = "multisn8";
         group = "users";
       }
-      #{
-      #  source = configs;
-      #  target = "/home/multisn8/zukunftslosigkeit/configs";
-      #  user = "multisn8";
-      #  group = "users";
-      #}
     ];
-
-    postVM = ''
-
-    '';
   };
 
   formatAttr = "raw";
