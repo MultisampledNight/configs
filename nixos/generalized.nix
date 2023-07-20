@@ -208,6 +208,8 @@ in {
         ll = "l -a";
         c = "clear";
         help = "man";
+        reb = "sudo nixos-rebuild switch";
+        rebb = "sudo nixos-rebuild boot";
       };
 
       gnome.excludePackages = with pkgs.gnome; [cheese epiphany geary tali iagno hitori atomix evince];
