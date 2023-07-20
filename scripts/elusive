@@ -41,4 +41,5 @@ qemu-system-x86_64 \
   -m size=8G \
   -nic user,restrict=off,hostfwd=tcp::50022-:22 \
   -nographic \
-  -accel kvm
+  -accel kvm \
+  -virtfs local,security_model=mapped-xattr,mount_tag=project,path="$HOME/lab/benchmarking"
