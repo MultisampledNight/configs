@@ -3,7 +3,8 @@
 with lib;
 let
   cfg = config.generalized;
-  resizeSerialConsole = pkgs.writeScriptBin "resize" ''
+
+  resizeSerialConsole = pkgs.writeShellScriptBin "resize" ''
     if [ -e /dev/tty ]; then
       old=$(stty -g)
       stty raw -echo min 0 time 5
@@ -13,6 +14,14 @@ let
       stty cols "$cols" rows "$rows"
     fi
   ''; # https://unix.stackexchange.com/questions/16578/resizable-serial-console-window
+
+  mountFromHost = pkgs.writeShellScriptBin "mount-from-host" ''
+    /run/wrappers/bin/mount \
+      -t 9p \
+      -o version=9p2000.L,msize=32M,trans=virtio, \
+         nosuid,nodev,exec \
+      $1 $2
+  '';
 in {
   imports = 
     [
@@ -50,11 +59,22 @@ in {
       multisn8 = {
         isNormalUser = true;
         password = "";
+        packages = [mountFromHost];
       };
     };
   };
 
   environment.loginShellInit = "${resizeSerialConsole}/bin/resize";
+
+  security.sudo.extraRules = [{
+    users = ["multisn8"];
+    commands = [
+      {
+        command = "${mountFromHost}/bin/mount-from-host *";
+        options = ["NOPASSWD"];
+      }
+    ];
+  }];
 
   services.openssh.settings = mkForce {
     PasswordAuthentication = true;
