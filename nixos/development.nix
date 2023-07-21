@@ -5,6 +5,9 @@ let
   cfg = config.generalized;
   neovideSmooth = pkgs.callPackage ./neovide/default.nix {};
   customVimPlugins = pkgs.vimPlugins.extend (pkgs.callPackage ./neovim/custom-plugins.nix {});
+  latexWithTikz = (pkgs.texlive.combine {
+    inherit (pkgs.texlive) scheme-basic pgf standalone german babel;
+  });
 in {
   documentation = {
     enable = true;
@@ -21,8 +24,7 @@ in {
       # languages (for Rust it's probably better to directly use a shell.nix instead)
       python3 black
       llvmPackages_latest.llvm llvmPackages_latest.bintools llvmPackages_latest.lld
-      clang sccache # texlive.combined.scheme-full texlab
-                    # out for now since they add +3min for nothing while testing
+      clang sccache latexWithTikz texlab
 
       direnv
     ]
