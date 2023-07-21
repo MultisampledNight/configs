@@ -1,0 +1,25 @@
+# vim: noet ts=32
+# describes all mounts which are shared between host and guest
+#
+# access kinds
+# - shared-rw: changes from guest are visible to host
+# - rw: changes from guest are persistent, but not visible to host
+#       stored in a project-specific overlay
+# - ro: guest cannot perform changes whatsoever
+#
+# access  path	tag
+
+shared-rw $project_path	project
+ro ~/.config	config
+ro ~/.icons	icons
+ro ~/.local	local
+ro ~/.renderdoc	renderdoc
+rw ~/.julia	julia
+rw ~/.rustup	rustup
+rw ~/.cargo	cargo
+rw ~/.ghidra	ghidra
+rw ~/.cache/nix	cache-nix
+rw ~/.cache/pip	cache-pip
+rw ~/.cache/black	cache-black
+rw ~/.cache/mesa_shader_cache	cache-mesa
+rw ~/.cache/typescript	cache-ts
