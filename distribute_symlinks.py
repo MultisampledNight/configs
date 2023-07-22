@@ -31,6 +31,7 @@ CONFIG_DESTINATIONS = {
     "nix/shells": "~/zukunftslosigkeit/shells",
     # system wide stuff
     "nixos": "/etc/nixos",
+    "pipewire": "/etc/pipewire/pipewire.conf.d",
 }
 
 
@@ -50,7 +51,8 @@ def distribute_symlinks(
     repo_root = Path(__file__).resolve().parent
 
     for repo_subpath, link_name in destinations.items():
-        if exclude_nixos and "nixos" in repo_subpath:
+        # TODO: some day I'll need to rename exclude_nixos and have it check for a non-user path instead
+        if exclude_nixos and ("nixos" in repo_subpath or "pipewire" in repo_subpath):
             continue
         link_name = expanduser(link_name, root=root, user=user)
         link_target = (repo_root / repo_subpath).resolve()
