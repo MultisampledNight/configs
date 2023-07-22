@@ -119,6 +119,7 @@ in {
       mate.eom
       dunst virt-manager qemu_kvm
       qt5ct
+      helvum
 
       # themes
       adapta-gtk-theme adapta-kde-theme adapta-backgrounds
