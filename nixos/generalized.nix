@@ -163,7 +163,7 @@ in {
             isNormalUser = true;
             extraGroups =
               ["wheel"]
-              ++ (if cfg.graphical then ["input"] else [])
+              ++ (if cfg.graphical then ["input" "video" "audio"] else [])
               ++ (if config.programs.adb.enable then ["adbusers"] else []);
             shell = pkgs.zsh;
           };
