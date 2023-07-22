@@ -21,6 +21,7 @@ CONFIG_DESTINATIONS = {
     "i3": "~/.config/i3",
     "mako": "~/.config/mako",
     "nvim": "~/.config/nvim",
+    "pipewire": "~/.config/pipewire/pipewire.conf.d",
     "sway": "~/.config/sway",
     "swaylock": "~/.config/swaylock",
     "wallpapers/wallpaper": "~/.background-image",
@@ -31,7 +32,6 @@ CONFIG_DESTINATIONS = {
     "nix/shells": "~/zukunftslosigkeit/shells",
     # system wide stuff
     "nixos": "/etc/nixos",
-    "pipewire": "/etc/pipewire/pipewire.conf.d",
 }
 
 
@@ -52,7 +52,7 @@ def distribute_symlinks(
 
     for repo_subpath, link_name in destinations.items():
         # TODO: some day I'll need to rename exclude_nixos and have it check for a non-user path instead
-        if exclude_nixos and ("nixos" in repo_subpath or "pipewire" in repo_subpath):
+        if exclude_nixos and "nixos" in repo_subpath:
             continue
         link_name = expanduser(link_name, root=root, user=user)
         link_target = (repo_root / repo_subpath).resolve()
