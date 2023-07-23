@@ -2,24 +2,18 @@
 # describes all mounts which are shared between host and guest
 #
 # access kinds
-# - shared-rw: changes from guest are visible to host
-# - rw: changes from guest are persistent, but not visible to host
-#       stored in a project-specific overlay
+# - rw: guest can write, changes from guest are visible to host
 # - ro: guest cannot perform changes whatsoever
+#
+# there's no way to do rw, but host unable to observe changes
+# well there is, with overlayfs, but in that case the host is unable to do changes itself
+# would be kinda nice with caches like ~/.cargo but eh
 #
 # access  path	tag
 
-shared-rw $project_path	project
+rw $project_path	project
 ro ~/.config	config
 ro ~/.icons	icons
 ro ~/.local	local
 ro ~/.renderdoc	renderdoc
-rw ~/.julia	julia
-rw ~/.rustup	rustup
-rw ~/.cargo	cargo
-rw ~/.ghidra	ghidra
-rw ~/.cache/nix	cache-nix
-rw ~/.cache/pip	cache-pip
-rw ~/.cache/black	cache-black
-rw ~/.cache/mesa_shader_cache	cache-mesa
-rw ~/.cache/typescript	cache-ts
+ro ~/.rustup	rustup
