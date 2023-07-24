@@ -15,7 +15,9 @@ pkgs.mkShell rec {
     libGL
     vulkan-headers vulkan-loader
     vulkan-tools vulkan-tools-lunarg
-    vulkan-validation-layers vulkan-extension-layer
+    vulkan-validation-layers
+    # TODO: for some reason fails when building the image for elusive due to XDG_DATA_DIRS being unbound in the setup hook
+    # vulkan-extension-layer
     monado openxr-loader openxr-loader.dev
 
     mdbook mdbook-linkcheck mdbook-pagetoc
