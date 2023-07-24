@@ -70,6 +70,12 @@ in {
         user = "multisn8";
         group = "users";
       }
+      {
+        source = "${configs}";
+        target = "/home/multisn8/zukunftslosigkeit/configs";
+        user = "multisn8";
+        group = "users";
+      }
     ];
     additionalPaths = shells;
   };

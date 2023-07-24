@@ -1,0 +1,66 @@
+#!/usr/bin/env nix-shell
+#!nix-shell -i python3 -p python3
+# vim: ft=python
+from dataclasses import dataclass
+from enum import Enum
+from pathlib import Path
+from typing import Iterator
+
+
+USER = "multisn8"
+MOUNTS_PATH = f"/home/{USER}/zukunftslosigkeit/configs/nixos/elusive/mounts"
+
+
+class Access(Enum):
+    ReadOnly = 1
+    ReadWrite = 2
+
+    def parse(source: str):
+        match source:
+            case "ro":
+                return Access.ReadOnly
+            case "rw":
+                return Access.ReadWrite
+
+
+@dataclass
+class Mount:
+    access: Access
+    path: str
+    tag: str
+
+    def parse(line: str):
+        parts = line.split()
+        return Mount(
+            access=Access.parse(parts[0]),
+            path=parts[1],
+            tag=parts[2],
+        )
+
+
+def parse_mounts(mounts_path=MOUNTS_PATH) -> Iterator[Mount]:
+    def should_ignore_line(line: str) -> bool:
+        line = line.strip()
+        return line.startswith("#") or not line
+
+    lines = Path(mounts_path).read_text().splitlines()
+    relevant_lines = filter(lambda line: not should_ignore_line(line), lines)
+
+    return list(
+        map(
+            Mount.parse,
+            relevant_lines,
+        )
+    )
+
+
+def format_as_qemu_args(project_path: str, mounts: list[Mount]) -> str:
+    # don't forget to replace $project_path in the mounts
+    # and also generate an fw_cfg arg so the command inside the VM can find it
+    ...
+
+
+def format_as_guest_mounts(mounts: list[Mount]) -> str:
+    # read $project_path from /sys/firmware/qemu_fw_cfg/by_name/opt/elusive/project_path/raw instead
+    ...
+

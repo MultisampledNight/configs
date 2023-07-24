@@ -1,5 +1,5 @@
-#! /usr/bin/env nix-shell
-#! nix-shell -p zsh nixos-generators -i zsh
+#!/usr/bin/env nix-shell
+#!nix-shell -p zsh nixos-generators -i zsh
 # vim: ft=zsh
 set -euo pipefail
 
