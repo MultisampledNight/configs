@@ -1,7 +1,9 @@
 #!/usr/bin/env nix-shell
 #!nix-shell -i python3 -p python3
 # vim: ft=python
+import argparse
 import shlex
+import sys
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
@@ -11,6 +13,39 @@ from typing import Iterator
 USER = "multisn8"
 MOUNTS_PATH = f"/home/{USER}/zukunftslosigkeit/configs/nixos/elusive/mounts"
 QEMU_PROJECT_PATH_NAME = "opt/elusive/project_path"
+
+
+def main():
+    args = parse_args()
+    mounts = parse_mounts(args.mounts)
+
+    result = args.callback(args, mounts)
+    sys.stdout.write(result)
+    sys.stdout.flush()
+
+
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--mounts", default=MOUNTS_PATH)
+
+    subparsers = parser.add_subparsers(required=True)
+
+    parser_host = subparsers.add_parser("host")
+    parser_host.add_argument("project_path")
+    parser_host.set_defaults(callback=host)
+
+    parser_guest = subparsers.add_parser("guest")
+    parser_guest.set_defaults(callback=guest)
+
+    return parser.parse_args()
+
+
+def host(args, mounts) -> str:
+    return shlex.join(format_as_host_qemu_args(args.project_path, mounts))
+
+
+def guest(args, mounts) -> str:
+    return "\n".join(format_as_guest_mount_cmds(mounts)) + "\n"
 
 
 class Access(Enum):
@@ -54,7 +89,7 @@ def parse_mounts(mounts_path=MOUNTS_PATH) -> Iterator[Mount]:
     )
 
 
-def format_as_qemu_args(project_path: str, mounts: list[Mount]) -> list[str]:
+def format_as_host_qemu_args(project_path: str, mounts: list[Mount]) -> list[str]:
     args = [
         "-fw_cfg",
         f"name={QEMU_PROJECT_PATH_NAME},string={expand_user(project_path)}",
@@ -115,6 +150,5 @@ def expand_project_path(path: str, project_path: str):
     return path.replace("$project_path", project_path)
 
 
-import pprint
-
-print(format_as_guest_mount_cmds(parse_mounts()))
+if __name__ == "__main__":
+    main()
