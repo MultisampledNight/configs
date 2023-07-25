@@ -1,6 +1,7 @@
 #!/usr/bin/env nix-shell
 #!nix-shell -i python3 -p python3
 # vim: ft=python
+import shlex
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
@@ -54,15 +55,13 @@ def parse_mounts(mounts_path=MOUNTS_PATH) -> Iterator[Mount]:
 
 
 def format_as_qemu_args(project_path: str, mounts: list[Mount]) -> list[str]:
-    # don't forget to replace $project_path in the mounts
-    # and also generate an fw_cfg arg so the command inside the VM can find it
     args = [
         "-fw_cfg",
-        f"name={QEMU_PROJECT_PATH_NAME},string={expanduser(project_path)}",
+        f"name={QEMU_PROJECT_PATH_NAME},string={expand_user(project_path)}",
     ]
 
     for mount in mounts:
-        path = expanduser(mount.path.replace("$project_path", project_path))
+        path = expand_user(expand_project_path("$project_path", project_path))
         mount_opts = [
             "local",
             "security_model=mapped-xattr",
@@ -78,15 +77,44 @@ def format_as_qemu_args(project_path: str, mounts: list[Mount]) -> list[str]:
     return args
 
 
-def format_as_guest_mounts(mounts: list[Mount]) -> str:
-    # read $project_path from /sys/firmware/qemu_fw_cfg/by_name/opt/elusive/project_path/raw instead
-    ...
+def format_as_guest_mount_cmds(mounts: list[Mount]) -> list[str]:
+    """
+    Formats the given mounts as all commands that would be needed in order to
+    mount all shared folders on the guest. The commands need to be run through a shell.
+    """
+    project_path = (
+        f"$(cat /sys/firmware/qemu_fw_cfg/by_name/{QEMU_PROJECT_PATH_NAME}/raw)"
+    )
+
+    cmds = [
+        shlex.join(
+            [
+                "mount",
+                "-t",
+                "9p",
+                "-o",
+                "trans=virtio,version=9p2000.L,msize",
+                mount.tag,
+            ]
+        )
+        + " "
+        # great possibility for shell injection
+        # guess the mount path is trusted for now
+        + expand_user(expand_project_path(mount.path, project_path))
+        for mount in mounts
+    ]
+
+    return cmds
 
 
-def expanduser(path: str, user=USER):
+def expand_user(path: str, user=USER):
     return path.replace("~", f"/home/{user}")
+
+
+def expand_project_path(path: str, project_path: str):
+    return path.replace("$project_path", project_path)
 
 
 import pprint
 
-pprint.pprint(format_as_qemu_args("~/studio/rust/iel", parse_mounts()))
+print(format_as_guest_mount_cmds(parse_mounts()))
