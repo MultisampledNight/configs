@@ -12,7 +12,5 @@
 # access  path	tag
 
 rw $project_path	project
-ro ~/.config	config
 ro ~/.icons	icons
 ro ~/.renderdoc	renderdoc
-ro ~/.rustup	rustup

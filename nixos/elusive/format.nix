@@ -70,12 +70,6 @@ in {
         user = "multisn8";
         group = "users";
       }
-      {
-        source = "${configs}/nixos/elusive/mounts";
-        target = "/etc/elusive-mounts";
-        user = "multisn8";
-        group = "users";
-      }
     ];
     additionalPaths = shells;
   };

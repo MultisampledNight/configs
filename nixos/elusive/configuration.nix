@@ -4,6 +4,7 @@ with lib;
 let
   cfg = config.generalized;
 
+  configs = ./../..;
   resizeSerialConsole = pkgs.writeShellScriptBin "resize" ''
     if [ -e /dev/tty ]; then
       old=$(stty -g)
@@ -14,14 +15,6 @@ let
       stty cols "$cols" rows "$rows"
     fi
   ''; # https://unix.stackexchange.com/questions/16578/resizable-serial-console-window
-
-  mountFromHost = pkgs.writeShellScriptBin "mount-from-host" ''
-    /run/wrappers/bin/mount \
-      -t 9p \
-      -o version=9p2000.L,msize=32M,trans=virtio, \
-         nosuid,nodev,exec \
-      $1 $2
-  '';
 in {
   imports = 
     [
@@ -59,26 +52,30 @@ in {
       multisn8 = {
         isNormalUser = true;
         password = "";
-        packages = [mountFromHost];
+        extraGroups = ["power"];
       };
     };
   };
 
   environment.loginShellInit = "${resizeSerialConsole}/bin/resize";
 
-  security.sudo.extraRules = [{
-    users = ["multisn8"];
-    commands = [
-      {
-        command = "${mountFromHost}/bin/mount-from-host *";
-        options = ["NOPASSWD"];
-      }
-    ];
-  }];
-
   services.openssh.settings = mkForce {
     PasswordAuthentication = true;
     KbdInteractiveAuthentication = true;
+  };
+  systemd.services.elusive-mounts = {
+    description = "Mount all folders shared by the host";
+    wantedBy = ["multi-user.target"];
+
+    script = builtins.readFile (
+      pkgs.runCommand "elusive-mounts" {
+        buildInputs = with pkgs; [python3];
+      } ''
+        python3 ${configs}/scripts/elusive-instantiate-mounts \
+          --mounts ${configs}/nixos/elusive/mounts \
+          guest > $out
+      ''
+    );
   };
 
   system.stateVersion = "23.05";
