@@ -71,8 +71,8 @@ in {
         group = "users";
       }
       {
-        source = "${configs}";
-        target = "/home/multisn8/zukunftslosigkeit/configs";
+        source = "${configs}/nixos/elusive/mounts";
+        target = "/etc/elusive-mounts";
         user = "multisn8";
         group = "users";
       }
