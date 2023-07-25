@@ -96,11 +96,11 @@ def format_as_host_qemu_args(project_path: str, mounts: list[Mount]) -> list[str
     ]
 
     for mount in mounts:
-        path = expand_user(expand_project_path("$project_path", project_path))
+        path = expand_user(expand_project_path(mount.path, project_path))
         mount_opts = [
             "local",
             "security_model=mapped-xattr",
-            f"mount-tag={mount.tag}",
+            f"mount_tag={mount.tag}",
             f"path={path}",
         ]
 
@@ -124,11 +124,12 @@ def format_as_guest_mount_cmds(mounts: list[Mount]) -> list[str]:
     cmds = [
         shlex.join(
             [
-                "mount",
+                "/run/wrappers/bin/mount",
+                "--mkdir",
                 "-t",
                 "9p",
                 "-o",
-                "trans=virtio,version=9p2000.L,msize",
+                "nosuid,nodev,exec,trans=virtio,version=9p2000.L,msize=32M",
                 mount.tag,
             ]
         )

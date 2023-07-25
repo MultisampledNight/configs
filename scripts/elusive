@@ -42,4 +42,4 @@ qemu-system-x86_64 \
   -nic user,restrict=off,hostfwd=tcp::50022-:22 \
   -nographic \
   -accel kvm \
-  -fw_cfg name=opt/elusive/project_path,string="$project_path"
+  $(elusive-instantiate-mounts host "$project_path")

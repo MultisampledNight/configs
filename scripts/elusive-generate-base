@@ -11,6 +11,7 @@ state_dir="$HOME/zukunftslosigkeit/state/elusive"
 image_in_store=$(nixos-generate \
 	--format-path "$HOME/zukunftslosigkeit/configs/nixos/elusive/format.nix" \
 	--configuration "$HOME/zukunftslosigkeit/configs/nixos/elusive/configuration.nix" \
+	$@ \
   | tail --lines 1)
 
 # replace the old image, both in the GC root and the symlink on the disk

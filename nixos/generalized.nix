@@ -187,7 +187,7 @@ in {
 
     environment = {
       systemPackages = with pkgs; [
-        curl rsync magic-wormhole-rs
+        curl rsync rclone magic-wormhole-rs
         fd ripgrep
         file pv
         ffmpeg mpv jq unzip zip

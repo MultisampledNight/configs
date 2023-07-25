@@ -1,0 +1,2 @@
+#!/usr/bin/env sh
+ssh localhost -p 50022 -o NoHostAuthenticationForLocalhost=yes
