@@ -9,6 +9,8 @@ in {
       ./development.nix
     ];
 
+  boot.supportedFilesystems = ["ntfs"];
+
   hardware = {
     pulseaudio.enable = false; # handled by pipewire-pulse instead
     opengl = {
