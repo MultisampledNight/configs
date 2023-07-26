@@ -3,11 +3,16 @@
 with lib;
 let
   cfg = config.generalized;
+  pkgs-unstable = import <nixos-unstable> {};
+
   neovideSmooth = pkgs.callPackage ./neovide/default.nix {};
-  customVimPlugins = pkgs.vimPlugins.extend (pkgs.callPackage ./neovim/custom-plugins.nix {});
+  customVimPlugins = pkgs-unstable.vimPlugins.extend (
+    pkgs-unstable.callPackage ./neovim/custom-plugins.nix {}
+  );
   latexWithTikz = (pkgs.texlive.combine {
     inherit (pkgs.texlive) scheme-basic pgf standalone german babel;
   });
+
 in {
   documentation = {
     enable = true;
@@ -73,6 +78,7 @@ in {
   programs = {
     neovim = {
       defaultEditor = !cfg.forTheGeneralPublic;
+      package = pkgs.neovim-nightly-unwrapped;
       withNodeJs = true;
       withRuby = false;
 
@@ -149,4 +155,18 @@ in {
     enabled = "ibus";
     ibus.engines = with pkgs.ibus-engines; [hangul];
   };
+
+  nixpkgs.overlays = [
+    (final: prev: {
+      neovim-nightly-unwrapped = prev.neovim-unwrapped.overrideAttrs {
+        version = "0.10.0-nightly";
+        src = pkgs.fetchFromGitHub {
+          owner = "neovim";
+          repo = "neovim";
+          rev = "14d047ad2f448885de39966d1963f15d3fa21089";
+          hash = "sha256-2JHBvDWMKd3brUwzU5NMc2cqrrqyoXZ3p8AFN82MNPI=";
+        };
+      };
+    })
+  ];
 }
