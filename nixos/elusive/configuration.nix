@@ -25,11 +25,11 @@ in {
   generalized = {
     hostName = "elusive";
     ssh = true;
-    # note that no display protocol is specified
-    graphical = true;
+    wayland = true;
     forMulti = false;
   };
 
+  console.font = "ter-132b";
   boot.loader = {
     systemd-boot.enable = mkForce false;
     grub.enable = mkForce true;

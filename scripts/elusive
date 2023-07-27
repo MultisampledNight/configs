@@ -33,6 +33,7 @@ qemu-system-x86_64 \
   -cpu host \
   -smp cpus=8,cores=4,threads=2 \
   -m size=8G \
-  -nographic \
   -accel kvm \
-  -nic user,restrict=off,hostfwd=tcp::50022-:22
+  -nic user,restrict=off,hostfwd=tcp::50022-:22 \
+  -device virtio-vga-gl \
+  -display gtk,full-screen=on,gl=on
