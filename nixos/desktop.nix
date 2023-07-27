@@ -172,30 +172,6 @@ in {
       enable = true;
       remotePlay.openFirewall = true;
     };
-
-    sway = {
-      enable = cfg.wayland;
-      wrapperFeatures.gtk = true;
-      extraPackages = with pkgs; [
-        fuzzel waybar mako grim slurp swappy hyprpicker gammastep
-        swaybg swaylock wl-clipboard
-      ];
-      extraSessionCommands = ''
-        export PATH=$HOME/zukunftslosigkeit/scripts:$PATH
-        export SDL_VIDEODRIVER=wayland
-        export QT_QPA_PLATFORM=wayland-egl
-        export QT_WAYLAND_FORCE_DPI=physical
-        export ECORE_EVAS_ENGINE=wayland_egl
-        export ELM_ENGINE=wayland_egl
-        export _JAVA_AWT_WM_NONREPARENTING=1
-      '';
-
-      extraOptions = if cfg.videoDriver == "nvidia"
-        then ["--unsupported-gpu"]
-        else [];
-    };
-
-    xwayland.enable = false;  # enabled by default by sway, but I don't need it
   };
 
   nixpkgs = {
