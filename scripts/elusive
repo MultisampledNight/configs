@@ -30,6 +30,8 @@ qemu-system-x86_64 \
   $overlay_image \
   -name "elusive-$project_name" \
   -machine q35 \
+  -cpu host \
+  -smp cpus=8,cores=4,threads=2 \
   -m size=8G \
   -nographic \
   -accel kvm \
