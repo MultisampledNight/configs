@@ -236,6 +236,10 @@ in {
         viAlias = true;
       };
 
+      ssh = {
+        startAgent = true;
+      };
+
       # shell
       zsh = {
         enable = true;

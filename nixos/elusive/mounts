@@ -9,8 +9,9 @@
 # well there is, with overlayfs, but in that case the host is unable to do changes itself
 # would be kinda nice with caches like ~/.cargo but eh
 #
-# access  path	tag
+# access  source path	target path (= source path if unspecified)
 
-rw $project_path	project
-ro ~/.icons	icons
-ro ~/.renderdoc	renderdoc
+rw $project_path
+ro ~/.icons
+ro ~/.renderdoc
+ro ~/.rustup
