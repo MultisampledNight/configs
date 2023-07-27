@@ -52,31 +52,16 @@ in {
       multisn8 = {
         isNormalUser = true;
         password = "";
-        extraGroups = ["power"];
+        # generate a new one using
+        # ssh-keygen -f ~/.ssh/id_to_elusive -t ed25519
+        openssh.authorizedKeys.keyFiles = [
+          ~/.ssh/id_to_elusive.pub
+        ];
       };
     };
   };
 
   environment.loginShellInit = "${resizeSerialConsole}/bin/resize";
-
-  services.openssh.settings = mkForce {
-    PasswordAuthentication = true;
-    KbdInteractiveAuthentication = true;
-  };
-  systemd.services.elusive-mounts = {
-    description = "Mount all folders shared by the host";
-    wantedBy = ["multi-user.target"];
-
-    script = builtins.readFile (
-      pkgs.runCommand "elusive-mounts" {
-        buildInputs = with pkgs; [python3];
-      } ''
-        python3 ${configs}/scripts/elusive-instantiate-mounts \
-          --mounts ${configs}/nixos/elusive/mounts \
-          guest-mount > $out
-      ''
-    );
-  };
 
   system.stateVersion = "23.05";
 }

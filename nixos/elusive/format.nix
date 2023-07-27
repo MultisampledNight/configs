@@ -54,7 +54,7 @@ in {
 
   system.build.raw = import "${toString modulesPath}/../lib/make-disk-image.nix" {
     inherit lib config pkgs;
-    diskSize = "auto";
+    diskSize = 50 * 1024;
     format = "raw";
 
     name = "elusive-base-image";
