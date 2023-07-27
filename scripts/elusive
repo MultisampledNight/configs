@@ -33,13 +33,17 @@ if [[ ! -f $overlay_image ]]; then
     -f qcow2 $overlay_image
 fi
 
+# the two spawned rclones should go into pidfiles to terminate them properly afterwards but eh
+elusive-instantiate-mounts host-serve "$project_path"
+
 # everything's ready, launch
 qemu-system-x86_64 \
   $overlay_image \
   -name "elusive-$project_name" \
   -machine q35 \
   -m size=8G \
-  -nic user,restrict=off,hostfwd=tcp::50022-:22 \
   -nographic \
   -accel kvm \
-  $(elusive-instantiate-mounts host "$project_path")
+  $(elusive-instantiate-mounts host-qemu-cfg "$project_path")
+
+pkill rclone

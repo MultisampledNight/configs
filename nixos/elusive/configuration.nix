@@ -73,7 +73,7 @@ in {
       } ''
         python3 ${configs}/scripts/elusive-instantiate-mounts \
           --mounts ${configs}/nixos/elusive/mounts \
-          guest > $out
+          guest-mount > $out
       ''
     );
   };

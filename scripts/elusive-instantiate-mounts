@@ -3,11 +3,13 @@
 # vim: ft=python
 import argparse
 import shlex
+import subprocess
 import sys
+import time
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
-from typing import Iterator
+from typing import Iterator, Iterable
 
 
 USER = "multisn8"
@@ -30,22 +32,31 @@ def parse_args():
 
     subparsers = parser.add_subparsers(required=True)
 
-    parser_host = subparsers.add_parser("host")
-    parser_host.add_argument("project_path")
-    parser_host.set_defaults(callback=host)
+    parser_host_serve = subparsers.add_parser("host-serve")
+    parser_host_serve.add_argument("project_path")
+    parser_host_serve.set_defaults(callback=host_serve)
 
-    parser_guest = subparsers.add_parser("guest")
-    parser_guest.set_defaults(callback=guest)
+    parser_host_cfg = subparsers.add_parser("host-qemu-cfg")
+    parser_host_cfg.add_argument("project_path")
+    parser_host_cfg.set_defaults(callback=host_cfg)
+
+    parser_guest_mount = subparsers.add_parser("guest-mount")
+    parser_guest_mount.set_defaults(callback=guest_mount)
 
     return parser.parse_args()
 
 
-def host(args, mounts) -> str:
-    return shlex.join(format_as_host_qemu_args(args.project_path, mounts))
+def host_serve(args, mounts) -> str:
+    run_serve_cmds(args.project_path, mounts)
+    return ""
 
 
-def guest(args, mounts) -> str:
-    return "\n".join(format_as_guest_mount_cmds(mounts)) + "\n"
+def host_cfg(args, _mounts) -> str:
+    return shlex.join(format_qemu_args(args.project_path))
+
+
+def guest_mount(args, mounts) -> str:
+    return "\n".join(format_as_mount_cmds(mounts)) + "\n"
 
 
 class Access(Enum):
@@ -63,15 +74,19 @@ class Access(Enum):
 @dataclass
 class Mount:
     access: Access
-    path: str
-    tag: str
+    source: str
+    target: str
 
     def parse(line: str):
         parts = line.split()
+        if len(parts) == 2:
+            # source = target
+            parts.append(parts[-1])
+
         return Mount(
             access=Access.parse(parts[0]),
-            path=parts[1],
-            tag=parts[2],
+            source=parts[1],
+            target=parts[2],
         )
 
 
@@ -89,58 +104,56 @@ def parse_mounts(mounts_path=MOUNTS_PATH) -> Iterator[Mount]:
     )
 
 
-def format_as_host_qemu_args(project_path: str, mounts: list[Mount]) -> list[str]:
-    args = [
+def run_serve_cmds(project_path: str, mounts: Iterable[Mount]):
+    mounts = list(mounts)
+    readonly = (mount for mount in mounts if mount.access == Access.ReadOnly)
+    readwrite = (mount for mount in mounts if mount.access == Access.ReadWrite)
+
+    readonly_cmd = single_rclone_serve_instance(project_path, readonly)
+    readwrite_cmd = single_rclone_serve_instance(project_path, readwrite)
+
+    readonly_cmd += ["--addr", "localhost:50021", "--read-only"]
+    readwrite_cmd += ["--addr", "localhost:50020"]
+
+    # explicitly leaking for the moment
+    # probably a pidfile or the like would be better
+    subprocess.Popen(readonly_cmd)
+    subprocess.Popen(readwrite_cmd)
+
+
+def single_rclone_serve_instance(
+    project_path: str, mounts: Iterable[Mount]
+) -> list[str]:
+    cmd = ["rclone", "serve", "sftp", "/", "--no-auth", "--copy-links"]
+    for mount in mounts:
+        cmd += ["--filter", f"+ {expand(mount.source, project_path)}"]
+    cmd += ["--filter", "- **"]
+
+    return cmd
+
+
+def format_qemu_args(project_path: str) -> list[str]:
+    return [
+        "-nic",
+        ",".join(
+            [
+                "user",
+                "restrict=off",
+                "hostfwd=tcp::50022-:22",
+            ]
+        ),
         "-fw_cfg",
         f"name={QEMU_PROJECT_PATH_NAME},string={expand_user(project_path)}",
     ]
 
-    for mount in mounts:
-        path = expand_user(expand_project_path(mount.path, project_path))
-        mount_opts = [
-            "local",
-            "security_model=mapped-xattr",
-            f"mount_tag={mount.tag}",
-            f"path={path}",
-        ]
 
-        if mount.access == Access.ReadOnly:
-            mount_opts.append("readonly=on")
-
-        args += ["-virtfs", ",".join(mount_opts)]
-
-    return args
+def format_as_mount_cmds(mounts) -> list[str]:
+    # TODO
+    return []
 
 
-def format_as_guest_mount_cmds(mounts: list[Mount]) -> list[str]:
-    """
-    Formats the given mounts as all commands that would be needed in order to
-    mount all shared folders on the guest. The commands need to be run through a shell.
-    """
-    project_path = (
-        f"$(cat /sys/firmware/qemu_fw_cfg/by_name/{QEMU_PROJECT_PATH_NAME}/raw)"
-    )
-
-    cmds = [
-        shlex.join(
-            [
-                "/run/wrappers/bin/mount",
-                "--mkdir",
-                "-t",
-                "9p",
-                "-o",
-                "nosuid,nodev,exec,trans=virtio,version=9p2000.L,msize=32M",
-                mount.tag,
-            ]
-        )
-        + " "
-        # great possibility for shell injection
-        # guess the mount path is trusted for now
-        + expand_user(expand_project_path(mount.path, project_path))
-        for mount in mounts
-    ]
-
-    return cmds
+def expand(path, project_path: str, user=USER):
+    return expand_user(expand_project_path(path, project_path), user)
 
 
 def expand_user(path: str, user=USER):
