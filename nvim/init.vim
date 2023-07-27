@@ -410,9 +410,9 @@ cmp.setup({
     { name = "path" },
   }),
   mapping = {
-    ["<S-Enter>"] = cmp.mapping(prev_item, { "i", "c", "s" }),
+    ["<S-Tab>"] = cmp.mapping(prev_item, { "i", "c", "s" }),
 
-    ["<C-Enter>"] = cmp.mapping(next_item, { "i", "c", "s" }),
+    ["<Tab>"] = cmp.mapping(next_item, { "i", "c", "s" }),
 
     ["<Enter>"] = cmp.mapping(
       cmp.mapping.confirm({

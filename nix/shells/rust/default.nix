@@ -2,7 +2,7 @@
 
 pkgs.mkShell rec {
   buildInputs = with pkgs; [
-    rust-analyzer rustup
+    cargo rustc rust-analyzer rustup
 
     clang llvmPackages_latest.lld llvmPackages.libclang
     openssl pkg-config

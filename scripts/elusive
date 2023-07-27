@@ -4,19 +4,11 @@
 set -eu
 
 if (( $# != 1 )); then
-  echo "takes 1 argument: what project to open in an elusive instance" 1>&2
+  echo "takes 1 argument: the name of the elusive instance" 1>&2
   exit 1
 fi
 
-project_path=$(realpath -- "$1")
-project_name=$(basename -- "$project_path")
-
-# pure nonexhaustive sanity check: make sure the path is actually to a project
-if [[ ! ($project_path == $HOME/studio/*/* || $project_path == $HOME/lab/*/*) ]]; then
-  echo "path would be $project_path when fully expanded; which doesn't look like a path to a project" 1>&2
-  echo "projects are defined as subfolders in folders in ~/studio or ~/lab" 1>&2
-  exit 2
-fi
+project_name="$1"
 
 base_image=$(readlink -- "/nix/var/nix/gcroots/per-user/$USER/elusive-base")
 overlay_image="$HOME/zukunftslosigkeit/state/elusive/$project_name/overlay.qcow2"
@@ -33,9 +25,6 @@ if [[ ! -f $overlay_image ]]; then
     -f qcow2 $overlay_image
 fi
 
-# the two spawned rclones should go into pidfiles to terminate them properly afterwards but eh
-elusive-instantiate-mounts host-serve "$project_path"
-
 # everything's ready, launch
 qemu-system-x86_64 \
   $overlay_image \
@@ -44,6 +33,4 @@ qemu-system-x86_64 \
   -m size=8G \
   -nographic \
   -accel kvm \
-  $(elusive-instantiate-mounts host-qemu-cfg "$project_path")
-
-pkill rclone
+  -nic user,restrict=off,hostfwd=tcp::50022-:22
