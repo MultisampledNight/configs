@@ -129,10 +129,6 @@ in {
       dunst virt-manager qemu_kvm
       qt5ct
       helvum
-
-      # themes
-      adapta-gtk-theme adapta-kde-theme adapta-backgrounds
-      breeze-icons volantes-cursors
     ] else [])
     ++ (if cfg.xorg then [
       xorg.xauth rofi flameshot

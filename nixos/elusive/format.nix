@@ -26,11 +26,20 @@
 
 let
   configs = ./../..;
-  symlinkSkeleton = pkgs.runCommand "elusive-symlink-skeleton" {} ''
-    ${pkgs.python3}/bin/python \
-        ${configs}/distribute_symlinks.py \
-        --root "$out" --user multisn8 \
-        --actually-install --exclude-nixos --no-backup &>/dev/null
+  symlinkSkeleton = pkgs.runCommand "elusive-symlink-skeleton" {
+    buildInputs = with pkgs; [fd patch python3];
+  } ''
+    python \
+      ${configs}/distribute_symlinks.py \
+      --root "$out" --user multisn8 \
+      --actually-install --exclude-nixos --no-backup &>/dev/null
+
+    pushd "$out"
+      chmod -R +w .
+      patch -p1 < ${configs}/nixos/elusive/config.patch
+      fd '\.orig$' --exec rm
+      chmod -R -w .
+    popd
   '';
   shellDir = ../../nix/shells;
   shells =
@@ -75,5 +84,6 @@ in {
   };
 
   formatAttr = "raw";
+  # might be renamed to fileExtension, dropping the *, if it fails
   filename = "*.img";
 }
