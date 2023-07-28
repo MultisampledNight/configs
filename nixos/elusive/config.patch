@@ -1,0 +1,10 @@
+--- a/home/multisn8/.config/sway/config
++++ b/home/multisn8/.config/sway/config
+@@ -1,6 +1,6 @@
+ font pango:IBM Plex Sans 10
+ 
+-set $mod Mod4
++set $mod Alt
+ 
+ set $left  n
+ set $down  r

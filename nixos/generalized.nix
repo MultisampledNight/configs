@@ -194,7 +194,12 @@ in {
         alacritty
         btop
       ]
-      ++ (if cfg.xorg then [xclip] else []);
+      ++ (if cfg.xorg then [xclip] else [])
+      ++ (if cfg.graphical then [
+        # themes
+        adapta-gtk-theme adapta-kde-theme
+        breeze-icons volantes-cursors
+      ] else []);
 
       sessionVariables = {
         TYPST_FONT_PATHS =

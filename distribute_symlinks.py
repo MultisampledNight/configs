@@ -27,6 +27,7 @@ CONFIG_DESTINATIONS = {
     "wallpapers/wallpaper": "~/.background-image",
     "waybar": "~/.config/waybar",
     "zsh/zshrc": "~/.zshrc",
+    "zsh/zlogin": "~/.zlogin",
     # putting things out of config so elusive gets them
     "scripts": "~/zukunftslosigkeit/scripts",
     "nix/shells": "~/zukunftslosigkeit/shells",
