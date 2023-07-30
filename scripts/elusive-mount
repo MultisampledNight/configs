@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
-sshfs localhost \
+sshfs \
 	-i	~/.ssh/id_to_elusive \
 	-p	50022 \
 	-o	ServerAliveInterval=15,\

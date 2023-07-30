@@ -14,9 +14,6 @@ base_image=$(readlink -- "/nix/var/nix/gcroots/per-user/$USER/elusive-base")
 overlay_image="$HOME/zukunftslosigkeit/state/elusive/$project_name/overlay.qcow2"
 
 # set up the overlay image first, if not already done
-# it's actually pretty much useless for now since the iso is fully live, i.e. doesn't remember
-# but qemu really really wants the main disk to be rw-able, so I'm giving it exactly that
-# all interesting accesses should be done via virtfs anyway
 if [[ ! -f $overlay_image ]]; then
   echo "creating overlay at $overlay_image since it doesn't exist yet"
   mkdir -p $(dirname -- "$overlay_image")
