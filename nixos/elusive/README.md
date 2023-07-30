@@ -19,6 +19,7 @@ QEMU stores for an overlay where its base image is. Due to this, if `elusive-gen
 # How to use
 
 - Firstly, run `elusive-generate-base` once, which will probably take less than 10 minutes.
+    - If you want to use `elusive-ssh` or `elusive-rsync`, run `ssh-keygen -f ~/.ssh/id_to_elusive -t ed25519` **beforehand**.
     - This base image contains all shells and development tools I need for development.
 - Anytime you want a VM for a project, run `elusive <tag>`, where `<tag>` can be any string you want (that your filesystem can store).
     - Using the same tag again will give you the same VM again, with all state persisted (unless you clean it).
