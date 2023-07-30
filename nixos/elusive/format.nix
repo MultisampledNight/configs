@@ -25,6 +25,7 @@
 { config, lib, pkgs, modulesPath, ... }:
 
 let
+  cfg = config.generalized;
   configs = ./../..;
   symlinkSkeleton = pkgs.runCommand "elusive-symlink-skeleton" {
     buildInputs = with pkgs; [fd patch python3];
@@ -37,6 +38,11 @@ let
     pushd "$out"
       chmod -R +w .
       patch -p1 < ${configs}/nixos/elusive/config.patch
+      ${
+        if cfg.hidpi
+        then "patch -p1 < ${configs}/nixos/elusive/hidpi.patch"
+        else ""
+      }
       fd '\.orig$' --exec rm
       chmod -R -w .
     popd

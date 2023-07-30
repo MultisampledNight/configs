@@ -10,7 +10,6 @@ in
   ];
 
   config = {
-    console.font = "ter-132b";
     services.logind = {
       lidSwitchExternalPower = "ignore";
       lidSwitch = "suspend";

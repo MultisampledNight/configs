@@ -15,16 +15,18 @@ in {
     pulseaudio.enable = false; # handled by pipewire-pulse instead
     opengl = {
       enable = true;
-      extraPackages = if cfg.videoDriver == "intel"
-        then with pkgs; [mesa.drivers intel-media-driver intel-compute-runtime]
-        # TODO: sometime in future, I suppose also nvidia's ICD belongs here?
+      extraPackages = with pkgs;
+        if cfg.videoDriver == "intel"
+          then [mesa.drivers intel-media-driver intel-compute-runtime]
+        else if cfg.videoDriver == "nvidia"
+          then [config.boot.kernelPackages.nvidia_x11]
         else [];
     };
 
     nvidia = if cfg.videoDriver == "nvidia"
       then {
         modesetting.enable = true;
-        open = false;
+        open = true;
       }
       else {};
   };

@@ -25,7 +25,7 @@ output * {
     max_render_time 6
 }
 output Virtual-1 {
-    scale 2
+    scale 1
     max_render_time 1
 }
 output HDMI-A-1 position 0,0
@@ -33,7 +33,7 @@ output eDP-1 position 440,1080
 
 seat seat0 {
     hide_cursor 8000
-    xcursor_theme volantes_cursors 48
+    xcursor_theme volantes_cursors 32
 }
 floating_modifier $mod normal
 
