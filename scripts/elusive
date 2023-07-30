@@ -35,5 +35,5 @@ qemu-system-x86_64 \
   -m size=8G \
   -accel kvm \
   -nic user,restrict=off,hostfwd=tcp::50022-:22 \
-  -device virtio-vga-gl \
+  -device virtio-vga-gl,max_outputs=1 \
   -display gtk,full-screen=on,gl=on

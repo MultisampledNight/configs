@@ -46,9 +46,11 @@ in {
 
     sessionVariables = {
       VK_ICD_FILENAMES =
-        if cfg.videoDriver == "intel"
         # hacky but who cares, it's semi-ensured to be there through hardware.opengl.extraPackages anyway
-        then "/run/opengl-driver/share/vulkan/icd.d/intel_icd.x86_64.json"
+        if cfg.videoDriver == "intel"
+          then "/run/opengl-driver/share/vulkan/icd.d/intel_icd.x86_64.json"
+        else if cfg.videoDriver == "nvidia"
+          then "/run/opengl-driver/share/vulkan/icd.d/nvidia_icd.x86_64.json"
         else "";
     }
     // (if cfg.videoDriver == "nvidia" then {

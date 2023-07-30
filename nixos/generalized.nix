@@ -63,6 +63,12 @@ in {
       description = "If to install graphical applications. Automatically enabled if you enable a display protocol.";
     };
 
+    hidpi = mkOption {
+      type = types.bool;
+      default = false;
+      description = "If this system has a high display resolution on a relatively small surface. Causes most elements to be scaled up and a larger font size in the console.";
+    };
+
     profileGuided = mkOption {
       type = types.bool;
       default = false;
@@ -149,7 +155,11 @@ in {
     i18n.defaultLocale = "en_US.UTF-8";
 
     console = {
-      font = mkDefault "Lat2-Terminus16";
+      font =
+        if cfg.hidpi
+        then "ter-132b"
+        else "Lat2-Terminus16";
+
       keyMap = if cfg.forTheGeneralPublic then "de" else cfg.layout;
     };
 
