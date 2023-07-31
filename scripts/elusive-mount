@@ -1,6 +1,5 @@
 #!/usr/bin/env sh
 sshfs \
-	-i	~/.ssh/id_to_elusive \
 	-p	50022 \
-	-o	ServerAliveInterval=15,reconnect,max_conns=32,dir_cache=yes \
+	-o	IdentityFile=~/.ssh/id_to_elusive,ServerAliveInterval=15,reconnect,max_conns=32,dir_cache=yes \
 	$@
