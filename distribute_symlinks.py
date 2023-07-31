@@ -4,13 +4,12 @@
 import argparse
 import os
 import shutil
+import subprocess
 import sys
-from datetime import datetime
 from pathlib import Path
 
 ROOT = "/"
 USER = "multisn8"
-BACKUP_DIR = "~/_archive/backup"
 CONFIG_DESTINATIONS = {
     # user stuff
     "alacritty": "~/.config/alacritty",
@@ -38,17 +37,12 @@ CONFIG_DESTINATIONS = {
 
 def distribute_symlinks(
     destinations=CONFIG_DESTINATIONS,
-    backup_dir=BACKUP_DIR,
     user=USER,
     root=ROOT,
     exclude_nixos=False,
     no_backup=False,
     actually_install=False,
 ):
-    time_tag = datetime.now().isoformat()
-    if not no_backup:
-        backup_dir = expanduser(backup_dir, root=root, user=user) / time_tag
-        backup_dir.mkdir(parents=True, exist_ok=True)
     repo_root = Path(__file__).resolve().parent
 
     for repo_subpath, link_name in destinations.items():
@@ -61,14 +55,12 @@ def distribute_symlinks(
         # back up the old content (if any)
         if not no_backup:
             try:
-                shutil.move(link_name, backup_dir)
-            except FileNotFoundError:
-                pass
-            except PermissionError:
-                print(
-                    f"Skipping {link_name} due to missing perms",
-                    file=sys.stderr,
+                subprocess.run(
+                    ["python3", repo_root / "scripts" / "archive", link_name],
+                    check=True,
                 )
+            except subprocess.CalledProcessError:
+                # most likely a permission error, just ignore this entry
                 continue
 
         try:

@@ -16,6 +16,7 @@ in {
     hostName = "elusive";
     ssh = true;
     wayland = true;
+    xorg = true;
     forMulti = false;
   };
 

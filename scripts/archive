@@ -1,0 +1,50 @@
+#!/usr/bin/env nix-shell
+#!nix-shell -i python3 -p python3
+# vim: ft=python
+import argparse
+import os
+import shutil
+import sys
+from datetime import datetime
+from pathlib import Path
+
+
+BACKUP_DIR = "~/_archive/backup"
+
+
+def archive(subject_path, backup_dir=BACKUP_DIR) -> int:
+    time_tag = datetime.now().isoformat()
+    backup_dir = Path(os.path.expanduser(backup_dir)) / time_tag
+    backup_dir.mkdir(parents=True, exist_ok=True)
+
+    try:
+        shutil.move(subject_path, backup_dir)
+    except FileNotFoundError:
+        pass
+    except PermissionError:
+        print(
+            f"Skipping {subject_path} due to missing perms",
+            file=sys.stderr,
+        )
+        return 1
+
+    return 0
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(
+        description="quick and dirty archival, ignoring nonexistent dirs"
+    )
+    parser.add_argument("path")
+    parser.add_argument("--backup-dir", default=BACKUP_DIR)
+    return parser.parse_args()
+
+
+def main():
+    args = parse_args()
+    exit_code = archive(args.path, backup_dir=args.backup_dir)
+    sys.exit(exit_code)
+
+
+if __name__ == "__main__":
+    main()

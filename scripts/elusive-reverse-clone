@@ -1,0 +1,3 @@
+#!/usr/bin/env sh
+archive "$1"
+elusive-rsync --recursive "elusive:$(pwd)/$1/" "$1/"
