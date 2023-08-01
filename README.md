@@ -85,7 +85,7 @@ For example, you could take a look at [the elusive `configuration.nix`] which is
 
 Afterwards, run `sudo nixos-rebuild boot && reboot`, and you're good to go!
 
-## User-only (does not require root)
+### User-only (does not require root)
 
 **Note:** Untested. At your own risk.
 
