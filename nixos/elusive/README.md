@@ -2,7 +2,7 @@ In here are a few configurations for QEMU VMs, intended for my development envir
 
 # Goals
 
-- If anything fails, only that one project is affected, and other project's secrets and state stay untouched. This is why caches mustn't shared, too.
+- If anything fails, only that one project is affected, and other project's secrets and state stay untouched. This is why caches mustn't be shared, too.
 - The VM must be user-spawnable.
 - Interaction with the VM must be easy.
 
@@ -32,8 +32,11 @@ QEMU stores for an overlay where its base image is. Due to this, if `elusive-gen
         - Fullscreen mode can be escaped from using <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>F</kbd>.
     - `elusive-ssh` without any arguments, giving you an SSH session in your current terminal into the VM.
     - `elusive-rsync`, which is rsync, except that `localhost`/`127.0.0.1`/`elusive` will refer to the VM.
-    - `elusive-clone`, which accepts 1 argument, and clones the given directory under the same path into the VM through `elusive-rsync`.
-    - `elusive-mount`, which is sshfs, except that `localhost`/`127.0.0.1`/`elusive` will refer to the VM once again.
+    - `elusive-clone`, which accepts 1 argument, and **clones** the given directory under the same path **into** the VM through `elusive-rsync`.
+        - Note that it does not accept absolute paths (well it _does_, but it's buggy. don't.)
+    - `elusive-reverse-clone`, which is `elusive-clone`, but the other way around. That is, it clones the given directory **out of** the VM.
+    - `elusive-sshfs`, which is just like `elusive-rsync`, but with sshfs instead.
+    - `elusive-mount`, which is just like `elusive-clone`, but with `elusive-sshfs` instead.
 - Finally, if you wish to delete a VM's persistent state, you can do so by deleting the folder `~/zukunftslosigkeit/state/elusive/<tag>`, where `<tag>` refers to the VM tag you want to delete. If you want to do so for ***ALL*** VMs, `elusive-clean-state` is a shortcut for deleting the `elusive` folder. Do note that it **does not** ask for confirmation though.
 
 # Caveats
@@ -55,6 +58,7 @@ where X is
 - bubblewrap/firejail: Same thing as with containers.
 - virtiofs(d) instead of sshfs: Somehow doesn't play nicely with mmap, and as such no Rust project was buildable over it.
 - Guest → Host communication: Difficult to limit. If you want to offer a few directories over ssh, you'd need a different user on the host for it. And as such the VM has the same rights as the user, and runs on the same kernel again.
+- Xorg: no. It causes more issues at this point than it'd be worth to keep it. The X server installed into elusive is also semi-functional at the moment, it does display, it is possible to launch applications using the serial console/SSH, but it accepts no input.
 
 # Credits
 
