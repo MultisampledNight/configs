@@ -5,6 +5,7 @@
 with lib;
 let
   cfg = config.generalized;
+  pkgs-unstable = import <nixos-unstable> {};
 in {
   options.generalized = {
     hostName = mkOption {
@@ -221,6 +222,10 @@ in {
         btop
       ]
       ++ (if cfg.xorg then [xclip] else [])
+      ++ (if cfg.wayland then [
+        fuzzel waybar mako grim slurp swappy hyprpicker gammastep
+        swaybg swaylock wl-clipboard
+      ] else [])
       ++ (if cfg.graphical then [
         # themes
         adapta-gtk-theme adapta-kde-theme
@@ -269,24 +274,24 @@ in {
 
       sway = {
         enable = cfg.wayland;
-        wrapperFeatures.gtk = true;
-        extraPackages = with pkgs; [
-          fuzzel waybar mako grim slurp swappy hyprpicker gammastep
-          swaybg swaylock wl-clipboard
-        ];
-        extraSessionCommands = ''
-          export PATH=$HOME/zukunftslosigkeit/scripts:$PATH
-          export SDL_VIDEODRIVER=wayland
-          export QT_QPA_PLATFORM=wayland-egl
-          export QT_WAYLAND_FORCE_DPI=physical
-          export ECORE_EVAS_ENGINE=wayland_egl
-          export ELM_ENGINE=wayland_egl
-          export _JAVA_AWT_WM_NONREPARENTING=1
-        '';
+        package = pkgs-unstable.sway.override {
+          extraSessionCommands = ''
+            export PATH=$HOME/zukunftslosigkeit/scripts:$PATH
+            export SDL_VIDEODRIVER=wayland
+            export QT_QPA_PLATFORM=wayland-egl
+            export QT_WAYLAND_FORCE_DPI=physical
+            export ECORE_EVAS_ENGINE=wayland_egl
+            export ELM_ENGINE=wayland_egl
+            export _JAVA_AWT_WM_NONREPARENTING=1
+          '';
 
-        extraOptions = if cfg.videoDriver == "nvidia"
-          then ["--unsupported-gpu"]
-          else [];
+          extraOptions = if cfg.videoDriver == "nvidia"
+            then ["--unsupported-gpu"]
+            else [];
+
+          withGtkWrapper = true;
+          isNixOS = true;
+        };
       };
 
       xwayland.enable = false;  # enabled by default by sway, but I don't need it

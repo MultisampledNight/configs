@@ -3,6 +3,7 @@
 with lib;
 let
   cfg = config.generalized;
+  pkgs-unstable = import <nixos-unstable> {};
 in {
   imports =
     [
@@ -195,7 +196,7 @@ in {
       } else {})
       (final: prev: if (cfg.videoDriver == "nvidia" && cfg.wayland) then {
         # blatantly taken from https://wiki.hyprland.org/hyprland-wiki/pages/Nvidia/
-        wlroots = prev.wlroots.overrideAttrs (finalAttrs: prevAttrs: {
+        wlroots = pkgs-unstable.wlroots.overrideAttrs (finalAttrs: prevAttrs: {
           postPatch = (prev.postPatch or "") + ''
             substituteInPlace render/gles2/renderer.c --replace "glFlush();" "glFinish();"
           '';
