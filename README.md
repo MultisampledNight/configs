@@ -70,6 +70,7 @@ For example, you could take a look at the [elusive] `configuration.nix` which is
     ssh = true;
     xorg = true;
     wayland = true;
+    audio = true;
     profileGuided = true;
     videoDriver = "nvidia";
 

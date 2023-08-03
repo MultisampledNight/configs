@@ -69,6 +69,12 @@ in {
       description = "If this system has a high display resolution on a relatively small surface. Causes most elements to be scaled up and a larger font size in the console.";
     };
 
+    audio = mkOption {
+      type = types.bool;
+      default = false;
+      description = "If this system should have PipeWire with compatability plugins installed and running.";
+    };
+
     profileGuided = mkOption {
       type = types.bool;
       default = false;
@@ -192,6 +198,16 @@ in {
           KbdInteractiveAuthentication = false;
           PermitRootLogin = "no";
         };
+      };
+
+      # audio server
+      pipewire = {
+        enable = cfg.audio;
+        alsa.enable = true;
+        alsa.support32Bit = true;
+        pulse.enable = true;
+        jack.enable = true;
+        wireplumber.enable = true;
       };
     };
 

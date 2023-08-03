@@ -17,6 +17,7 @@ in {
     ssh = true;
     wayland = true;
     xorg = true;
+    audio = true;
     forMulti = false;
   };
 
