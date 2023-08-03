@@ -1,2 +1,6 @@
 #!/usr/bin/env sh
-ssh localhost -p 50022 -o NoHostAuthenticationForLocalhost=yes -i ~/.ssh/id_to_elusive
+ssh localhost \
+	-p 50022 \
+	-i ~/.ssh/id_to_elusive \
+	-o NoHostAuthenticationForLocalhost=yes \
+	$@

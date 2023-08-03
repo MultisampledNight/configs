@@ -5,4 +5,5 @@ else
 	prefix="$(pwd)"
 fi
 
-elusive-rsync --recursive "$prefix/$1/" "elusive:$prefix/$1/"
+full_path="$(realpath -- "$prefix/$1")/"
+elusive-rsync --recursive "$full_path" "elusive:$full_path"

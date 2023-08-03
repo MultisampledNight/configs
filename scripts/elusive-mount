@@ -5,4 +5,5 @@ else
 	prefix="$(pwd)"
 fi
 
-elusive-sshfs "elusive:$prefix/$1" "$prefix/$1"
+full_path="$(realpath -- "$prefix/$1")/"
+elusive-sshfs "elusive:$full_path" "$full_path"
