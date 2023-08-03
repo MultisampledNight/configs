@@ -8,7 +8,7 @@ All of my configurations which would be needed to set up a new system and develo
 
 Where possible, I try to use open-source software. Notable exceptions to this include CUDA, [Obsidian] and Steam (and all applications installed through it). I try to move away from them, but sometimes it's simply not possible (yet).
 
-Development is actually rarely done on the actual machine, but rather in VMs, which are collectively and individually called "elusive". See the [elusive README] for details.
+Development is actually rarely done on the actual machine, but rather in VMs, which are collectively and individually called "elusive". See the [elusive] README for details.
 
 [Neovim]: https://neovim.io/
 [Neovide]: https://neovide.dev/
@@ -16,7 +16,6 @@ Development is actually rarely done on the actual machine, but rather in VMs, wh
 [Sway]: https://alacritty.org/
 [i3]: https://i3wm.org/
 [Obsidian]: https://obsidian.md/
-[elusive README]: ./nixos/elusive/README.md
 
 ## Installation
 
@@ -48,7 +47,7 @@ However, this won't suffice. One final step remains. Actually creating a `config
 - possibly `development.nix` if you intend to do any kind of development on this machine.
 - possibly a hardware-specific model like `portable.nix` or `desktop.nix` if this is a physical machine rather than a container or the like.
 
-For example, you could take a look at [the elusive `configuration.nix`] which is a development VM, or this one which is (basically) the `configuration.nix` of one of my physical machines:
+For example, you could take a look at the [elusive] `configuration.nix` which is a development VM, or this one which is (basically) the `configuration.nix` of one of my physical machines:
 
 ```nix
 # vim: ts=2 sw=2 et
@@ -98,3 +97,5 @@ cd configs
 ```
 
 You'll need to get the Neovim plugins from somewhere else though then.
+
+[elusive]: ./nixos/elusive

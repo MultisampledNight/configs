@@ -2,3 +2,4 @@
 evcxr/history.txt
 nixos/configuration.nix
 nixos/hardware-configuration.nix
+pipewire/*

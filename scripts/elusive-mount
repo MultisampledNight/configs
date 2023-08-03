@@ -1,2 +1,8 @@
 #!/usr/bin/env sh
-elusive-sshfs "elusive:$(pwd)/$1" "$1"
+if [[ "$1" == /* ]]; then
+	prefix=''
+else
+	prefix="$(pwd)"
+fi
+
+elusive-sshfs "elusive:$prefix/$1" "$prefix/$1"

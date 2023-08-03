@@ -28,7 +28,7 @@ qemu-system-x86_64 \
   -name "elusive-$project_name" \
   -machine q35 \
   -cpu host \
-  -smp cpus=8,cores=4,threads=2 \
+  -smp cpus=20,cores=10,threads=2 \
   -m size=8G \
   -accel kvm \
   -nic user,restrict=off,hostfwd=tcp::50022-:22 \

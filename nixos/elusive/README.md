@@ -33,7 +33,6 @@ QEMU stores for an overlay where its base image is. Due to this, if `elusive-gen
     - `elusive-ssh` without any arguments, giving you an SSH session in your current terminal into the VM.
     - `elusive-rsync`, which is rsync, except that `localhost`/`127.0.0.1`/`elusive` will refer to the VM.
     - `elusive-clone`, which accepts 1 argument, and **clones** the given directory under the same path **into** the VM through `elusive-rsync`.
-        - Note that it does not accept absolute paths (well it _does_, but it's buggy. don't.)
     - `elusive-reverse-clone`, which is `elusive-clone`, but the other way around. That is, it clones the given directory **out of** the VM.
     - `elusive-sshfs`, which is just like `elusive-rsync`, but with sshfs instead.
     - `elusive-mount`, which is just like `elusive-clone`, but with `elusive-sshfs` instead.

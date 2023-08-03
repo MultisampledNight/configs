@@ -1,2 +1,8 @@
 #!/usr/bin/env sh
-elusive-rsync --recursive "$1/" "elusive:$(pwd)/$1/"
+if [[ "$1" == /* ]]; then
+	prefix=''
+else
+	prefix="$(pwd)"
+fi
+
+elusive-rsync --recursive "$prefix/$1/" "elusive:$prefix/$1/"
