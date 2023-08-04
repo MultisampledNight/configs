@@ -291,24 +291,34 @@ in {
 
       sway = {
         enable = cfg.wayland;
-        package = cfg.pkgs-unstable.sway.override {
-          extraSessionCommands = ''
-            export PATH=$HOME/zukunftslosigkeit/scripts:$PATH
-            export SDL_VIDEODRIVER=wayland
-            export QT_QPA_PLATFORM=wayland-egl
-            export QT_WAYLAND_FORCE_DPI=physical
-            export ECORE_EVAS_ENGINE=wayland_egl
-            export ELM_ENGINE=wayland_egl
-            export _JAVA_AWT_WM_NONREPARENTING=1
-          '';
+        package =
+          let
+            # sway behaves kind of weird on unstable
+            # flipped screen and unusable flickering on QEMU (elusive)
+            # huge performance drops on intel iGPUs
+            conditionalSwayPackage =
+              if builtins.elem cfg.videoDriver ["virtio" "intel"]
+              then pkgs.sway
+              else cfg.pkgs-unstable.sway;
+          in
+            conditionalSwayPackage.override {
+              extraSessionCommands = ''
+                export PATH=$HOME/zukunftslosigkeit/scripts:$PATH
+                export SDL_VIDEODRIVER=wayland
+                export QT_QPA_PLATFORM=wayland-egl
+                export QT_WAYLAND_FORCE_DPI=physical
+                export ECORE_EVAS_ENGINE=wayland_egl
+                export ELM_ENGINE=wayland_egl
+                export _JAVA_AWT_WM_NONREPARENTING=1
+              '';
 
-          extraOptions = if cfg.videoDriver == "nvidia"
-            then ["--unsupported-gpu"]
-            else [];
+              extraOptions = if cfg.videoDriver == "nvidia"
+                then ["--unsupported-gpu"]
+                else [];
 
-          withGtkWrapper = true;
-          isNixOS = true;
-        };
+              withGtkWrapper = true;
+              isNixOS = true;
+            };
       };
 
       xwayland.enable = false;  # enabled by default by sway, but I don't need it
