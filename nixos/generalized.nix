@@ -5,7 +5,6 @@
 with lib;
 let
   cfg = config.generalized;
-  pkgs-unstable = import <nixos-unstable> {};
 in {
   options.generalized = {
     hostName = mkOption {
@@ -111,6 +110,24 @@ in {
       default = false;
       description = "If you want to record and edit videos. Only in effect on non-server setups.";
     };
+
+    pkgs-unstable = mkOption {
+      type = types.pkgs;
+      default = import <nixos-unstable> {
+        config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
+          "nvidia-x11"
+        ];
+
+        overlays = [
+          (final: prev: if cfg.profileGuided then {
+            linuxZenFast = pkgs.linuxPackagesFor (pkgs.linuxKernel.kernels.linux_zen.override {
+              stdenv = pkgs.fastStdenv;
+            });
+          } else {})
+        ];
+      };
+      description = "From where to pull unstable packages.";
+    };
   };
 
   config = {
@@ -128,8 +145,8 @@ in {
 
       kernelPackages = mkDefault (
         if cfg.profileGuided
-        then pkgs-unstable.linuxZenFast
-        else pkgs-unstable.linuxKernel.packages.linux_zen
+        then cfg.pkgs-unstable.linuxZenFast
+        else cfg.pkgs-unstable.linuxKernel.packages.linux_zen
       );
     };
 
@@ -274,7 +291,7 @@ in {
 
       sway = {
         enable = cfg.wayland;
-        package = pkgs-unstable.sway.override {
+        package = cfg.pkgs-unstable.sway.override {
           extraSessionCommands = ''
             export PATH=$HOME/zukunftslosigkeit/scripts:$PATH
             export SDL_VIDEODRIVER=wayland
@@ -312,5 +329,12 @@ in {
     };
 
     nix.settings.auto-optimise-store = true;
+    nixpkgs.overlays = [
+      (final: prev: if cfg.profileGuided then {
+        godot_4 = prev.godot_4.override {
+          stdenv = pkgs.fastStdenv;
+        };
+      } else {})
+    ];
   };
 }

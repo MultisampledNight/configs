@@ -35,6 +35,21 @@ export NIX_PATH="$NIX_PATH:$ALL_SHELLDEFS_PATH"
 
 export PAGER='less --mouse'
 
+# see also https://grml.org/zsh/zsh-lovers.html
+alias -g ...='../..'
+alias -g ....='../../..'
+alias -g .....='../../../..'
+
+rationalise-dot() {
+  if [[ $LBUFFER = *.. ]]; then
+    LBUFFER+=/..
+  else
+    LBUFFER+=.
+  fi
+}
+zle -N rationalise-dot
+bindkey . rationalise-dot
+
 alias evcxr='evcxr --edit-mode vi'
 alias nv='neovide --multigrid --noidle'
 alias wh='wormhole-rs'

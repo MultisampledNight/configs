@@ -2,10 +2,11 @@
 
 pkgs.mkShell rec {
   buildInputs = with pkgs; [
-    cargo rustc rust-analyzer rustup
+    cargo rustc rustfmt clippy rust-analyzer rustup
 
+    gdb
     clang llvmPackages_latest.lld llvmPackages.libclang
-    openssl pkg-config
+    openssl pkg-config cmake
     wasm-pack evcxr tokei
     libxkbcommon
     wayland xorg.libX11 xorg.libXcursor xorg.libXrandr xorg.libXi

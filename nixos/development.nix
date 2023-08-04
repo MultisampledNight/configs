@@ -3,11 +3,10 @@
 with lib;
 let
   cfg = config.generalized;
-  pkgs-unstable = import <nixos-unstable> {};
 
   neovideSmooth = pkgs.callPackage ./neovide/default.nix {};
-  customVimPlugins = pkgs-unstable.vimPlugins.extend (
-    pkgs-unstable.callPackage ./neovim/custom-plugins.nix {}
+  customVimPlugins = cfg.pkgs-unstable.vimPlugins.extend (
+    cfg.pkgs-unstable.callPackage ./neovim/custom-plugins.nix {}
   );
   latexWithTikz = (pkgs.texlive.combine {
     inherit (pkgs.texlive) scheme-basic pgf standalone german babel;
@@ -47,10 +46,8 @@ in {
     sessionVariables = {
       VK_ICD_FILENAMES =
         # hacky but who cares, it's semi-ensured to be there through hardware.opengl.extraPackages anyway
-        if cfg.videoDriver == "intel"
-          then "/run/opengl-driver/share/vulkan/icd.d/intel_icd.x86_64.json"
-        else if cfg.videoDriver == "nvidia"
-          then "/run/opengl-driver/share/vulkan/icd.d/nvidia_icd.x86_64.json"
+        if cfg.videoDriver != null
+        then "/run/opengl-driver/share/vulkan/icd.d/${cfg.videoDriver}_icd.x86_64.json"
         else "";
     }
     // (if cfg.videoDriver == "nvidia" then {
@@ -64,7 +61,7 @@ in {
     } else {});
 
     extraInit = (if cfg.videoDriver == "nvidia" && cfg.xorg then ''
-      export LD_LIBRARY_PATH="${pkgs.linuxPackages.nvidia_x11}/lib"
+      export LD_LIBRARY_PATH="${cfg.pkgs-unstable.linuxPackages.nvidia_x11}/lib"
     '' else "")
     + (if cfg.xorg then ''
       # is X even running yet?

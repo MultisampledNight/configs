@@ -3,7 +3,6 @@
 with lib;
 let
   cfg = config.generalized;
-  pkgs-unstable = import <nixos-unstable> {};
 in {
   imports =
     [
@@ -109,7 +108,7 @@ in {
 
       # tools
       pulseaudio-ctl playerctl
-      vde2 linuxKernel.packages.linux_zen.usbip lm_sensors
+      vde2 lm_sensors
     ]
     ++ (if cfg.graphical then [
       # normal applications
@@ -196,19 +195,10 @@ in {
       } else {})
       (final: prev: if (cfg.videoDriver == "nvidia" && cfg.wayland) then {
         # blatantly taken from https://wiki.hyprland.org/hyprland-wiki/pages/Nvidia/
-        wlroots = pkgs-unstable.wlroots.overrideAttrs (finalAttrs: prevAttrs: {
+        wlroots = cfg.pkgs-unstable.wlroots.overrideAttrs (finalAttrs: prevAttrs: {
           postPatch = (prev.postPatch or "") + ''
             substituteInPlace render/gles2/renderer.c --replace "glFlush();" "glFinish();"
           '';
-        });
-      } else {})
-      (final: prev: if cfg.profileGuided then {
-        godot_4 = prev.godot_4.override {
-          stdenv = pkgs.fastStdenv;
-        };
-
-        linuxZenFast = pkgs.linuxPackagesFor (pkgs.linuxKernel.kernels.linux_zen.override {
-          stdenv = pkgs.fastStdenv;
         });
       } else {})
     ];

@@ -45,6 +45,8 @@ let
       }
       fd '\.orig$' --exec rm
       chmod -R -w .
+      chmod +w home/multisn8/.config
+      chmod +w home/multisn8/zukunftslosigkeit
     popd
   '';
   shellDir = ../../nix/shells;

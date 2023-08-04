@@ -17,13 +17,17 @@ in {
     ssh = true;
     wayland = true;
     xorg = true;
+    videoDriver = "virtio";
     audio = true;
     forMulti = false;
   };
 
-  boot.loader = {
-    systemd-boot.enable = mkForce false;
-    grub.enable = mkForce true;
+  boot = {
+    kernelParams = ["kernel.perf_event_paranoid=0"];
+    loader = {
+      systemd-boot.enable = mkForce false;
+      grub.enable = mkForce true;
+    };
   };
 
   users = {

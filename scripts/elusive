@@ -33,5 +33,5 @@ qemu-system-x86_64 \
   -accel kvm \
   -nic user,restrict=off,hostfwd=tcp::50022-:22 \
   -device virtio-vga-gl,max_outputs=1 \
-  -audio driver=pa,model=hda,out.buffer-length=48000 \
+  -audio driver=alsa,model=hda,out.buffer-length=48000 \
   -display gtk,full-screen=on,gl=on

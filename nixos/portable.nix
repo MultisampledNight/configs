@@ -27,12 +27,12 @@ in
 
     specialisation.hardened.configuration = {
       system.nixos.tags = ["hardened"];
-      boot.kernelPackages = pkgs.linuxKernel.packages.linux_hardened;
+      boot.kernelPackages = cfg.pkgs-unstable.linuxKernel.packages.linux_hardened;
     };
 
     specialisation.kmscon.configuration = {
       system.nixos.tags = ["kmscon" "hardened"];
-      boot.kernelPackages = pkgs.linuxKernel.packages.linux_hardened;
+      boot.kernelPackages = cfg.pkgs-unstable.linuxKernel.packages.linux_hardened;
 
       generalized = {
         wayland = lib.mkForce false;
