@@ -128,8 +128,8 @@ in {
 
       kernelPackages = mkDefault (
         if cfg.profileGuided
-        then pkgs.linuxZenFast
-        else pkgs.linuxKernel.packages.linux_zen
+        then pkgs-unstable.linuxZenFast
+        else pkgs-unstable.linuxKernel.packages.linux_zen
       );
     };
 
