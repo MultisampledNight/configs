@@ -30,6 +30,8 @@ in {
     };
   };
 
+  hardware.opengl.extraPackages = with pkgs; [swiftshader];
+
   users = {
     defaultUserShell = pkgs.zsh;
     mutableUsers = false;

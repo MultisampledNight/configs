@@ -91,6 +91,7 @@ in {
             multisn8-colorschemes
 
             nvim-cmp cmp-path cmp-cmdline cmp-nvim-lsp
+            cmp-vsnip vim-vsnip
             nvim-lspconfig trouble-nvim plenary-nvim
             telescope-nvim telescope-ui-select-nvim
             (nvim-treesitter.withPlugins (parsers: with parsers; [

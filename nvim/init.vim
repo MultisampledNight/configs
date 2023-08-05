@@ -352,12 +352,19 @@ function AutoWriteToggle()
     if exists("g:autowrite") && g:autowrite
       let g:autowrite = v:false
     else
-      au CursorHold,CursorHoldI * silent update
+      au CursorHold,CursorHoldI * call UpdateIfPossible()
       let g:autowrite = v:true
     endif
 
   augroup END
 endfunction
+
+function UpdateIfPossible()
+  if &buftype == ""
+    silent update
+  endif
+endfunction
+
 command AutoWrite call AutoWriteToggle()
 autocmd FocusGained * checktime
 
@@ -407,8 +414,14 @@ end
 cmp.setup({
   sources = cmp.config.sources({
     { name = "nvim_lsp" },
+    { name = "vsnip" },
     { name = "path" },
   }),
+  snippet = {
+    expand = function(args)
+      vim.fn["vsnip#anonymous"](args.body)
+    end,
+  },
   mapping = {
     ["<S-Tab>"] = cmp.mapping(prev_item, { "i", "c", "s" }),
 
@@ -421,6 +434,15 @@ cmp.setup({
       { "i", "c", "s" }
     ),
   },
+  window = {
+    completion = {
+      scrollbar = false,
+    },
+    documentation = cmp.config.disable,
+  },
+  experimental = {
+    ghost_text = true,
+  },
 })
 cmp.setup.cmdline(":", {
   mapping = cmp.mapping.preset.cmdline(),
@@ -428,12 +450,6 @@ cmp.setup.cmdline(":", {
     { name = "cmdline" }
   })
 })
-cmp.setup.filetype({ "markdown", "help" }, {
-  window = {
-    documentation = cmp.config.disable,
-  }
-})
-
 
 local telescope = require("telescope")
 telescope.setup({

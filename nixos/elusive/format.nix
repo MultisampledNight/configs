@@ -36,7 +36,7 @@ let
       --actually-install --exclude-nixos --no-backup &>/dev/null
 
     pushd "$out"
-      chmod -R +w .
+      chmod -R 700 .
       patch -p1 < ${configs}/nixos/elusive/config.patch
       ${
         if cfg.hidpi
@@ -44,9 +44,6 @@ let
         else ""
       }
       fd '\.orig$' --exec rm
-      chmod -R -w .
-      chmod +w home/multisn8/.config
-      chmod +w home/multisn8/zukunftslosigkeit
     popd
   '';
   shellDir = ../../nix/shells;
@@ -84,6 +81,7 @@ in {
       {
         source = "${symlinkSkeleton}/home/multisn8";
         target = "/home/multisn8";
+        mode = "700";
         user = "multisn8";
         group = "users";
       }

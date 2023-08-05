@@ -193,14 +193,6 @@ in {
           cudaSupport = true;
         };
       } else {})
-      (final: prev: if (cfg.videoDriver == "nvidia" && cfg.wayland) then {
-        # blatantly taken from https://wiki.hyprland.org/hyprland-wiki/pages/Nvidia/
-        wlroots = cfg.pkgs-unstable.wlroots.overrideAttrs (finalAttrs: prevAttrs: {
-          postPatch = (prev.postPatch or "") + ''
-            substituteInPlace render/gles2/renderer.c --replace "glFlush();" "glFinish();"
-          '';
-        });
-      } else {})
     ];
   };
 
