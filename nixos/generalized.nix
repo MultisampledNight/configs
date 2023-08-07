@@ -113,7 +113,10 @@ in {
 
     pkgs-unstable = mkOption {
       type = types.pkgs;
-      default = import <nixos-unstable> {
+      default =
+        if cfg.hostName == "elusive"
+        then pkgs
+        else import <nixos-unstable> {
         config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
           "nvidia-x11"
         ];
@@ -176,6 +179,26 @@ in {
       "aaa9ff" # bright cyan
       "b6b3b4" # bright white
     ];
+
+    hardware = {
+      pulseaudio.enable = false; # handled by pipewire-pulse instead
+      opengl = {
+        enable = true;
+        extraPackages = with pkgs;
+          if cfg.videoDriver == "intel"
+            then [mesa.drivers intel-media-driver intel-compute-runtime]
+          else if cfg.videoDriver == "nvidia"
+            then [config.boot.kernelPackages.nvidia_x11]
+          else [];
+      };
+
+      nvidia = if cfg.videoDriver == "nvidia"
+        then {
+          modesetting.enable = true;
+          open = true;
+        }
+        else {};
+    };
 
     networking = {
       hostName = cfg.hostName;
