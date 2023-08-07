@@ -110,6 +110,35 @@ in {
       default = false;
       description = "If you want to record and edit videos. Only in effect on non-server setups.";
     };
+
+    pkgs-unstable = mkOption {
+      type = types.pkgs;
+      default =
+        if cfg.hostName == "elusive"
+        then pkgs
+        else import <nixos-unstable> {
+        config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
+          "nvidia-x11"
+        ];
+
+        overlays = [
+          (final: prev: if (cfg.videoDriver == "nvidia" && cfg.wayland) then {
+            # blatantly taken from https://wiki.hyprland.org/hyprland-wiki/pages/Nvidia/
+            wlroots = prev.wlroots.overrideAttrs (finalAttrs: prevAttrs: {
+              postPatch = (prev.postPatch or "") + ''
+                substituteInPlace render/gles2/renderer.c --replace "glFlush();" "glFinish();"
+              '';
+            });
+          } else {})
+          (final: prev: if cfg.profileGuided then {
+            linuxZenFast = prev.linuxPackagesFor (prev.linuxKernel.kernels.linux_zen.override {
+              stdenv = pkgs.fastStdenv;
+            });
+          } else {})
+        ];
+      };
+      description = "From where to pull unstable packages.";
+    };
   };
 
   config = {
@@ -127,8 +156,8 @@ in {
 
       kernelPackages = mkDefault (
         if cfg.profileGuided
-        then pkgs.linuxZenFast
-        else pkgs.linuxKernel.packages.linux_zen
+        then cfg.pkgs-unstable.linuxZenFast
+        else cfg.pkgs-unstable.linuxKernel.packages.linux_zen
       );
     };
 
@@ -293,24 +322,34 @@ in {
 
       sway = {
         enable = cfg.wayland;
-        package = pkgs.sway.override {
-          extraSessionCommands = ''
-            export PATH=$HOME/zukunftslosigkeit/scripts:$PATH
-            export SDL_VIDEODRIVER=wayland
-            export QT_QPA_PLATFORM=wayland-egl
-            export QT_WAYLAND_FORCE_DPI=physical
-            export ECORE_EVAS_ENGINE=wayland_egl
-            export ELM_ENGINE=wayland_egl
-            export _JAVA_AWT_WM_NONREPARENTING=1
-          '';
+        package =
+          let
+            # sway behaves kind of weird on unstable
+            # flipped screen and unusable flickering on QEMU (elusive)
+            # huge performance drops on intel iGPUs
+            conditionalSwayPackage =
+              if builtins.elem cfg.videoDriver ["virtio" "intel"]
+              then pkgs.sway
+              else cfg.pkgs-unstable.sway;
+          in
+            conditionalSwayPackage.override {
+              extraSessionCommands = ''
+                export PATH=$HOME/zukunftslosigkeit/scripts:$PATH
+                export SDL_VIDEODRIVER=wayland
+                export QT_QPA_PLATFORM=wayland-egl
+                export QT_WAYLAND_FORCE_DPI=physical
+                export ECORE_EVAS_ENGINE=wayland_egl
+                export ELM_ENGINE=wayland_egl
+                export _JAVA_AWT_WM_NONREPARENTING=1
+              '';
 
-          extraOptions = if cfg.videoDriver == "nvidia"
-            then ["--unsupported-gpu"]
-            else [];
+              extraOptions = if cfg.videoDriver == "nvidia"
+                then ["--unsupported-gpu"]
+                else [];
 
-          withGtkWrapper = true;
-          isNixOS = true;
-        };
+              withGtkWrapper = true;
+              isNixOS = true;
+            };
       };
 
       xwayland.enable = false;  # enabled by default by sway, but I don't need it
@@ -332,22 +371,10 @@ in {
 
     nix.settings.auto-optimise-store = true;
     nixpkgs.overlays = [
-      (final: prev: if (cfg.videoDriver == "nvidia" && cfg.wayland) then {
-        # blatantly taken from https://wiki.hyprland.org/hyprland-wiki/pages/Nvidia/
-        wlroots = prev.wlroots.overrideAttrs (finalAttrs: prevAttrs: {
-          postPatch = (prev.postPatch or "") + ''
-            substituteInPlace render/gles2/renderer.c --replace "glFlush();" "glFinish();"
-          '';
-        });
-      } else {})
       (final: prev: if cfg.profileGuided then {
         godot_4 = prev.godot_4.override {
           stdenv = pkgs.fastStdenv;
         };
-
-        linuxZenFast = prev.linuxPackagesFor (prev.linuxKernel.kernels.linux_zen.override {
-          stdenv = pkgs.fastStdenv;
-        });
       } else {})
     ];
   };

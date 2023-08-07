@@ -11,6 +11,7 @@ state_dir="$HOME/zukunftslosigkeit/state/elusive"
 image_in_store=$(nixos-generate \
 	--format-path "$HOME/zukunftslosigkeit/configs/nixos/elusive/format.nix" \
 	--configuration "$HOME/zukunftslosigkeit/configs/nixos/elusive/configuration.nix" \
+	-I nixos=/nix/var/nix/profiles/per-user/root/channels/nixos-unstable \
 	$@ \
   | tail --lines 1)
 

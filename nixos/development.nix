@@ -5,8 +5,8 @@ let
   cfg = config.generalized;
 
   neovideSmooth = pkgs.callPackage ./neovide/default.nix {};
-  customVimPlugins = pkgs.vimPlugins.extend (
-    pkgs.callPackage ./neovim/custom-plugins.nix {}
+  customVimPlugins = cfg.pkgs-unstable.vimPlugins.extend (
+    cfg.pkgs-unstable.callPackage ./neovim/custom-plugins.nix {}
   );
   latexWithTikz = (pkgs.texlive.combine {
     inherit (pkgs.texlive) scheme-basic pgf standalone german babel;
@@ -61,7 +61,7 @@ in {
     } else {});
 
     extraInit = (if cfg.videoDriver == "nvidia" && cfg.xorg then ''
-      export LD_LIBRARY_PATH="${pkgs.linuxPackages.nvidia_x11}/lib"
+      export LD_LIBRARY_PATH="${cfg.pkgs-unstable.linuxPackages.nvidia_x11}/lib"
     '' else "")
     + (if cfg.xorg then ''
       # is X even running yet?
@@ -121,7 +121,7 @@ in {
   };
 
   fonts = mkIf cfg.graphical {
-    packages = with pkgs; [
+    fonts = with pkgs; [
       hack-font
       roboto roboto-mono
       ibm-plex
@@ -134,13 +134,15 @@ in {
       ttf_bitstream_vera
       ubuntu_font_family
     ];
-    fontDir.enable = true;
 
-    enableDefaultPackages = true;
+    fontDir.enable = true;
+    # this adds a few commonly expected fonts like liberation...
+    enableDefaultFonts = true;
 
     fontconfig = {
-      hinting.style = "slight";
+      hinting.style = "hintslight";
 
+      # ...while this one sets the actually in-place default fonts
       defaultFonts = {
         serif = ["IBM Plex Serif"];
         sansSerif = ["IBM Plex Sans"];
