@@ -58,6 +58,10 @@ in {
     };
   };
 
+  environment.extraInit = ''
+    export LD_LIBRARY_PATH="${makeLibraryPath [pkgs.gcc-unwrapped.lib]}:$LD_LIBRARY_PATH";
+  '';
+
   services.getty.autologinUser = "multisn8";
 
   system.stateVersion = "23.05";
