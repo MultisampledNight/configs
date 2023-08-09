@@ -77,7 +77,7 @@ in {
   programs = {
     neovim = {
       defaultEditor = !cfg.forTheGeneralPublic;
-      package = pkgs.neovim-nightly-unwrapped;
+      package = cfg.pkgs-unstable.neovim-nightly-unwrapped;
       withNodeJs = true;
       withRuby = false;
 
@@ -155,18 +155,4 @@ in {
     enabled = "ibus";
     ibus.engines = with pkgs.ibus-engines; [hangul];
   };
-
-  nixpkgs.overlays = [
-    (final: prev: {
-      neovim-nightly-unwrapped = final.neovim-unwrapped.overrideAttrs {
-        version = "0.10.0-nightly";
-        src = pkgs.fetchFromGitHub {
-          owner = "neovim";
-          repo = "neovim";
-          rev = "14d047ad2f448885de39966d1963f15d3fa21089";
-          hash = "sha256-2JHBvDWMKd3brUwzU5NMc2cqrrqyoXZ3p8AFN82MNPI=";
-        };
-      };
-    })
-  ];
 }

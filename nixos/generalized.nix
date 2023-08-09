@@ -122,6 +122,17 @@ in {
         ];
 
         overlays = [
+          (final: prev: {
+            neovim-nightly-unwrapped = final.neovim-unwrapped.overrideAttrs {
+              version = "0.10.0-nightly";
+              src = pkgs.fetchFromGitHub {
+                owner = "neovim";
+                repo = "neovim";
+                rev = "0211f889b9538f7df5fbcb06273d273fb071efff";
+                hash = "sha256-JeZWpcCczEwIw3wX3zUFN0kM/y5cj5PrlO59ckUdGyE=";
+              };
+            };
+          })
           (final: prev: if (cfg.videoDriver == "nvidia" && cfg.wayland) then {
             # blatantly taken from https://wiki.hyprland.org/hyprland-wiki/pages/Nvidia/
             wlroots = prev.wlroots.overrideAttrs (finalAttrs: prevAttrs: {
