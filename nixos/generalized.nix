@@ -113,10 +113,7 @@ in {
 
     pkgs-unstable = mkOption {
       type = types.pkgs;
-      default =
-        if cfg.hostName == "elusive"
-        then pkgs
-        else import <nixos-unstable> {
+      default = import <nixos-unstable> {
         config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
           "nvidia-x11"
         ];
