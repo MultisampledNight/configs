@@ -130,11 +130,10 @@ in {
     gnupg.agent = {
       enable = true;
       enableSSHSupport = true;
+      pinentryFlavor = "curses";
     };
 
-    ssh = {
-      askPassword = "${pkgs.gnome.seahorse}/libexec/seahorse/ssh-askpass";
-    };
+    ssh.askPassword = "${pkgs.libsForQt5.ksshaskpass}/bin/ksshaskpass";
 
     steam = mkIf cfg.gaming {
       enable = true;
