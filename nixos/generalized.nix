@@ -281,6 +281,7 @@ in {
       ++ (if cfg.wayland then [
         fuzzel waybar mako grim slurp swappy hyprpicker gammastep
         swaybg swaylock wl-clipboard
+        waypipe
       ] else [])
       ++ (if cfg.graphical then [
         # themes
