@@ -17,6 +17,7 @@ in {
     ssh = true;
     wayland = true;
     xorg = true;
+    hidpi = true;
     videoDriver = "virtio";
     audio = true;
     forMulti = false;

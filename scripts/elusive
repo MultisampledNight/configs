@@ -24,25 +24,25 @@ if [[ ! -f $overlay_image ]]; then
     -f qcow2 $overlay_image
 fi
 
-args="
+args=(
   $overlay_image
-  -name 'elusive-$project_name'
+  -name "elusive-$project_name"
   -machine q35
   -cpu host
   -smp cpus=20,cores=10,threads=2
   -m size=8G
   -accel kvm
   -nic user,restrict=off,hostfwd=tcp::50022-:22
-"
+)
 
 if (( $#nogui )); then
-  maybe_gui_args=''
+  maybe_gui_args=()
 else
-  maybe_gui_args='
+  maybe_gui_args=(
     -audio driver=alsa,model=hda,out.buffer-length=48000
     -device virtio-vga-gl,max_outputs=1
     -display gtk,full-screen=on,gl=on
-  '
+  )
 fi
 
 # everything's ready, launch
