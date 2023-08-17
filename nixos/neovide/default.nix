@@ -25,16 +25,16 @@
 
 rustPlatform.buildRustPackage.override { stdenv = clangStdenv; } rec {
   pname = "neovide";
-  version = "0.10.4";
+  version = "0.11.0";
 
   src = fetchFromGitHub {
-    owner = "fredizzimo";
+    owner = "neovide";
     repo = "neovide";
-    rev = "f85ae873517a8e198ed013457b7df7b8f229aa0f"; # fsundvik/improve-render-loop
-    sha256 = "sha256-Nt2rfEAFzChF4btNmZTN9hORB3rO10YLj7urHsOT0ig=";
+    rev = "09419014e330063793d586b0f3f889e65276ada6"; # branch improve-render-loop
+    sha256 = "sha256-eKXpV9TT3OUM4yhrToUfExFUXyIH+oyPYwMzcJlQmds=";
   };
 
-  cargoLock.lockFile = ./Cargo.lock;
+  cargoSha256 = "sha256-2nEqlD6s8RukigOhuaMBrYeXtQ+yVYD7w3ifBFRIpaM=";
 
   SKIA_SOURCE_DIR =
     let
@@ -115,6 +115,6 @@ rustPlatform.buildRustPackage.override { stdenv = clangStdenv; } rec {
     homepage = "https://github.com/neovide/neovide";
     changelog = "https://github.com/neovide/neovide/releases/tag/${version}";
     license = with licenses; [ mit ];
-    maintainers = with maintainers; [ ck3d ];
+    maintainers = with maintainers; [ ck3d multisn8 ];
   };
 }

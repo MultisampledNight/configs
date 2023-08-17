@@ -4,7 +4,7 @@ with lib;
 let
   cfg = config.generalized;
 
-  neovideSmooth = pkgs.callPackage ./neovide/default.nix {};
+  neovideSmooth = cfg.pkgs-unstable.callPackage ./neovide/default.nix {};
   customVimPlugins = cfg.pkgs-unstable.vimPlugins.extend (
     cfg.pkgs-unstable.callPackage ./neovim/custom-plugins.nix {}
   );
