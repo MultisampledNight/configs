@@ -39,13 +39,8 @@ else
   colorscheme base16-abnormalize-alt
   set termguicolors
 
-  if exists("g:neovide")
-    set winblend=50
-    set pumblend=50
-  else
-    set winblend=20
-    set pumblend=20
-  endif
+  set winblend=50
+  set pumblend=50
 
 lua <<EOF
   local capabilities = require("cmp_nvim_lsp").default_capabilities()
