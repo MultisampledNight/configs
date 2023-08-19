@@ -61,7 +61,10 @@ in {
         defaultSession = if cfg.forTheGeneralPublic then "gnome"
           else if cfg.wayland then "sway"
           else "none+i3";
-        gdm.enable = cfg.xorg;
+        gdm = {
+          enable = cfg.xorg;
+          autoSuspend = false;
+        };
       };
 
       desktopManager = {
