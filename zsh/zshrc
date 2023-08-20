@@ -65,7 +65,7 @@ alias ct='cargo nextest'
 alias docs='cargo doc --open'
 alias cm='cargo miri'
 alias ca='cargo apk'
-alias cfg='CARGO_PROFILE_RELEASE_DEBUG=true cargo flamegraph --palette aqua'
+alias cfg='CARGO_PROFILE_RELEASE_DEBUG=true cargo flamegraph'
 
 man() {
   if [[ ! -n $1 ]]; then
