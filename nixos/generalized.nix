@@ -378,6 +378,12 @@ in {
       };
     };
 
+    xdg.portal.enable = lib.mkForce false;
+    qt = {
+      enable = true;
+      platformTheme = "qt5ct";
+    };
+
     nix.settings.auto-optimise-store = true;
     nixpkgs.overlays = [
       (final: prev: if cfg.profileGuided then {

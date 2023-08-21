@@ -13,11 +13,6 @@ in {
 
   sound.enable = true;
   security.rtkit.enable = true;
-  xdg.portal.enable = lib.mkForce false;
-  qt = {
-    enable = true;
-    platformTheme = "qt5ct";
-  };
 
   networking = {
     dhcpcd.wait = "background"; # saves like 5 seconds of startup time
