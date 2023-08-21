@@ -17,9 +17,6 @@ client.urgent "#212224" "#212224" "#B6B3B4" "#212224"
 default_border pixel 1
 hide_edge_borders smart
 
-bindgesture swipe:right workspace prev
-bindgesture swipe:left workspace next
-
 output * {
     bg ~/.background-image fill
     max_render_time 6
