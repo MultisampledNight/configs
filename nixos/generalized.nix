@@ -274,6 +274,7 @@ in {
         fd ripgrep
         file pv
         ffmpeg mpv jq unzip zip
+        sqlite-interactive
         alacritty
         btop
       ]
@@ -391,6 +392,17 @@ in {
           stdenv = pkgs.fastStdenv;
         };
       } else {})
+      (final: prev: {
+        inkscape = prev.inkscape.overrideAttrs rec {
+          version = "1.3";
+          src = pkgs.fetchurl {
+            url = "https://inkscape.org/release/inkscape-${version}/source/archive/xz/dl/inkscape-${version}.tar.xz";
+            sha256 = "sha256-v08oawJeAWm4lIzBTVGZqbTCBNdhyJTEtISWVx7HYwc=";
+          };
+
+          buildInputs = prev.inkscape.buildInputs ++ (with pkgs; [double-conversion libepoxy]);
+        };
+      })
     ];
   };
 }

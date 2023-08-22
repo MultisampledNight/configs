@@ -99,6 +99,7 @@ in {
       dunst virt-manager qemu_kvm
       qt5ct
       helvum
+      cfg.pkgs-unstable.scrcpy
     ] else [])
     ++ (if cfg.xorg then [
       xorg.xauth rofi flameshot
