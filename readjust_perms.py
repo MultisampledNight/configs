@@ -6,7 +6,6 @@ from pathlib import Path
 from pwd import getpwnam
 
 from distribute_symlinks import (
-    BACKUP_DIR,
     USER,
     ROOT,
     CONFIG_DESTINATIONS,
@@ -14,10 +13,12 @@ from distribute_symlinks import (
     expanduser,
 )
 
+BACKUP_DIR = expanduser("~/_archive")
+
 
 def readjust_perms(destinations=CONFIG_DESTINATIONS, user=USER, root=ROOT):
     for link_name in list(destinations.values()) + [BACKUP_DIR]:
-        if link_name.startswith("/"):
+        if str(link_name).startswith("/"):
             # most likely a system config path in /etc, we don't want to change those
             continue
 
