@@ -50,7 +50,9 @@ in
             }
           ];
           extraConfig = ''
-            font-size=30
+            font-size=${
+              toString (if cfg.hidpi then 30 else 14}
+            }
 
             xkb-layout=de
             xkb-variant=bone
