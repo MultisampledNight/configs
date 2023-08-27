@@ -295,6 +295,10 @@ in {
           if config.fonts.fontDir.enable
           then "/run/current-system/sw/share/X11/fonts"  # not sure if I should upstream this
           else "";
+        QT_PLUGIN_PATH =
+          if cfg.wayland
+          then map (plugin: "${plugin}/lib") (with pkgs; [libsForQt5.qtwayland])
+          else [];
       };
 
       shellAliases = {
