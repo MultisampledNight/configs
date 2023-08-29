@@ -13,6 +13,7 @@ USER = "multisn8"
 CONFIG_DESTINATIONS = {
     # user stuff
     "alacritty": "~/.config/alacritty",
+    "cargo/config.toml": "~/.cargo/config.toml",
     "evcxr": "~/.config/evcxr",
     "git/gitignore-global": "~/.gitignore-global",
     "git/gitconfig": "~/.gitconfig",
