@@ -51,7 +51,7 @@ in
           ];
           extraConfig = ''
             font-size=${
-              toString (if cfg.hidpi then 30 else 14}
+              toString (if cfg.hidpi then 30 else 14)
             }
 
             xkb-layout=de
