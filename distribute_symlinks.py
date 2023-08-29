@@ -65,6 +65,7 @@ def distribute_symlinks(
                 continue
 
         try:
+            link_name.parent.mkdir(parents=True, exist_ok=True)
             if actually_install:
                 # directly copy to the destination instead
                 if Path(link_target).is_file():
@@ -73,7 +74,6 @@ def distribute_symlinks(
                     shutil.copytree(link_target, link_name)
             else:
                 # create the symlink
-                link_name.parent.mkdir(parents=True, exist_ok=True)
                 link_name.symlink_to(link_target)
         except PermissionError:
             print(

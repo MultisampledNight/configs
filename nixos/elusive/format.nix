@@ -33,7 +33,7 @@ let
     python \
       ${configs}/distribute_symlinks.py \
       --root "$out" --user multisn8 \
-      --actually-install --exclude-nixos --no-backup &>/dev/null
+      --actually-install --exclude-nixos --no-backup
 
     pushd "$out"
       chmod -R 700 .
