@@ -275,8 +275,7 @@ in {
         file pv
         ffmpeg mpv jq unzip zip
         sqlite-interactive
-        alacritty
-        btop
+        btop sysstat
       ]
       ++ (if cfg.xorg then [xclip] else [])
       ++ (if cfg.wayland then [
@@ -285,6 +284,7 @@ in {
         waypipe
       ] else [])
       ++ (if cfg.graphical then [
+        alacritty
         # themes
         adapta-gtk-theme adapta-kde-theme
         breeze-icons volantes-cursors
