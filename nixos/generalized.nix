@@ -192,12 +192,18 @@ in {
       pulseaudio.enable = false; # handled by pipewire-pulse instead
       opengl = {
         enable = true;
+        driSupport = true;
+        driSupport32Bit = true; # :clueless:
         extraPackages = with pkgs;
           if cfg.videoDriver == "intel"
             then [mesa.drivers intel-media-driver intel-compute-runtime]
           else if cfg.videoDriver == "nvidia"
             then [config.boot.kernelPackages.nvidia_x11]
           else [];
+          extraPackages32 =
+            if cfg.videoDriver == "nvidia"
+              then [config.boot.kernelPackages.nvidia_x11.lib32]
+            else [];
       };
 
       nvidia = if cfg.videoDriver == "nvidia"

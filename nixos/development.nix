@@ -47,8 +47,11 @@ in {
       VK_ICD_FILENAMES =
         # hacky but who cares, it's semi-ensured to be there through hardware.opengl.extraPackages anyway
         if cfg.videoDriver != null
-        then "/run/opengl-driver/share/vulkan/icd.d/${cfg.videoDriver}_icd.x86_64.json"
-        else "";
+        then [
+          "/run/opengl-driver/share/vulkan/icd.d/${cfg.videoDriver}_icd.x86_64.json"
+          "/run/opengl-driver-32/share/vulkan/icd.d/${cfg.videoDriver}_icd.i686.json"
+        ]
+        else [];
     }
     // (if cfg.videoDriver == "nvidia" then {
       # both required for blender
