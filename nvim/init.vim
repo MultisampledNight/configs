@@ -449,18 +449,20 @@ cmp.setup.cmdline(":", {
 local telescope = require("telescope")
 telescope.setup({
   defaults = {
+    winblend = 50,
+    sorting_strategy = "ascending",
     layout_config = {
       horizontal = {
         prompt_position = "bottom",
         width = 0.91,
         height = 0.975,
-      }
-    }
+      },
+    },
   },
   extensions = {
     ["ui-select"] = {
       require("telescope.themes").get_dropdown {}
-    }
+    },
   },
 })
 telescope.load_extension("ui-select")
