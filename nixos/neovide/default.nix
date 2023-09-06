@@ -28,10 +28,10 @@ rustPlatform.buildRustPackage.override { stdenv = clangStdenv; } rec {
   version = "0.11.0";
 
   src = fetchFromGitHub {
-    owner = "neovide";
+    owner = "MultisampledNight";
     repo = "neovide";
-    rev = "7e02920f2106abd114cceea8bd94e5611bfd2b84"; # branch improve-render-loop
-    sha256 = "sha256-hkVFp942ody5BBSxl+C4Rf1BpaB3B9t9Ly+xEDq5rNc=";
+    rev = "7cce876267b5109668ec2c5fece4eb5d4ad9aeae"; # branch render-loop-on-winit
+    sha256 = "sha256-ihjmeicFrYpr+4NGR/8FPUogqjFUYWe2MPbHdBmI9AU=";
   };
 
   cargoSha256 = "sha256-2nEqlD6s8RukigOhuaMBrYeXtQ+yVYD7w3ifBFRIpaM=";

@@ -450,7 +450,6 @@ local telescope = require("telescope")
 telescope.setup({
   defaults = {
     winblend = 50,
-    sorting_strategy = "ascending",
     layout_config = {
       horizontal = {
         prompt_position = "bottom",

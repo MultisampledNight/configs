@@ -125,8 +125,8 @@ in {
               src = pkgs.fetchFromGitHub {
                 owner = "neovim";
                 repo = "neovim";
-                rev = "ffb340bf63af42ac347e23e0488898adc4391328";
-                hash = "sha256-OWIJeWxnrmBn2+6fQRnnQsirW49LIyQHck3SS0b8NoA=";
+                rev = "2ef7b6a433c61837bcef0fca297a665551835423";
+                hash = lib.fakeHash;
               };
             };
           })
