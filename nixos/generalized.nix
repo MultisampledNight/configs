@@ -21,6 +21,12 @@ in {
       in graphical environments.";
     };
 
+    cpuVendor = mkOption {
+      type = types.nullOr types.str;
+      default = null;
+      description = "What microcode updates to install.";
+    };
+
     wireless.wlan = mkOption {
       type = types.bool;
       default = true;
@@ -190,6 +196,10 @@ in {
 
     hardware = {
       pulseaudio.enable = false; # handled by pipewire-pulse instead
+
+      cpu.intel.updateMicrocode = cfg.cpuVendor == "intel";
+      cpu.amd.updateMicrocode = cfg.cpuVendor == "amd";
+
       opengl = {
         enable = true;
         driSupport = true;
