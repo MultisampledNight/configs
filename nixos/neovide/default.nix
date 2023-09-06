@@ -34,7 +34,7 @@ rustPlatform.buildRustPackage.override { stdenv = clangStdenv; } rec {
     sha256 = "sha256-ihjmeicFrYpr+4NGR/8FPUogqjFUYWe2MPbHdBmI9AU=";
   };
 
-  cargoSha256 = "sha256-2nEqlD6s8RukigOhuaMBrYeXtQ+yVYD7w3ifBFRIpaM=";
+  cargoSha256 = "sha256-rf+vwprCKsNzdebWaB9157zW9Tk4wg5Ji269u+9qSNE=";
 
   SKIA_SOURCE_DIR =
     let
