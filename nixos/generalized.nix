@@ -126,7 +126,7 @@ in {
                 owner = "neovim";
                 repo = "neovim";
                 rev = "2ef7b6a433c61837bcef0fca297a665551835423";
-                hash = lib.fakeHash;
+                hash = "sha256-DIyHgdfhmftTN2aHVEmJ1q/W2o0Slild0McAf4sEa8U=";
               };
             };
           })
