@@ -30,11 +30,16 @@ rustPlatform.buildRustPackage.override { stdenv = clangStdenv; } rec {
   src = fetchFromGitHub {
     owner = "MultisampledNight";
     repo = "neovide";
-    rev = "7cce876267b5109668ec2c5fece4eb5d4ad9aeae"; # branch render-loop-on-winit
-    sha256 = "sha256-ihjmeicFrYpr+4NGR/8FPUogqjFUYWe2MPbHdBmI9AU=";
+    rev = "3073e0f453702f12b0ec55c12fa9f077281492a1"; # branch render-loop-on-winit
+    sha256 = "sha256-qn1H7C+tAFh19SVBpowOjQ+nIE6gh7KGFLcfaxv1n20=";
   };
 
-  cargoSha256 = "sha256-rf+vwprCKsNzdebWaB9157zW9Tk4wg5Ji269u+9qSNE=";
+  cargoLock = {
+    lockFile = ./Cargo.lock;
+    outputHashes = {
+      "winit-0.29.1-beta" = "sha256-bqAZRaknk5IzhOXWP8kZ184YFqtu/mBIdphx26hCKOU=";
+    };
+  };
 
   SKIA_SOURCE_DIR =
     let
