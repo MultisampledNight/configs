@@ -80,7 +80,7 @@ in {
   programs = {
     neovim = {
       defaultEditor = !cfg.forTheGeneralPublic;
-      package = cfg.pkgs-unstable.neovim-nightly-unwrapped;
+      package = cfg.pkgs-unstable.neovim-0-9-2;
       withNodeJs = true;
       withRuby = false;
 

@@ -126,13 +126,13 @@ in {
 
         overlays = [
           (final: prev: {
-            neovim-nightly-unwrapped = final.neovim-unwrapped.overrideAttrs {
-              version = "0.10.0-nightly";
+            neovim-0-9-2 = final.neovim-unwrapped.overrideAttrs {
+              version = "0.9.2";
               src = pkgs.fetchFromGitHub {
                 owner = "neovim";
                 repo = "neovim";
-                rev = "2ef7b6a433c61837bcef0fca297a665551835423";
-                hash = "sha256-DIyHgdfhmftTN2aHVEmJ1q/W2o0Slild0McAf4sEa8U=";
+                rev = "v0.9.2";
+                hash = "sha256-kKstlq1BzoBAy+gy9iL1auRViJ223cVpAt5X7pUWT1U=";
               };
             };
           })

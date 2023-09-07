@@ -119,12 +119,12 @@ set linebreak
 set undofile
 set shortmess+=W
 
-" smarter autochdir
 set clipboard+=unnamedplus
 set completeopt=menu,menuone,preview,noselect
 set mouse=a
 set mousemodel=extend
 set mousescroll=ver:4,hor:0
+set smoothscroll
 set ignorecase
 set smartcase
 set scrolloff=2
