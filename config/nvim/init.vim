@@ -87,6 +87,7 @@ lua <<EOF
     },
   }
   lspconfig.tsserver.setup {}
+  lspconfig.typst_lsp.setup {}
 
   require("trouble").setup({
     position = "bottom",
@@ -275,7 +276,7 @@ autocmd VimLeavePre *.tex
 
 " typst
 autocmd BufNewFile,BufRead *.typ
-  \ set filetype=text sw=2 ts=2 sts=0 et
+  \ set filetype=typst sw=2 ts=2 sts=0 et
   \|call LaunchProgram("typst" . bufnr(), ["typst", "watch", expand("%:p")])
   \|noremap <buffer> <Leader>2 <Cmd>call ViewCurrentPdf()<CR>
 autocmd VimLeavePre *.typ

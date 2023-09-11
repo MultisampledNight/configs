@@ -1,6 +1,6 @@
 # configs but it's actually a [NixOS](https://nixos.org) configuration
 
-Most configs in here can be used without NixOS though.
+Most configs in here can be used without NixOS though, those are in the directory [`config`][./config].
 
 ## What this contains
 

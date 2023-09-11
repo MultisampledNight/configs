@@ -1,5 +1,5 @@
 **/__pycache__
-evcxr/history.txt
+config/evcxr/history.txt
+config/pipewire/*
 nixos/configuration.nix
 nixos/hardware-configuration.nix
-pipewire/*
