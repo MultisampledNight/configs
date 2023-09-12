@@ -24,10 +24,11 @@ CONFIG_DESTINATIONS = {
     "config/pipewire": "~/.config/pipewire/pipewire.conf.d",
     "config/sway": "~/.config/sway",
     "config/swaylock": "~/.config/swaylock",
-    "config/wallpapers/wallpaper": "~/.background-image",
     "config/waybar": "~/.config/waybar",
+    "config/zathura/zathurarc": "~/.config/zathura/zathurarc",
     "config/zsh/zshrc": "~/.zshrc",
     "config/zsh/zlogin": "~/.zlogin",
+    "wallpapers/wallpaper": "~/.background-image",
     # putting things out of config so elusive gets them
     "scripts": "~/zukunftslosigkeit/scripts",
     "nix/shells": "~/zukunftslosigkeit/shells",
