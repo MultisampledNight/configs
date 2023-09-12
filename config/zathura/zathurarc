@@ -1,0 +1,10 @@
+set sandbox strict
+
+set render-loading false
+
+set default-fg "#B6B3B4"
+set default-bg "#212224"
+
+set recolor true
+set recolor-darkcolor "#B6B3B4"
+set recolor-lightcolor "#212224"
