@@ -1,0 +1,8 @@
+#!/usr/bin/env sh
+set -eux
+adb wait-for-device
+adb tcpip 5555
+iwctl station wlan0 scan
+sleep 5
+iwctl station wlan0 connect possible
+sleep 5

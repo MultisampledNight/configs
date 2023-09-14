@@ -1,0 +1,2 @@
+#!/usr/bin/env sh
+scrcpy --no-video --audio-buffer=200 --audio-bit-rate=256k
