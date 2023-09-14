@@ -178,7 +178,7 @@ function TelescopeOnToplevel(command)
 endfunction
 
 function CreateNewFile()
-  let sub_path = trim(input("New file name: ", expand("<cword>"), "file"))
+  let sub_path = trim(input("New file name: ", expand("<cword>")))
   if sub_path == ""
     return
   endif
@@ -191,7 +191,7 @@ endfunction
 
 function RenameCurrentFile()
   let old = expand("%:t")
-  let sub_path = trim(input("Rename to: ", old, "file"))
+  let sub_path = trim(input("Rename to: ", old))
   if sub_path == ""
     return
   elseif sub_path == old
