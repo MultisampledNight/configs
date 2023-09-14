@@ -183,10 +183,27 @@ function CreateNewFile()
     return
   endif
 
-  let full_path = expand("%:p:h") . "/" . sub_path
+  let full_path = expand("%:.:h") . "/" . sub_path
   call mkdir(fnamemodify(full_path, ":h"), "p")
   exe "edit " . full_path
   write
+endfunction
+
+function RenameCurrentFile()
+  let old = expand("%:t")
+  let sub_path = trim(input("Rename to: ", old, "file"))
+  if sub_path == ""
+    return
+  elseif sub_path == old
+    echo "Already named that way"
+    return
+  endif
+
+  let full_path = expand("%:.:h") . "/" . sub_path
+  call mkdir(fnamemodify(full_path, ":h"), "p")
+  exe "saveas " . full_path
+
+  exe "silent !rm " . old
 endfunction
 
 nnoremap tt <Cmd>Telescope resume<CR>
@@ -214,7 +231,8 @@ nnoremap ty <Cmd>SignifyDiff<CR>
 nnoremap tz <Cmd>call TelescopeOnToplevel("git_status")<CR>
 nnoremap t, <Plug>(signify-prev-hunk)
 nnoremap t. <Plug>(signify-next-hunk)
-nnoremap tk <Cmd>call CreateNewFile()<CR>
+nnoremap tj <Cmd>call CreateNewFile()<CR>
+nnoremap tc <Cmd>call RenameCurrentFile()<CR>
 
 nnoremap tq <Cmd>update \| call jobstart("cargo fmt")<CR>
 
