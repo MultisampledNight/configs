@@ -83,9 +83,8 @@ bydir() {
 
 # wrapper for nix-shell to make it launch zsh and cause less friction in my workflow
 nix-shell() {
-	SHELL_NAME="${SHELL_NAME:+$SHELL_NAME/}$@" \
-		command nix-shell $@ \
-			--command "SHELL=$(command which zsh) exec $(command which zsh) -i"
+	command nix-shell $@ \
+		--command "SHELL=$(command which zsh) exec $(command which zsh) -i"
 }
 shell() {
 	inner_cmd="SHELL=$(command which zsh) "
@@ -110,10 +109,7 @@ shell() {
 	before=$(pwd)
 	cd "$ALL_SHELLDEFS_PATH/$1"
 
-	# no magic variable, just set here for the prompt below
-	# **do note this doesn't know of standalone nix-shells**
-	SHELL_NAME="${SHELL_NAME:+$SHELL_NAME/}<$1>" \
-		command nix-shell --command "cd $before; $inner_cmd"
+	command nix-shell --command "cd $before; $inner_cmd"
 
 	cd $before
 }

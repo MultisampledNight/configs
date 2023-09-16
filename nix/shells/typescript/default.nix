@@ -10,4 +10,8 @@ pkgs.mkShell rec {
     typescript
     typescript-language-server
   ]);
+
+  shellHook = ''
+    export SHELL_NAME="''${SHELL_NAME:+$SHELL_NAME/}<typescript>"
+  '';
 }

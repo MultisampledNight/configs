@@ -7,4 +7,8 @@ pkgs.mkShell {
     SDL2_mixer SDL2_sound
     SDL2_net
   ];
+
+  shellHook = ''
+    export SHELL_NAME="''${SHELL_NAME:+$SHELL_NAME/}<sdl>"
+  '';
 }

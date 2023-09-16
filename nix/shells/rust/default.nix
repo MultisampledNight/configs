@@ -37,6 +37,7 @@ pkgs.mkShell rec {
   ];
 
   shellHook = ''
+    export SHELL_NAME="''${SHELL_NAME:+$SHELL_NAME/}<rust>"
     export PATH=$PATH:''${CARGO_HOME:-~/.cargo}/bin
     export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:${builtins.toString (pkgs.lib.makeLibraryPath buildInputs)}";
   '';

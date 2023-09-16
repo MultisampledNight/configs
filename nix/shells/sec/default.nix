@@ -7,4 +7,8 @@ pkgs.mkShell rec {
 
     intelmetool coreboot-utils
   ];
+
+  shellHook = ''
+    export SHELL_NAME="''${SHELL_NAME:+$SHELL_NAME/}<sec>"
+  '';
 }

@@ -9,4 +9,8 @@ pkgs.mkShell {
   buildInputs = with pkgs; [
     python3Ext black
   ];
+
+  shellHook = ''
+    export SHELL_NAME="''${SHELL_NAME:+$SHELL_NAME/}<python>"
+  '';
 }
