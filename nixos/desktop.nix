@@ -92,7 +92,7 @@ in {
       # normal applications
       configuredFirefox tor-browser-bundle-bin thunderbird
       okular zathura
-      blender gimp inkscape musescore
+      blender gimp inkscape
       obsidian libreoffice-fresh
       pavucontrol carla
       mate.eom
@@ -104,7 +104,8 @@ in {
     ++ (if cfg.xorg then [
       xorg.xauth rofi flameshot
     ] else [])
-    ++ (if cfg.videos then [
+    ++ (if cfg.multimedia then [
+      # video
       # OBS Studio and its plugins
       (wrapOBS {
         plugins = with obs-studio-plugins; [
@@ -114,6 +115,9 @@ in {
         ];
       })
       libsForQt5.kdenlive
+
+      # audio
+      audacity lmms musescore polyphone
     ] else []);
 
     sessionVariables = {

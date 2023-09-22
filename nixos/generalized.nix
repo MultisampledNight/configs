@@ -111,10 +111,10 @@ in {
       description = "If you are the type of person which is colloquially referred to as gamer. Only in effect on non-server setups.";
     };
 
-    videos = mkOption {
+    multimedia = mkOption {
       type = types.bool;
       default = false;
-      description = "If you want to record and edit videos. Only in effect on non-server setups.";
+      description = "If you want to record, produce and edit videos, music and audio. Only in effect on non-server setups.";
     };
 
     pkgs-unstable = mkOption {

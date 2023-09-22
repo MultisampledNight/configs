@@ -136,6 +136,7 @@ in {
       overpass
       ttf_bitstream_vera
       ubuntu_font_family
+      source-han-sans
     ];
 
     fontDir.enable = true;
