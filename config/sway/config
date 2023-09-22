@@ -53,7 +53,7 @@ input type:touchpad {
     accel_profile flat
     click_method clickfinger
     drag disabled
-    dwt enabled
+    dwt disabled
     tap enabled
     natural_scroll enabled
     middle_emulation disabled
