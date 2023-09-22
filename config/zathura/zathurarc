@@ -1,5 +1,3 @@
-set sandbox strict
-
 set render-loading false
 
 set default-fg "#B6B3B4"
