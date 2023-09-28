@@ -294,6 +294,7 @@ in {
         sqlite-interactive
         btop sysstat
       ]
+      ++ (if cfg.wireless.wlan then [iw] else [])
       ++ (if cfg.xorg then [xclip] else [])
       ++ (if cfg.wayland then [
         fuzzel waybar mako grim slurp swappy hyprpicker gammastep
