@@ -114,6 +114,12 @@ shell() {
 	cd $before
 }
 
+pwd-as-title() {
+	print -nP '\e]2;%~\a'
+}
+chpwd_functions+=("pwd-as-title")
+print -nP '\e]2;%~\a'
+
 setopt prompt_subst
 if [[ -z "$TIME_LEFT" ]]; then
 	TIME_LEFT=$(time-left)
