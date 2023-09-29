@@ -2,6 +2,7 @@
 #!nix-shell -i python3 -p python3
 import argparse
 import os
+import sys
 from pathlib import Path
 from pwd import getpwnam
 
