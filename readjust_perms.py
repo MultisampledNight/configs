@@ -32,6 +32,8 @@ def readjust_perms(destinations=CONFIG_DESTINATIONS, user=USER, root=ROOT):
             )
         except PermissionError:
             print(f"Skipping {link_name} due to missing perms", file=sys.stderr)
+        except FileNotFoundError:
+            print(f"Skipping {link_name} due to not existing", file=sys.stderr)
 
 
 def parse_args():
