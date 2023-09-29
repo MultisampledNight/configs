@@ -1,3 +1,4 @@
+set filemonitor noop
 set render-loading false
 
 set default-fg "#B6B3B4"
