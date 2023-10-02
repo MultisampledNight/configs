@@ -47,7 +47,6 @@ zle -N rationalise-dot
 bindkey . rationalise-dot
 
 alias evcxr='evcxr --edit-mode vi'
-alias nv='neovide'
 alias wh='wormhole-rs'
 alias sqlite='sqlite3 -box'
 alias rsync='rsync --progress --compress'
@@ -66,6 +65,11 @@ alias docs='cargo doc --open'
 alias cm='cargo miri'
 alias ca='cargo apk'
 alias cfg='CARGO_PROFILE_RELEASE_DEBUG=true cargo flamegraph'
+
+nv() {
+	# purely temporary as I'm too tired and broken to fix this properly atm
+	(neovide --no-fork $@ 2>/dev/null; rm -f neovide_backtraces.log) & disown
+}
 
 man() {
   if [[ ! -n $1 ]]; then
