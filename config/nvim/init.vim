@@ -41,7 +41,7 @@ else
 
   if exists("g:neovide")
     set winblend=80
-    set pumblend=80
+    set pumblend=30
   else
     set winblend=10
     set pumblend=10

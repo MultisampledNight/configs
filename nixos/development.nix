@@ -4,9 +4,9 @@ with lib;
 let
   cfg = config.generalized;
 
-  neovideSmooth = cfg.pkgs-unstable.callPackage ./neovide/default.nix {};
+  neovideSmooth = cfg.pkgs-unstable.callPackage ./packages/neovide/default.nix {};
   customVimPlugins = cfg.pkgs-unstable.vimPlugins.extend (
-    cfg.pkgs-unstable.callPackage ./neovim/custom-plugins.nix {}
+    cfg.pkgs-unstable.callPackage ./packages/neovim/custom-plugins.nix {}
   );
   latexWithTikz = (pkgs.texlive.combine {
     inherit (pkgs.texlive) scheme-basic pgf standalone german babel;
