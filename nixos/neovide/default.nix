@@ -41,6 +41,10 @@ rustPlatform.buildRustPackage.override { stdenv = clangStdenv; } rec {
     };
   };
 
+  cargoPatches = [
+    ./0001-mouse-as-touch.patch
+  ];
+
   SKIA_SOURCE_DIR =
     let
       repo = fetchFromGitHub {

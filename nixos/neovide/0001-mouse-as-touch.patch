@@ -1,0 +1,341 @@
+diff --git a/src/window/mouse_manager.rs b/src/window/mouse_manager.rs
+index ed4b956..23ecbbb 100644
+--- a/src/window/mouse_manager.rs
++++ b/src/window/mouse_manager.rs
+@@ -1,6 +1,7 @@
+ use std::{
+     cmp::Ordering,
+     collections::HashMap,
++    num::NonZeroU32,
+     time::{Duration, Instant},
+ };
+ 
+@@ -65,6 +66,17 @@ struct TouchTrace {
+     start: PhysicalPosition<f32>,
+     last: PhysicalPosition<f32>,
+     left_deadzone_once: bool,
++    /// In the case of mouse-as-touch interpretation, stores how many mouse buttons are
++    /// currently "stacked" on this trace. Each time a mouse button is pressed, this count
++    /// increases, each time a mouse button is released, this count drops.
++    stacks: NonZeroU32,
++}
++
++#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
++enum FingerId {
++    /// The second tuple item allows to keep track of different fingers per device.
++    Touch(DeviceId, u64),
++    MouseEmulated(DeviceId),
+ }
+ 
+ pub struct MouseManager {
+@@ -72,13 +84,12 @@ pub struct MouseManager {
+     drag_position: PhysicalPosition<u32>,
+ 
+     has_moved: bool,
+-    position: PhysicalPosition<u32>,
++    position: PhysicalPosition<f64>,
+     relative_position: PhysicalPosition<u32>,
+ 
+     scroll_position: PhysicalPosition<f32>,
+ 
+-    // the tuple allows to keep track of different fingers per device
+-    touch_position: HashMap<(DeviceId, u64), TouchTrace>,
++    touch_position: HashMap<FingerId, TouchTrace>,
+ 
+     window_details_under_mouse: Option<WindowDrawDetails>,
+ 
+@@ -91,7 +102,7 @@ impl MouseManager {
+         MouseManager {
+             dragging: None,
+             has_moved: false,
+-            position: PhysicalPosition::new(0, 0),
++            position: PhysicalPosition::new(0.0, 0.0),
+             relative_position: PhysicalPosition::new(0, 0),
+             drag_position: PhysicalPosition::new(0, 0),
+             scroll_position: PhysicalPosition::new(0.0, 0.0),
+@@ -152,11 +163,6 @@ impl MouseManager {
+             renderer.grid_renderer.font_dimensions.into(),
+         );
+ 
+-        self.position = to_grid_coords(
+-            clamped_position,
+-            renderer.grid_renderer.font_dimensions.into(),
+-        );
+-
+         if let Some(relevant_window_details) = relevant_window_details {
+             let relative_position = PhysicalPosition::new(
+                 clamped_position.x - relevant_window_details.region.left,
+@@ -323,7 +329,7 @@ impl MouseManager {
+         keyboard_manager: &KeyboardManager,
+         renderer: &Renderer,
+         window: &Window,
+-        finger_id: (DeviceId, u64),
++        finger_id: FingerId,
+         location: PhysicalPosition<f32>,
+         phase: &TouchPhase,
+     ) {
+@@ -332,60 +338,66 @@ impl MouseManager {
+                 let settings = SETTINGS.get::<WindowSettings>();
+                 let enable_deadzone = settings.touch_deadzone >= 0.0;
+ 
+-                self.touch_position.insert(
+-                    finger_id,
+-                    TouchTrace {
++                self.touch_position
++                    .entry(finger_id)
++                    .and_modify(|trace| trace.stacks = trace.stacks.saturating_add(1))
++                    .or_insert(TouchTrace {
+                         start_time: Instant::now(),
+                         start: location,
+                         last: location,
+                         left_deadzone_once: !enable_deadzone,
+-                    },
+-                );
++                        stacks: NonZeroU32::new(1).unwrap(),
++                    });
+             }
+             TouchPhase::Moved => {
+                 let mut dragging_just_now = false;
+ 
+-                if let Some(trace) = self.touch_position.get_mut(&finger_id) {
+-                    if !trace.left_deadzone_once {
+-                        let distance_to_start = ((trace.start.x - location.x).powi(2)
+-                            + (trace.start.y - location.y).powi(2))
+-                        .sqrt();
+-
+-                        let settings = SETTINGS.get::<WindowSettings>();
+-                        if distance_to_start >= settings.touch_deadzone {
+-                            trace.left_deadzone_once = true;
+-                        }
+-
+-                        let timeout_setting = Duration::from_micros(
+-                            (settings.touch_drag_timeout * 1_000_000.) as u64,
+-                        );
+-                        if self.dragging.is_none() && trace.start_time.elapsed() >= timeout_setting
+-                        {
+-                            dragging_just_now = true;
+-                        }
++                let trace = if let Some(trace) = self.touch_position.get_mut(&finger_id) {
++                    trace
++                } else {
++                    return;
++                };
++
++                if !trace.left_deadzone_once {
++                    let distance_to_start = ((trace.start.x - location.x).powi(2)
++                        + (trace.start.y - location.y).powi(2))
++                    .sqrt();
++
++                    let settings = SETTINGS.get::<WindowSettings>();
++                    if distance_to_start >= settings.touch_deadzone {
++                        trace.left_deadzone_once = true;
+                     }
+ 
+-                    if self.dragging.is_some() || dragging_just_now {
+-                        self.handle_pointer_motion(
+-                            location.x.round() as i32,
+-                            location.y.round() as i32,
+-                            keyboard_manager,
+-                            renderer,
+-                            window,
+-                        );
++                    let timeout_setting =
++                        Duration::from_micros((settings.touch_drag_timeout * 1_000_000.) as u64);
++                    if self.dragging.is_none() && trace.start_time.elapsed() >= timeout_setting {
++                        dragging_just_now = true;
+                     }
+-                    // the double check might seem useless, but the if branch above might set
+-                    // trace.left_deadzone_once - which urges to check again
+-                    else if trace.left_deadzone_once {
+-                        let delta = (trace.last.x - location.x, location.y - trace.last.y);
++                }
++
++                if self.dragging.is_some() || dragging_just_now {
++                    self.handle_pointer_motion(
++                        location.x.round() as i32,
++                        location.y.round() as i32,
++                        keyboard_manager,
++                        renderer,
++                        window,
++                    );
++                }
++                // the double check might seem useless, but the if branch above might set
++                // trace.left_deadzone_once - which urges to check again
++                else if trace.left_deadzone_once {
++                    let delta = (
++                        (trace.last.x - location.x) * trace.stacks.get() as f32,
++                        (location.y - trace.last.y) * trace.stacks.get() as f32,
++                    );
+ 
+-                        // not updating the position would cause the movement to "escalate" from the
+-                        // starting point
+-                        trace.last = location;
++                    // not updating the position would cause the movement to "escalate" from the
++                    // starting point
++                    trace.last = location;
+ 
+-                        let font_size = renderer.grid_renderer.font_dimensions.into();
+-                        self.handle_pixel_scroll(font_size, delta, keyboard_manager);
+-                    }
++                    let font_size = renderer.grid_renderer.font_dimensions.into();
++                    self.handle_pixel_scroll(font_size, delta, keyboard_manager);
+                 }
+ 
+                 if dragging_just_now {
+@@ -400,22 +412,34 @@ impl MouseManager {
+                 }
+             }
+             TouchPhase::Ended | TouchPhase::Cancelled => {
+-                if let Some(trace) = self.touch_position.remove(&finger_id) {
+-                    if self.dragging.is_some() {
+-                        self.handle_pointer_transition(&MouseButton::Left, false, keyboard_manager);
+-                    }
+-                    if !trace.left_deadzone_once {
+-                        self.handle_pointer_motion(
+-                            trace.start.x.round() as i32,
+-                            trace.start.y.round() as i32,
+-                            keyboard_manager,
+-                            renderer,
+-                            window,
+-                        );
+-                        self.handle_pointer_transition(&MouseButton::Left, true, keyboard_manager);
+-                        self.handle_pointer_transition(&MouseButton::Left, false, keyboard_manager);
++                if let Some(trace) = self.touch_position.get_mut(&finger_id) {
++                    let stacks_afterwards = NonZeroU32::new(trace.stacks.get() - 1);
++
++                    if let Some(new_stacks) = stacks_afterwards {
++                        // everything alright, still at least one stack left
++                        trace.stacks = new_stacks;
++                        return;
+                     }
+                 }
++
++                // no stacks left :( let's finish the touch trace
++                let trace = self.touch_position.remove(&finger_id).unwrap();
++
++                if self.dragging.is_some() {
++                    self.handle_pointer_transition(&MouseButton::Left, false, keyboard_manager);
++                }
++
++                if !trace.left_deadzone_once {
++                    self.handle_pointer_motion(
++                        trace.start.x.round() as i32,
++                        trace.start.y.round() as i32,
++                        keyboard_manager,
++                        renderer,
++                        window,
++                    );
++                    self.handle_pointer_transition(&MouseButton::Left, true, keyboard_manager);
++                    self.handle_pointer_transition(&MouseButton::Left, false, keyboard_manager);
++                }
+             }
+         }
+     }
+@@ -427,7 +451,52 @@ impl MouseManager {
+         renderer: &Renderer,
+         window: &Window,
+     ) {
++        let mouse_as_touch = SETTINGS.get::<WindowSettings>().mouse_as_touch;
+         match event {
++            // overrides if mouse_as_touch is active
++            // TODO(multisn8): what if `mouse_as_touch` switches to false
++            // mid-emulation?
++            Event::WindowEvent {
++                event:
++                    WindowEvent::CursorMoved {
++                        position,
++                        device_id,
++                        ..
++                    },
++                ..
++            } if mouse_as_touch => {
++                self.position = *position;
++                self.handle_touch(
++                    keyboard_manager,
++                    renderer,
++                    window,
++                    FingerId::MouseEmulated(*device_id),
++                    position.cast(),
++                    &TouchPhase::Moved,
++                );
++                if self.mouse_hidden {
++                    window.set_cursor_visible(true);
++                    self.mouse_hidden = false;
++                }
++            }
++            Event::WindowEvent {
++                event:
++                    WindowEvent::MouseInput {
++                        state, device_id, ..
++                    },
++                ..
++            } if mouse_as_touch => self.handle_touch(
++                keyboard_manager,
++                renderer,
++                window,
++                FingerId::MouseEmulated(*device_id),
++                self.position.cast(),
++                match state {
++                    ElementState::Pressed => &TouchPhase::Started,
++                    ElementState::Released => &TouchPhase::Ended,
++                },
++            ),
++            // "normal" procedure otherwise
+             Event::WindowEvent {
+                 event: WindowEvent::CursorMoved { position, .. },
+                 ..
+@@ -464,6 +533,14 @@ impl MouseManager {
+                 (delta.x as f32, delta.y as f32),
+                 keyboard_manager,
+             ),
++            Event::WindowEvent {
++                event: WindowEvent::MouseInput { button, state, .. },
++                ..
++            } => self.handle_pointer_transition(
++                button,
++                state == &ElementState::Pressed,
++                keyboard_manager,
++            ),
+             Event::WindowEvent {
+                 event:
+                     WindowEvent::Touch(Touch {
+@@ -478,18 +555,10 @@ impl MouseManager {
+                 keyboard_manager,
+                 renderer,
+                 window,
+-                (*device_id, *id),
++                FingerId::Touch(*device_id, *id),
+                 location.cast(),
+                 phase,
+             ),
+-            Event::WindowEvent {
+-                event: WindowEvent::MouseInput { button, state, .. },
+-                ..
+-            } => self.handle_pointer_transition(
+-                button,
+-                state == &ElementState::Pressed,
+-                keyboard_manager,
+-            ),
+             Event::WindowEvent {
+                 event:
+                     WindowEvent::KeyboardInput {
+diff --git a/src/window/settings.rs b/src/window/settings.rs
+index cf8f8e0..0c223b6 100644
+--- a/src/window/settings.rs
++++ b/src/window/settings.rs
+@@ -12,6 +12,7 @@ pub struct WindowSettings {
+     pub remember_window_size: bool,
+     pub remember_window_position: bool,
+     pub hide_mouse_when_typing: bool,
++    pub mouse_as_touch: bool,
+     pub touch_deadzone: f32,
+     pub touch_drag_timeout: f32,
+     pub background_color: String,
+@@ -36,6 +37,7 @@ impl Default for WindowSettings {
+             remember_window_size: true,
+             remember_window_position: true,
+             hide_mouse_when_typing: false,
++            mouse_as_touch: false,
+             touch_deadzone: 6.0,
+             touch_drag_timeout: 0.17,
+             background_color: "".to_string(),

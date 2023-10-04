@@ -264,6 +264,10 @@ let g:neovide_floating_blur_amount_y = 16.0
 let g:neovide_underline_automatic_scaling = v:true
 let g:neovide_hide_mouse_when_typing = v:true
 
+if hostname() == "elusive"
+  let g:neovide_mouse_as_touch = v:true
+endif
+
 " global
 " hacky and bound to interfere with the latex or typst machinery, but it works
 function CdProjectToplevel(_timer_id)
