@@ -3,6 +3,7 @@
 with lib;
 let
   cfg = config.generalized;
+  light-please = pkgs.callPackage ./packages/light-please/default.nix {};
 in
 {
   imports = [
@@ -23,6 +24,7 @@ in
       mdadm
       acpi brightnessctl
       xournalpp
+      light-please
     ];
 
     specialisation.hardened.configuration = {
