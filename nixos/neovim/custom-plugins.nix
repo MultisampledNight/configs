@@ -3,7 +3,7 @@
 { pkgs, lib, ... }:
 
 let
-  build = pkgs.vimUtils.buildVimPluginFrom2Nix;
+  build = pkgs.vimUtils.buildVimPlugin;
 in final: prev: {
   multisn8-colorschemes = build {
     name = "multisn8-colorschemes";
