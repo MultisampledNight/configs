@@ -6,7 +6,7 @@ colors:
     matches:
       foreground: "#212224"
       background: "#00C7F7"
-    focused_matche:
+    focused_match:
       foreground: "#212224"
       background: "#FF9365"
 
