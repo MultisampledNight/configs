@@ -212,7 +212,7 @@ function RenameCurrentFile()
 endfunction
 
 nnoremap tt <Cmd>Telescope resume<CR>
-nnoremap ti <Cmd>call TelescopeOnToplevel("find_files")<CR>
+nnoremap ti <Cmd>call TelescopeOnToplevel("find_files follow=true")<CR>
 nnoremap te <Cmd>call TelescopeOnToplevel("live_grep")<CR> 
 nnoremap td <Cmd>call TelescopeOnToplevel("lsp_definitions")<CR>
 nnoremap tu <Cmd>call TelescopeOnToplevel("lsp_references")<CR>
