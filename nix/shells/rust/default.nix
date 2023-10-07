@@ -2,7 +2,7 @@
 
 pkgs.mkShell rec {
   buildInputs = with pkgs; [
-    cargo rustc rustfmt clippy rust-analyzer rustup
+    rustup
     cargo-nextest cargo-flamegraph
 
     gdb
@@ -38,7 +38,11 @@ pkgs.mkShell rec {
 
   shellHook = ''
     export SHELL_NAME="''${SHELL_NAME:+$SHELL_NAME/}<rust>"
-    export PATH=$PATH:''${CARGO_HOME:-~/.cargo}/bin
+    export PATH="$PATH:''${CARGO_HOME:-~/.cargo}/bin"
+    export PATH="$PATH:''${RUSTUP_HOME:-~/.rustup/toolchains/$RUSTC_VERSION-x86_64-unknown-linux/bin}"
     export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:${builtins.toString (pkgs.lib.makeLibraryPath buildInputs)}";
+
+    rustup default stable
+    rustup component add rustfmt clippy rust-src rust-analyzer
   '';
 }
