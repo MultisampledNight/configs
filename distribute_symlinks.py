@@ -22,6 +22,7 @@ CONFIG_DESTINATIONS = {
     "config/mako": "~/.config/mako",
     "config/nvim": "~/.config/nvim",
     "config/pipewire": "~/.config/pipewire/pipewire.conf.d",
+    "config/ripgrep/rgignore": "~/.rgignore",
     "config/sway": "~/.config/sway",
     "config/swaylock": "~/.config/swaylock",
     "config/waybar": "~/.config/waybar",
