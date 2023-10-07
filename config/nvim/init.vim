@@ -477,6 +477,16 @@ cmp.setup.cmdline(":", {
 local telescope = require("telescope")
 telescope.setup({
   defaults = {
+    vimgrep_arguments = {
+      "rg",
+      "--color=never",
+      "--no-heading",
+      "--with-filename",
+      "--line-number",
+      "--column",
+      "--smart-case",
+      "--follow",
+    },
     winblend = vim.o.winblend,
     layout_config = {
       horizontal = {
