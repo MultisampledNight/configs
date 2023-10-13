@@ -26,6 +26,7 @@ pkgs.mkShell rec {
 
     python3 valgrind lldb rr
     renderdoc
+    gnuplot
   ];
   RUSTC_VERSION = pkgs.lib.strings.removeSuffix "\n" (
     pkgs.lib.readFile ./rust-toolchain
