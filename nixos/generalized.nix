@@ -302,7 +302,7 @@ in {
         waypipe
       ] else [])
       ++ (if cfg.graphical then [
-        alacritty speedcrunch
+        cfg.pkgs-unstable.alacritty speedcrunch
         # themes
         adapta-gtk-theme adapta-kde-theme
         breeze-icons volantes-cursors
