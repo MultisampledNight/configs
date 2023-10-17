@@ -11,30 +11,31 @@ TARGET_DATE_PATH = "~/.config/time-left/config.json"
 
 
 def main():
-    diff = time_left()
-    if diff is None:
-        sys.exit(1)
-
-    diff = format_delta(diff, precision = {"d": 1, "w": 7})
-    print(diff)
-
-
-def time_left() -> timedelta:
     try:
         path = Path(TARGET_DATE_PATH).expanduser()
         with open(path) as fh:
             parsed = json.load(fh)
             target = parsed["target-date"]
+            precision = parsed["precision"]
     except FileNotFoundError:
         return None
 
+    diff = time_left(target)
+    if diff is None:
+        sys.exit(1)
+
+    diff = format_delta(diff, precision)
+    print(diff)
+
+
+def time_left(target) -> timedelta:
     target = datetime.fromisoformat(target)
     diff = target - datetime.now()
 
     return diff
 
 
-def format_delta(delta, precision = {"d": 1, "w": 7, "m": 30, "y": 365}) -> str:
+def format_delta(delta, precision = {"d": 1*24, "w": 7*24, "m": 30*24, "y": 365*24}) -> str:
     # want to go from coarse to fine, to make sure large sieves cover everything
     precision = sorted(
         precision.items(),
@@ -46,7 +47,7 @@ def format_delta(delta, precision = {"d": 1, "w": 7, "m": 30, "y": 365}) -> str:
     # and noting down in `sieved_out` what each precision step down yielded
     sieved_out = []
     for i, (label, sieve_size) in enumerate(precision):
-        sieve = timedelta(days=sieve_size)
+        sieve = timedelta(hours=sieve_size)
 
         sieve_result = delta // sieve
         delta %= sieve
