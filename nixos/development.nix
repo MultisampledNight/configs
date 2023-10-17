@@ -98,6 +98,7 @@ in {
             cmp-vsnip vim-vsnip
             nvim-lspconfig trouble-nvim plenary-nvim
             telescope-nvim telescope-ui-select-nvim
+            nvim-dap nvim-dap-ui
             (nvim-treesitter.withPlugins (parsers: with parsers; [
               arduino c cpp c_sharp elixir gdscript javascript julia haskell
               ocaml objc lua python r rust swift typescript

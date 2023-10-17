@@ -5,7 +5,7 @@ pkgs.mkShell rec {
     rustup
     cargo-audit cargo-nextest cargo-flamegraph
 
-    gdb
+    gdb lldb
     clang llvmPackages_latest.lld llvmPackages.libclang
     openssl pkg-config cmake
     wasm-pack evcxr tokei

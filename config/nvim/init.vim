@@ -113,7 +113,7 @@ EOF
 endif
 
 set guifont=IBM_Plex_Mono:h14:#h-slight
-set linespace=2
+set linespace=4
 set number
 set noshowmode
 set breakindent
@@ -130,7 +130,6 @@ set completeopt=menu,menuone,preview,noselect
 set mouse=a
 set mousemodel=extend
 set mousescroll=ver:4,hor:0
-set smoothscroll
 set ignorecase
 set smartcase
 set scrolloff=2
@@ -221,7 +220,8 @@ nnoremap ta <Cmd>call TelescopeOnToplevel("lsp_implementations")<CR>
 nnoremap to <Cmd>TroubleToggle<CR>
 nnoremap tb <Cmd>update \| Trouble<CR>
 
-nnoremap tn <Cmd>update \| lua vim.lsp.buf.hover()<CR>
+nnoremap tn <Cmd>update \| lua if require("dap").session() == nil then vim.lsp.buf.hover() else require("dap.ui.widgets").hover() end<CR>
+vnoremap tn <Cmd>update \| lua if require("dap").session() == nil then vim.lsp.buf.hover() else require("dap.ui.widgets").hover() end<CR>
 nnoremap tr <Cmd>update \| lua vim.lsp.buf.rename()<CR>
 nnoremap ts <Cmd>update \| lua vim.lsp.buf.code_action()<CR>
 vnoremap ts <Cmd>update \| lua vim.lsp.buf.code_action()<CR>
@@ -232,10 +232,7 @@ nnoremap tl <Cmd>call TelescopeOnToplevel("treesitter")<CR>
 nnoremap tm <Cmd>call TelescopeOnToplevel("man_pages")<CR>
 nnoremap tw <Cmd>call TelescopeOnToplevel("keymaps")<CR>
 
-nnoremap ty <Cmd>SignifyDiff<CR>
-nnoremap tz <Cmd>call TelescopeOnToplevel("git_status")<CR>
-nnoremap t, <Plug>(signify-prev-hunk)
-nnoremap t. <Plug>(signify-next-hunk)
+nnoremap t. <Cmd>call TelescopeOnToplevel("git_status")<CR>
 nnoremap tj <Cmd>call CreateNewFile()<CR>
 nnoremap tc <Cmd>call RenameCurrentFile()<CR>
 
@@ -244,8 +241,10 @@ nnoremap tq <Cmd>update \| call jobstart("cargo fmt")<CR>
 nnoremap tf <Cmd>lua require("dap").toggle_breakpoint()<CR>
 nnoremap tv <Cmd>lua require("dap").step_over()<CR>
 nnoremap tü <Cmd>lua require("dap").step_into()<CR>
-nnoremap tä <Cmd>lua require("dap").continue()<CR>
-nnoremap tö <Cmd>lua require("dap").terminate()<CR>
+nnoremap tä <Cmd>lua require("dap").step_out()<CR>
+nnoremap tö <Cmd>lua require("dap").continue()<CR>
+nnoremap ty <Cmd>lua require("dap").terminate()<CR>
+nnoremap tz <Cmd>lua require("dapui").toggle()<CR>
 
 nnoremap <F1> <NOP>
 inoremap <F1> <NOP>
@@ -277,6 +276,14 @@ autocmd BufEnter * call timer_start(50, "CdProjectToplevel")
 
 " rust
 autocmd BufNewFile,BufRead *.rs set equalprg=rustfmt formatprg=rustfmt
+autocmd BufNewFile,BufRead *.rs lua require("dap.ext.vscode").load_launchjs(".ide/launch.json")
+function RustProjectExecutable()
+  let metadata = json_decode(trim(system("cargo metadata --format-version=1 --offline --no-deps 2>/dev/null")))
+  let executable = metadata["target_directory"]
+    \ . "/debug/"
+    \ . metadata["packages"][0]["name"]
+  return executable
+endfunction
 
 " markdown
 autocmd BufNewFile,BufRead *.md set tw=0 sw=2 ts=2 sts=0 et
@@ -504,6 +511,58 @@ telescope.setup({
 })
 telescope.load_extension("ui-select")
 
+-- https://github.com/mfussenegger/nvim-dap/wiki/Debug-Adapter-installation#ccrust-via-lldb-vscode
+local dap = require("dap")
+dap.adapters.lldb = {
+  type = "executable",
+  command = "/usr/bin/env",
+  args = { "lldb-vscode" },
+  name = "lldb",
+}
+dap.configurations.rust = {
+  {
+    name = "Launch",
+    type = "lldb",
+    request = "launch",
+    program = vim.fn.RustProjectExecutable(),
+    cwd = "${workspaceFolder}",
+    stopOnEntry = false,
+
+    initCommands = function()
+      -- Find out where to look for the pretty printer Python module
+      local rustc_sysroot = vim.fn.trim(vim.fn.system("rustc --print sysroot"))
+
+      local script_import = 'command script import "' .. rustc_sysroot .. '/lib/rustlib/etc/lldb_lookup.py"'
+      local commands_file = rustc_sysroot .. "/lib/rustlib/etc/lldb_commands"
+
+      local commands = {}
+      local file = io.open(commands_file, "r")
+      if file then
+        for line in file:lines() do
+          table.insert(commands, line)
+        end
+        file:close()
+      end
+      table.insert(commands, 1, script_import)
+
+      return commands
+    end,
+  },
+}
+
+local dapui = require("dapui")
+dapui.setup()
+
+-- taken from https://github.com/rcarriga/nvim-dap-ui/
+dap.listeners.after.event_initialized["dapui_config"] = function()
+  dapui.open()
+end
+-- dap.listeners.before.event_terminated["dapui_config"] = function()
+--   dapui.close()
+-- end
+-- dap.listeners.before.event_exited["dapui_config"] = function()
+--   dapui.close()
+-- end
 EOF
 
 " vim: sw=2 ts=2 et
