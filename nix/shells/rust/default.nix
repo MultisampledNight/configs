@@ -6,7 +6,8 @@ pkgs.mkShell rec {
     cargo-audit cargo-nextest cargo-flamegraph
 
     gdb lldb
-    clang llvmPackages_latest.lld llvmPackages.libclang
+    clang llvmPackages.libclang
+    mold 
     openssl pkg-config cmake
     wasm-pack evcxr tokei
     libxkbcommon
