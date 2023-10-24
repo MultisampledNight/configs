@@ -79,7 +79,7 @@ lua <<EOF
         },
         checkOnSave = {
           command = "clippy",
-          -- extraArgs = {"--", "-Wclippy::pedantic"},
+          extraArgs = {"--", "-Wclippy::pedantic"},
         },
       }
     }
