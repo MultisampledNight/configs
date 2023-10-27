@@ -93,7 +93,7 @@ in {
       configuredFirefox tor-browser-bundle-bin thunderbird
       okular zathura
       blender gimp inkscape
-      obsidian libreoffice-fresh
+      cfg.pkgs-unstable.obsidian libreoffice-fresh
       pavucontrol carla
       mate.eom
       dunst virt-manager qemu_kvm

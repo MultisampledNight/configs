@@ -121,7 +121,7 @@ in {
       type = types.pkgs;
       default = import <nixos-unstable> {
         config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
-          "nvidia-x11"
+          "nvidia-x11" "obsidian"
         ];
 
         overlays = [
