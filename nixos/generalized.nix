@@ -121,7 +121,8 @@ in {
       type = types.pkgs;
       default = import <nixos-unstable> {
         config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
-          "nvidia-x11" "obsidian"
+          "nvidia-x11"
+          "obsidian"
         ];
 
         overlays = [
@@ -144,16 +145,6 @@ in {
               '';
             });
           } else {})
-          (final: prev: if cfg.profileGuided then {
-            linuxZenFast = prev.linuxPackagesFor (prev.linuxKernel.kernels.linux_zen.override {
-              stdenv = pkgs.fastStdenv;
-            });
-          } else {})
-          (final: prev: {
-            pciutils = prev.pciutils.overrideAttrs rec {
-              buildInputs = prev.pciutils.buildInputs ++ (with pkgs; [pkgs.gcc-unwrapped.lib]);
-            };
-          })
         ];
       };
       description = "From where to pull unstable packages.";
@@ -175,8 +166,8 @@ in {
 
       kernelPackages = mkDefault (
         if cfg.profileGuided
-        then cfg.pkgs-unstable.linuxZenFast
-        else cfg.pkgs-unstable.linuxKernel.packages.linux_zen
+        then pkgs.linuxZenFast
+        else pkgs.linuxKernel.packages.linux_zen
       );
     };
 
@@ -430,6 +421,11 @@ in {
           buildInputs = prev.inkscape.buildInputs ++ (with pkgs; [double-conversion libepoxy]);
         };
       })
+      (final: prev: if cfg.profileGuided then {
+        linuxZenFast = prev.linuxPackagesFor (prev.linuxKernel.kernels.linux_zen.override {
+          stdenv = pkgs.fastStdenv;
+        });
+      } else {})
     ];
   };
 }
