@@ -149,6 +149,11 @@ in {
               stdenv = pkgs.fastStdenv;
             });
           } else {})
+          (final: prev: {
+            pciutils = prev.pciutils.overrideAttrs rec {
+              buildInputs = prev.pciutils.buildInputs ++ (with pkgs; [pkgs.gcc-unwrapped.lib]);
+            };
+          })
         ];
       };
       description = "From where to pull unstable packages.";
