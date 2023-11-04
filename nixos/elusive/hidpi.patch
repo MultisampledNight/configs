@@ -1,11 +1,10 @@
 --- a/home/multisn8/.config/sway/config
 +++ b/home/multisn8/.config/sway/config
 @@ -25,7 +25,7 @@ output * {
-     max_render_time 6
+    bg ~/.background-image fill
  }
  output Virtual-1 {
 -    scale 1
 +    scale 2
-     max_render_time 1
  }
  output HDMI-A-1 position 0,0

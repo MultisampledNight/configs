@@ -19,11 +19,9 @@ hide_edge_borders smart
 
 output * {
     bg ~/.background-image fill
-    max_render_time 6
 }
 output Virtual-1 {
     scale 1
-    max_render_time 1
 }
 output HDMI-A-1 position 0,0
 output eDP-1 position 0,1080
