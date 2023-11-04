@@ -63,7 +63,10 @@ in {
     export LD_LIBRARY_PATH="${makeLibraryPath [pkgs.gcc-unwrapped.lib]}:$LD_LIBRARY_PATH";
   '';
 
-  services.getty.autologinUser = "multisn8";
+  services = {
+    getty.autologinUser = "multisn8";
+    xserver.desktopManager.plasma5.enable = true;
+  };
 
   system.stateVersion = "23.05";
 }

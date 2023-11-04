@@ -65,7 +65,7 @@ in {
     } else {});
 
     extraInit = (if cfg.videoDriver == "nvidia" && cfg.xorg then ''
-      export LD_LIBRARY_PATH="${cfg.pkgs-unstable.linuxPackages.nvidia_x11}/lib:$LD_LIBRARY_PATH"
+      export LD_LIBRARY_PATH="${config.boot.kernelPackages.nvidia_x11}/lib:$LD_LIBRARY_PATH"
     '' else "")
     + (if cfg.xorg then ''
       # is X even running yet?
@@ -81,7 +81,7 @@ in {
   programs = {
     neovim = {
       defaultEditor = !cfg.forTheGeneralPublic;
-      package = cfg.pkgs-unstable.neovim-0-9-2;
+      package = cfg.pkgs-unstable.neovim-unwrapped;
       withNodeJs = true;
       withRuby = false;
 
