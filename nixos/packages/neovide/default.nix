@@ -34,12 +34,7 @@ rustPlatform.buildRustPackage.override { stdenv = clangStdenv; } rec {
     sha256 = "lWhYCXdOGCT1ItAlgtW1OS2dee5NXnJKs1mW94xXXeA=";
   };
 
-  cargoLock = {
-    lockFile = ./Cargo.lock;
-    outputHashes = {
-      "winit-0.29.1-beta" = "sha256-7/eq0yeelRRsljPzMSOqall5iHom600Gr6gvK0neOdI=";
-    };
-  };
+  cargoLock.lockFile = ./Cargo.lock;
 
   cargoPatches = [
     ./0001-mouse-as-touch.patch
