@@ -376,11 +376,11 @@ in {
         enable = true;
         autosuggestions.enable = true;
         promptInit = ''
+          sign_color='6'
           if [[ $HOST == "elusive" ]]; then
-            PROMPT=' %D{%H %M} %F{2}%(!.#.=)%f '
-          else
-            PROMPT=' %D{%H %M} %F{6}%(!.#.=)%f '
+            sign_color='2'
           fi
+          PROMPT=" %D{%H %M} %F{$sign_color}%(!.#.=)%f "
           RPROMPT='%(?..%F{1}%?%f) %F{5}%~%f %F{4}@%M%f'
         '';
       };

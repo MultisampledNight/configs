@@ -117,7 +117,7 @@ in {
       libsForQt5.kdenlive
 
       # audio
-      audacity lmms musescore polyphone
+      audacity lmms cfg.pkgs-unstable.musescore polyphone
     ] else []);
 
     sessionVariables = {
