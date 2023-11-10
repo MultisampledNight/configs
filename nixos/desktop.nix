@@ -19,6 +19,7 @@ in {
 
     hosts = {
       "127.0.0.1" = ["elusive"];
+      "0.0.0.0" = ["github.com", "discord.com"];
     };
   };
 
