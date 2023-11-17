@@ -252,7 +252,7 @@ inoremap <F1> <NOP>
 " neovide
 let g:neovide_refresh_rate = 60
 let g:neovide_refresh_rate_idle = 5
-let g:neovide_cursor_unfocused_outline_width = 0.05
+let g:neovide_cursor_unfocused_outline_width = 0.025
 let g:neovide_cursor_animation_length = 0.08
 let g:neovide_cursor_vfx_mode = "pixiedust"
 let g:neovide_cursor_vfx_particle_lifetime = 3.4
@@ -306,7 +306,7 @@ autocmd BufNewFile,BufRead *.tex
   \|noremap <buffer> <Leader>1 <Cmd>call ExecAtFile(["pdflatex", "-halt-on-error", expand("%")])<CR>
   \|noremap <buffer> <Leader>2 <Cmd>call ViewCurrentPdf()<CR>
 autocmd VimLeavePre *.tex
-  \ call StopProgram("zathura")
+  \ call StopProgram("evince")
 
 " typst
 autocmd BufNewFile,BufRead *.typ
@@ -315,7 +315,7 @@ autocmd BufNewFile,BufRead *.typ
   \|noremap <buffer> <Leader>2 <Cmd>call ViewCurrentPdf()<CR>
 autocmd VimLeavePre *.typ
   \ call StopProgram("typst" . bufnr())
-  \|call StopProgram("zathura")
+  \|call StopProgram("evince")
 
 " both latex and typst, and anything that would require a pdf
 autocmd BufEnter *.tex,*.typ call ViewCurrentPdf()
@@ -326,29 +326,18 @@ function CurrentPdfPath()
 endfunction
 
 function ViewCurrentPdf()
-  if !has_key(g:tracked_programs, "zathura")
-    call LaunchProgram("zathura", ["zathura", CurrentPdfPath()])
+  if !has_key(g:tracked_programs, "evince")
+    echo CurrentPdfPath()
+    call LaunchProgram("evince", ["evince", CurrentPdfPath()])
     return
   endif
 
   try
-    let pid = jobpid(g:tracked_programs["zathura"])
+    let pid = jobpid(g:tracked_programs["evince"])
   catch /.*E900: Invalid channel id/
-    call LaunchProgram("zathura", ["zathura", CurrentPdfPath()])
+    call LaunchProgram("evince", ["evince", CurrentPdfPath()])
     return
   endtry
-
-  let command = [
-        \ "dbus-send",
-        \ "--type=method_call",
-        \ "--dest=org.pwmt.zathura.PID-" . pid,
-        \ "/org/pwmt/zathura",
-        \ "org.pwmt.zathura.OpenDocument",
-        \ 'string:' . CurrentPdfPath() . '',
-        \ "string:",
-        \ "int32:",
-  \ ]
-  call ExecAtFile(command)
 endfunction
 
 function LaunchProgram(name, command)

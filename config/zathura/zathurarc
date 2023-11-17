@@ -1,4 +1,4 @@
-set filemonitor noop
+set filemonitor glib
 set render-loading false
 
 set default-fg "#B6B3B4"

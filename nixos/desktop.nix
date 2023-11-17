@@ -19,7 +19,6 @@ in {
 
     hosts = {
       "127.0.0.1" = ["elusive"];
-      "0.0.0.0" = ["github.com" "discord.com"];
     };
   };
 
@@ -92,16 +91,21 @@ in {
     ++ (if cfg.graphical then [
       # normal applications
       configuredFirefox tor-browser-bundle-bin thunderbird
-      okular zathura
-      blender gimp inkscape
-      cfg.pkgs-unstable.obsidian libreoffice-fresh
+      gimp inkscape
+      libreoffice-fresh
       pavucontrol carla
       mate.eom
       dunst virt-manager qemu_kvm
       qt5ct
       helvum
-      cfg.pkgs-unstable.scrcpy
-    ] else [])
+    ] ++ (with cfg.pkgs-unstable; [
+      # zathura for viewing, evince for live-reloading
+      # since zathura flickers white when reloading, but evince does so only with the background color
+      zathura evince
+      blender
+      obsidian 
+      scrcpy
+    ]) else [])
     ++ (if cfg.xorg then [
       xorg.xauth rofi flameshot
     ] else [])
