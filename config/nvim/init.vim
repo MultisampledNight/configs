@@ -254,12 +254,11 @@ let g:neovide_refresh_rate = 60
 let g:neovide_refresh_rate_idle = 5
 let g:neovide_cursor_unfocused_outline_width = 0.025
 let g:neovide_cursor_animation_length = 0.08
-let g:neovide_cursor_vfx_mode = "pixiedust"
-let g:neovide_cursor_vfx_particle_lifetime = 3.4
-let g:neovide_cursor_vfx_particle_speed = 7
-let g:neovide_cursor_vfx_particle_density = 0
 let g:neovide_floating_blur_amount_x = 16.0
 let g:neovide_floating_blur_amount_y = 16.0
+let g:neovide_floating_shadow = v:true
+let g:neovide_light_angle_degrees = 20
+let g:neovide_light_radius = 40
 let g:neovide_underline_automatic_scaling = v:true
 let g:neovide_hide_mouse_when_typing = v:true
 
