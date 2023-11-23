@@ -131,6 +131,31 @@ in {
         };
 
         overlays = [
+          (final: prev: if cfg.wayland then {
+            godot_4 = prev.godot_4.overrideAttrs {
+              src = final.fetchFromGitHub {
+                owner = "godotengine";
+                repo = "godot";
+                rev = "8e606780b9aa997600f5e6176d263f172589f5af"; # PR #57025 adding Wayland support
+                sha256 = "sha256-CPkhxq+MS8CTx278CowLotXnL2DRx+mSgD8Q2DP1geo=";
+              };
+
+              nativeBuildInputs = prev.godot_4.nativeBuildInputs ++ (with final; [
+                autoPatchelfHook
+              ]);
+              buildInputs = prev.godot_4.buildInputs ++ (with final; [
+                wayland
+              ]);
+              runtimeDependencies = prev.godot_4.runtimeDependencies ++ (with final; [
+                wayland
+              ]);
+            };
+          } else {})
+          (final: prev: if cfg.profileGuided then {
+            godot_4 = prev.godot_4.override {
+              stdenv = pkgs.fastStdenv;
+            };
+          } else {})
           (final: prev: if (cfg.videoDriver == "nvidia" && cfg.wayland) then {
             # blatantly taken from https://wiki.hyprland.org/hyprland-wiki/pages/Nvidia/
             wlroots = prev.wlroots.overrideAttrs (finalAttrs: prevAttrs: {
@@ -394,11 +419,6 @@ in {
 
     nix.settings.auto-optimise-store = true;
     nixpkgs.overlays = [
-      (final: prev: if cfg.profileGuided then {
-        godot_4 = prev.godot_4.override {
-          stdenv = pkgs.fastStdenv;
-        };
-      } else {})
       (final: prev: {
         inkscape = prev.inkscape.overrideAttrs rec {
           version = "1.3";

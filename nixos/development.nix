@@ -21,9 +21,10 @@ in {
   environment = {
     systemPackages = with pkgs;
     [
-      python3 black godot_4 delta
+      python3 black delta
       inotify-tools geoipWithDatabase
       sshfs
+      cfg.pkgs-unstable.godot_4
 
       # languages (for Rust it's probably better to directly use a shell.nix instead)
       python3 black
