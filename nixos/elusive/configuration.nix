@@ -60,7 +60,7 @@ in {
   };
 
   environment.extraInit = ''
-    export LD_LIBRARY_PATH="${makeLibraryPath [pkgs.gcc-unwrapped.lib]}:$LD_LIBRARY_PATH";
+    export LD_LIBRARY_PATH="${makeLibraryPath (with pkgs; [gcc-unwrapped.lib])}:$LD_LIBRARY_PATH"
   '';
 
   services = {

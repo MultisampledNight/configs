@@ -123,7 +123,9 @@ in {
         config = {
           allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
             "nvidia-x11"
+            "cudatoolkit"
             "obsidian"
+            "blender"
           ];
           permittedInsecurePackages = [
             "electron-24.8.6" # see nixpkgs issue 263764
@@ -153,7 +155,12 @@ in {
           } else {})
           (final: prev: if cfg.profileGuided then {
             godot_4 = prev.godot_4.override {
-              stdenv = pkgs.fastStdenv;
+              stdenv = final.fastStdenv;
+            };
+          } else {})
+          (final: prev: if (cfg.videoDriver == "nvidia") then {
+            blender = prev.blender.override {
+              cudaSupport = true;
             };
           } else {})
           (final: prev: if (cfg.videoDriver == "nvidia" && cfg.wayland) then {
@@ -432,7 +439,7 @@ in {
       })
       (final: prev: if cfg.profileGuided then {
         linuxZenFast = prev.linuxPackagesFor (prev.linuxKernel.kernels.linux_zen.override {
-          stdenv = pkgs.fastStdenv;
+          stdenv = final.fastStdenv;
         });
       } else {})
     ];

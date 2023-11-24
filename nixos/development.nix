@@ -57,8 +57,8 @@ in {
     }
     // (if cfg.videoDriver == "nvidia" then {
       # both required for blender
-      CUDA_PATH = "${pkgs.cudatoolkit}";
-      CYCLES_CUDA_EXTRA_CFLAGS = "-I${pkgs.cudatoolkit}/targets/x86_64-linux/include";
+      CUDA_PATH = "${cfg.pkgs-unstable.cudatoolkit}";
+      CYCLES_CUDA_EXTRA_CFLAGS = "-I${cfg.pkgs-unstable.cudatoolkit}/targets/x86_64-linux/include";
     } else {})
     // (if cfg.wayland then {
       NIXOS_OZONE_WL = "1";

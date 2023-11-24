@@ -175,11 +175,6 @@ in {
           };
         };
       })
-      (final: prev: if (cfg.videoDriver == "nvidia") then {
-        blender = prev.blender.override {
-          cudaSupport = true;
-        };
-      } else {})
     ];
   };
 
