@@ -146,10 +146,10 @@ in {
                 autoPatchelfHook
               ]);
               buildInputs = prev.godot_4.buildInputs ++ (with final; [
-                wayland
+                wayland libdecor
               ]);
               runtimeDependencies = prev.godot_4.runtimeDependencies ++ (with final; [
-                wayland
+                wayland libdecor
               ]);
             };
           } else {})
@@ -424,7 +424,10 @@ in {
       platformTheme = "qt5ct";
     };
 
-    nix.settings.auto-optimise-store = true;
+    nix.settings = {
+      auto-optimise-store = true;
+      experimental-features = ["nix-command" "flakes"];
+    };
     nixpkgs.overlays = [
       (final: prev: {
         inkscape = prev.inkscape.overrideAttrs rec {
