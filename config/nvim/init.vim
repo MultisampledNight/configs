@@ -16,100 +16,15 @@ function ProjectToplevel()
 endfunction
 
 " general settings
-if $TERM ==# "linux"
-  " in a TTY neovim also serves as some sort of window manager for me
-  colorscheme pablo
+colorscheme base16-abnormalize-alt
+set termguicolors
 
-  hi! Identifier ctermfg=blue
-  hi! Function ctermfg=magenta
-  hi! Keyword ctermfg=red
-  hi! Conditional ctermfg=red
-  hi! Repeat ctermfg=red
-  hi! SignColumn ctermbg=black
-
-  hi! LineNr ctermfg=grey
-  hi! StatusLine ctermfg=blue ctermbg=black
-  hi! StatusLineNC ctermfg=grey ctermbg=black
-
-  nnoremap <A-S-j> <Cmd>2split<CR>z2<CR><Cmd>term i3status<CR><Cmd>set nonumber<CR>G<C-w>j
-
-  nnoremap <A-S-f> <Cmd>silent !brightnessctl --exponent set 5\%-<CR>
-  nnoremap <A-S-v> <Cmd>silent !brightnessctl --exponent set 3\%+<CR>
+if exists("g:neovide")
+  set winblend=80
+  set pumblend=30
 else
-  colorscheme base16-abnormalize-alt
-  set termguicolors
-
-  if exists("g:neovide")
-    set winblend=80
-    set pumblend=30
-  else
-    set winblend=10
-    set pumblend=10
-  endif
-
-lua <<EOF
-  local capabilities = require("cmp_nvim_lsp").default_capabilities()
-  local lspconfig = require("lspconfig")
-
-  flags = { debounce_text_changes = 150 }
-
-  lspconfig.util.default_config = vim.tbl_extend(
-    "force",
-    lspconfig.util.default_config,
-    {
-        handlers = {
-          ["window/showMessage"] = function(err, method, params, client_id) end;
-        }
-    }
-  )
-
-  lspconfig.rust_analyzer.setup {
-    capabilities = capabilities,
-    flags = flags,
-    filetypes = {
-      "rust",
-      "netrw",
-    },
-    settings = {
-      ["rust-analyzer"] = {
-        imports = {
-          granularity = {
-            group = "crate",
-          },
-        },
-        checkOnSave = {
-          command = "clippy",
-          extraArgs = {"--", "-Wclippy::pedantic"},
-        },
-      }
-    }
-  }
-  lspconfig.texlab.setup {
-    capabilities = capabilities,
-    flags = flags,
-    filetypes = {
-      "latex",
-    },
-  }
-  lspconfig.tsserver.setup {}
-  lspconfig.typst_lsp.setup {}
-
-  require("trouble").setup({
-    position = "bottom",
-    height = 9,
-    icons = false,
-    fold_closed = ">",
-    fold_open = "=",
-    signs = {
-      error = "#",
-      warning = "!",
-      hint = "?",
-      information = "/",
-      other = "-",
-    }
-  })
-EOF
-
+  set winblend=10
+  set pumblend=10
 endif
 
 set guifont=IBM_Plex_Mono:h14:#h-slight
@@ -175,6 +90,10 @@ vnoremap j gj
 vnoremap k gk
 vnoremap gn n<Cmd>noh<CR>
 vnoremap gN N<Cmd>noh<CR>
+
+nnoremap <A-S-j> <Cmd>2split<CR>z2<CR><Cmd>term i3status<CR><Cmd>set nonumber<CR>G<C-w>j
+nnoremap <A-S-f> <Cmd>silent !brightnessctl --exponent set 5\%-<CR>
+nnoremap <A-S-v> <Cmd>silent !brightnessctl --exponent set 3\%+<CR>
 
 function TelescopeOnToplevel(command)
   silent update
@@ -272,6 +191,23 @@ function CdProjectToplevel(_timer_id)
   exe "tcd " . ProjectToplevel()
 endfunction
 autocmd BufEnter * call timer_start(50, "CdProjectToplevel")
+
+" godot
+function CloseIfAlreadyOpen()
+  let pidfile = "~/zukunftslosigkeit/state/neovim/editing-in-godot"
+  call system("ps -p $(cat " . pidfile . ")")
+  if v:shell_error == 0
+    " yep, already editing
+    exit
+  endif
+
+  " oh well then let's propagate that we're currently editing
+  call system("mkdir $(dirname " . pidfile . ")")
+  call system("echo -n " . getpid() . " > " . pidfile)
+endfunction
+autocmd BufNewFile,BufRead *.gd
+  \ set filetype=gdscript
+  \|call CloseIfAlreadyOpen()
 
 " rust
 autocmd BufNewFile,BufRead *.rs set equalprg=rustfmt formatprg=rustfmt
@@ -397,8 +333,74 @@ for level in ["Error", "Warn", "Info", "Hint"]
 endfor
 
 lua <<EOF
+
+local capabilities = require("cmp_nvim_lsp").default_capabilities()
+local lspconfig = require("lspconfig")
+
+flags = { debounce_text_changes = 150 }
+
+lspconfig.util.default_config = vim.tbl_extend(
+  "force",
+  lspconfig.util.default_config,
+  {
+      handlers = {
+        ["window/showMessage"] = function(err, method, params, client_id) end;
+      }
+  }
+)
+
+lspconfig.gdscript.setup {}
+lspconfig.rust_analyzer.setup {
+  capabilities = capabilities,
+  flags = flags,
+  filetypes = {
+    "rust",
+    "netrw",
+  },
+  settings = {
+    ["rust-analyzer"] = {
+      imports = {
+        granularity = {
+          group = "crate",
+        },
+      },
+      checkOnSave = {
+        command = "clippy",
+        extraArgs = {"--", "-Wclippy::pedantic"},
+      },
+    }
+  }
+}
+lspconfig.texlab.setup {
+  capabilities = capabilities,
+  flags = flags,
+  filetypes = {
+    "latex",
+  },
+}
+lspconfig.tsserver.setup {}
+lspconfig.typst_lsp.setup {}
+
+require("trouble").setup({
+  position = "bottom",
+  height = 9,
+  icons = false,
+  fold_closed = ">",
+  fold_open = "=",
+  signs = {
+    error = "#",
+    warning = "!",
+    hint = "?",
+    information = "/",
+    other = "-",
+  }
+})
+
 require("nvim-treesitter.configs").setup {
   highlight = {
+    enable = true,
+  },
+  indent = {
     enable = true,
   },
 
@@ -551,6 +553,7 @@ end
 -- dap.listeners.before.event_exited["dapui_config"] = function()
 --   dapui.close()
 -- end
+
 EOF
 
 " vim: sw=2 ts=2 et

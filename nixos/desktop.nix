@@ -98,6 +98,8 @@ in {
       dunst virt-manager qemu_kvm
       qt5ct
       helvum
+      libsForQt5.kruler
+      gucharmap
     ] ++ (with cfg.pkgs-unstable; [
       # zathura for viewing, evince for live-reloading
       # since zathura flickers white when reloading, but evince does so only with the background color

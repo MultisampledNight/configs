@@ -24,7 +24,7 @@ output Virtual-1 {
     scale 1
 }
 output HDMI-A-1 position 0,0
-output eDP-1 position 0,1080
+output eDP-1 position 390,1080
 
 seat seat0 {
     xcursor_theme volantes_cursors 32
@@ -71,7 +71,7 @@ bindsym $mod+i exec xournalpp
 bindsym $mod+f exec blender
 bindsym $mod+v exec inkscape
 bindsym $mod+udiaeresis exec gimp
-bindsym $mod+adiaeresis exec godot4
+bindsym $mod+adiaeresis exec godot
 
 bindsym $mod+Return exec alacritty
 bindsym $mod+Shift+q kill
