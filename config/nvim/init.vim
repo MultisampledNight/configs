@@ -207,6 +207,7 @@ function CloseIfAlreadyOpen()
 endfunction
 autocmd BufNewFile,BufRead *.gd
   \ set filetype=gdscript
+  \|set updatetime=1500
   \|call CloseIfAlreadyOpen()
 
 " rust

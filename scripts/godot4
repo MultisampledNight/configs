@@ -1,0 +1,2 @@
+#!/usr/bin/env sh
+/run/current-system/sw/bin/godot4 --rendering-driver vulkan $@

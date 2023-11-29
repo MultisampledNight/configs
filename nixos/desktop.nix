@@ -34,6 +34,7 @@ in {
   services = {
     udisks2.enable = true;
     printing.enable = true;
+    joycond.enable = true;
 
     # hide the mouse cursor when not moved
     unclutter-xfixes = {
