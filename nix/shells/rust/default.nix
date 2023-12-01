@@ -4,6 +4,7 @@ pkgs.mkShell rec {
   buildInputs = with pkgs; [
     rustup
     cargo-audit cargo-expand cargo-flamegraph cargo-nextest
+    typos
 
     gdb lldb
     clang llvmPackages.libclang
