@@ -127,7 +127,7 @@ in {
   };
 
   fonts = mkIf cfg.graphical {
-    fonts = with pkgs; [
+    packages = with pkgs; [
       hack-font
       roboto roboto-mono
       ibm-plex
@@ -144,10 +144,10 @@ in {
 
     fontDir.enable = true;
     # this adds a few commonly expected fonts like liberation...
-    enableDefaultFonts = true;
+    enableDefaultPackages = true;
 
     fontconfig = {
-      hinting.style = "hintslight";
+      hinting.style = "slight";
 
       # ...while this one sets the actually in-place default fonts
       defaultFonts = {
