@@ -263,7 +263,7 @@ in {
     console = {
       font =
         if cfg.hidpi
-        then "ter-132b"
+        then null
         else "Lat2-Terminus16";
 
       keyMap = if cfg.forTheGeneralPublic then "de" else cfg.layout;
