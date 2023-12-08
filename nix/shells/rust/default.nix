@@ -8,6 +8,7 @@ pkgs.mkShell rec {
 
     gdb lldb
     clang llvmPackages.libclang
+    libgcc.lib
     mold 
     openssl pkg-config cmake
     wasm-pack evcxr tokei
