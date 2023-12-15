@@ -147,8 +147,8 @@ in {
               src = final.fetchFromGitHub {
                 owner = "godotengine";
                 repo = "godot";
-                rev = "8e606780b9aa997600f5e6176d263f172589f5af"; # PR #57025 adding Wayland support
-                sha256 = "sha256-CPkhxq+MS8CTx278CowLotXnL2DRx+mSgD8Q2DP1geo=";
+                rev = "df3949045fd9fa523c493ecce3c96955764aed0d"; # PR #86180 adding Wayland support
+                sha256 = "sha256-H4NzCQK7nP6J7c2zkMyxb/pTRwPpS6H0wSJ/R7YuQgU=";
               };
 
               nativeBuildInputs = prev.godot_4.nativeBuildInputs ++ (with final; [
