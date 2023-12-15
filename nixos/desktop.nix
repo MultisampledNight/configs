@@ -92,7 +92,7 @@ in {
     ++ (if cfg.graphical then [
       # normal applications
       configuredFirefox tor-browser-bundle-bin thunderbird
-      gimp inkscape
+      gimp inkscape scribus
       libreoffice-fresh
       pavucontrol carla
       mate.eom
