@@ -32,6 +32,11 @@ in {
       default = true;
       description = "If to enable wireless services through iwd and iwctl.";
     };
+    wireless.bluetooth = mkOption {
+      type = types.bool;
+      default = true;
+      description = "If to enable bluetooth.";
+    };
 
     externalInterface = mkOption {
       type = types.nullOr types.str;
@@ -226,6 +231,8 @@ in {
 
       cpu.intel.updateMicrocode = cfg.cpuVendor == "intel";
       cpu.amd.updateMicrocode = cfg.cpuVendor == "amd";
+
+      bluetooth.enable = cfg.wireless.bluetooth;
 
       opengl = {
         enable = true;
