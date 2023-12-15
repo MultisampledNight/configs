@@ -134,6 +134,7 @@ in {
       manrope
       source-code-pro
 
+      noto-fonts
       cantarell-fonts
       inter
       overpass
