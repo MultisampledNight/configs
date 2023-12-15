@@ -126,6 +126,7 @@ in {
 
       # audio
       audacity lmms cfg.pkgs-unstable.musescore polyphone
+      easyeffects
     ] else []);
 
     sessionVariables = {
