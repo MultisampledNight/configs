@@ -126,12 +126,16 @@ in {
       type = types.pkgs;
       default = import <nixos-unstable> {
         config = {
-          allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
-            "nvidia-x11"
-            "cudatoolkit"
-            "obsidian"
-            "blender"
-          ];
+          allowUnfreePredicate = pkg: (
+            (builtins.elem (lib.getName pkg) [
+              "nvidia-x11"
+              "obsidian"
+              "blender"
+            ]) || (
+              builtins.substring 0 4 (lib.getName pkg)
+              == "cuda"
+            )
+          );
           permittedInsecurePackages = [
             "electron-24.8.6" # see nixpkgs issue 263764
           ];
