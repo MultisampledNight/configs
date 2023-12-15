@@ -5,5 +5,4 @@ rustdocflags = ["--default-theme=ayu"]
 protocol = "sparse"
 
 [target.x86_64-unknown-linux-gnu]
-# threads=1 is only temporary until nightly 2023-12-09 is available
-rustflags = ["-C", "link-arg=-fuse-ld=mold", "-Z", "threads=1"]
+rustflags = ["-C", "link-arg=-fuse-ld=mold", "-Z", "threads=8"]
