@@ -186,6 +186,7 @@ if hostname() == "elusive"
 endif
 
 " global
+AutoWrite
 " hacky and bound to interfere with the latex or typst machinery, but it works
 function CdProjectToplevel(_timer_id)
   exe "tcd " . ProjectToplevel()
@@ -205,10 +206,11 @@ function CloseIfAlreadyOpen()
   call system("mkdir $(dirname " . pidfile . ")")
   call system("echo -n " . getpid() . " > " . pidfile)
 endfunction
+autocmd VimEnter *.gd
+  \ call CloseIfAlreadyOpen()
 autocmd BufNewFile,BufRead *.gd
   \ set filetype=gdscript
-  \|set updatetime=1500
-  \|call CloseIfAlreadyOpen()
+  \|set updatetime=500
 
 " rust
 autocmd BufNewFile,BufRead *.rs set equalprg=rustfmt formatprg=rustfmt

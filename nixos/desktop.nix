@@ -138,6 +138,7 @@ in {
     adb.enable = true;
     dconf.enable = true;
     firejail.enable = true;
+    nix-ld.enable = true;
 
     gnupg.agent = {
       enable = true;
