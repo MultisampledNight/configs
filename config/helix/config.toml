@@ -1,0 +1,22 @@
+theme = "onedark"
+
+[editor]
+scrolloff = 3
+cursorline = true
+auto-save = true
+idle-timeout = 0
+completion-replace = true
+
+[editor.statusline]
+left = ["mode", "register"]
+center = ["file-name", "read-only-indicator"]
+right = ["spinner", "diagnostics", "position", "file-encoding"]
+
+[editor.lsp]
+display-inlay-hints = true
+
+[editor.cursor-shape]
+insert = "bar"
+
+
+# for typst: editor.soft-wrap might be interesting

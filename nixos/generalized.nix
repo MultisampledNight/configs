@@ -331,6 +331,7 @@ in {
         ffmpeg mpv jq unzip zip
         sqlite-interactive
         btop sysstat
+        helix
       ]
       ++ (if cfg.wireless.wlan then [iw] else [])
       ++ (if cfg.xorg then [xclip] else [])
@@ -344,6 +345,7 @@ in {
         # themes
         adapta-gtk-theme adapta-kde-theme
         breeze-icons volantes-cursors
+        qalculate-gtk
       ] else []);
 
       sessionVariables = {
