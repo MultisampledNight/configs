@@ -17,6 +17,7 @@ CONFIG_DESTINATIONS = {
     "config/evcxr": "~/.config/evcxr",
     "config/git/gitignore-global": "~/.gitignore-global",
     "config/git/gitconfig": "~/.gitconfig",
+    "config/godot/editor_settings-4.tres": "~/.config/godot/editor_settings-4.tres",
     "config/gtk-3.0": "~/.config/gtk-3.0",
     "config/helix": "~/.config/helix",
     "config/i3": "~/.config/i3",
