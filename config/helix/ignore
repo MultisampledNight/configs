@@ -1,0 +1,9 @@
+*.ttf
+*.otf
+*.blend
+
+# godot stuff
+*.godot
+*.tscn
+*.meshlib
+*.import
