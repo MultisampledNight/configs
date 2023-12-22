@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+
+repo="$(basename $(pwd))"
+git remote add multisn8 "https://github.com/MultisampledNight/$repo.git"
+git remote set-url --push multisn8 "git@github.com:MultisampledNight/$repo.git"
