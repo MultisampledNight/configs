@@ -142,6 +142,16 @@ in {
         };
 
         overlays = [
+          (final: prev: {
+            neovim-unwrapped = prev.neovim-unwrapped.overrideAttrs {
+              version = "0.10.0";
+              src = pkgs.fetchFromGitHub {
+                owner = "neovim";
+                repo = "neovim";
+                rev = "eae6727325111e596b49bb04337a467e8833397c";
+                hash = "sha256-7SXH84C3+XW9TsBAA4LnW+Q4DzPAWartKBvedByla+s=";
+              };
+            };          })
           (final: prev: if cfg.wayland then {
             godot_4 = prev.godot_4.overrideAttrs {
               src = final.fetchFromGitHub {
