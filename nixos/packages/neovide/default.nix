@@ -30,15 +30,11 @@ rustPlatform.buildRustPackage.override { stdenv = clangStdenv; } rec {
   src = fetchFromGitHub {
     owner = "neovide";
     repo = "neovide";
-    rev = "b496ab23f4f5a20b494a1bd055eafe796324fd1d";
-    sha256 = "sha256-+kuAHMSyZoww7asNDEXljnezFiAL0vgFxCVMS8IckGY=";
+    rev = version;
+    sha256 = "sha256-m3ZdzdmkW69j1sZ9h7M1m5fDNnJ7BM7nwYPx7QhsIso=";
   };
 
-  cargoLock.lockFile = ./Cargo.lock;
-
-  cargoPatches = [
-    ./0001-mouse-as-touch.patch
-  ];
+  cargoSha256 = "sha256-AAHMx4xxbC/JdmAPE2bub7qdF5sFNWjqXI1nuCUxsZA=";
 
   SKIA_SOURCE_DIR =
     let
@@ -46,7 +42,7 @@ rustPlatform.buildRustPackage.override { stdenv = clangStdenv; } rec {
         owner = "rust-skia";
         repo = "skia";
         # see rust-skia:skia-bindings/Cargo.toml#package.metadata skia
-        rev = "m119-0.67.3";
+        rev = "m113-0.67.3";
         sha256 = "sha256-U75NuJnQa5+SNlOrsBmdlvflGdjo3el63EeIsbnE7ms=";
       };
       # The externals for skia are taken from skia/DEPS
