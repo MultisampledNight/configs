@@ -1,6 +1,3 @@
-[build]
-rustdocflags = ["--default-theme=ayu"]
-
 [registries.crates-io]
 protocol = "sparse"
 

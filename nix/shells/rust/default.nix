@@ -31,6 +31,8 @@ pkgs.mkShell rec {
     renderdoc
     gnuplot
   ];
+
+  CARGO_BUILD_RUSTDOCFLAGS="--default-theme=ayu";
   RUSTC_VERSION = pkgs.lib.strings.removeSuffix "\n" (
     pkgs.lib.readFile ./rust-toolchain
   );
