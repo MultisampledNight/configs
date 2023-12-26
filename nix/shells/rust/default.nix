@@ -3,7 +3,7 @@
 pkgs.mkShell rec {
   buildInputs = with pkgs; [
     rustup
-    cargo-audit cargo-expand cargo-flamegraph cargo-nextest
+    cargo-audit cargo-expand cargo-flamegraph cargo-nextest cargo-make
     typos
 
     gdb lldb
