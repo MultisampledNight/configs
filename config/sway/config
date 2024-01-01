@@ -1,4 +1,4 @@
-xwayland disable
+xwayland enable
 font pango:IBM Plex Sans 10
 
 set $mod Mod4

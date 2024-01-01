@@ -428,8 +428,6 @@ in {
         };
       };
 
-      xwayland.enable = false;  # enabled by default by sway, but I don't need it
-
       # shell
       zsh = {
         enable = true;
