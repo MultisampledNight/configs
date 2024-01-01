@@ -17,5 +17,8 @@ display-inlay-hints = true
 [editor.cursor-shape]
 insert = "bar"
 
+[keys.normal.space]
+space = "last_picker"
+
 
 # for typst: editor.soft-wrap might be interesting

@@ -112,6 +112,7 @@ in {
               css html
               sql dot mermaid latex bibtex markdown
               diff query vimdoc
+              agda
             ]))
             playground # nvim-treesitter's playground
             vim-polyglot vim-signify

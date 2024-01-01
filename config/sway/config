@@ -64,14 +64,14 @@ bindsym $mod+u exec discord
 bindsym $mod+a exec github
 bindsym $mod+x exec thunderbird
 bindsym $mod+p exec spotify
+bindsym $mod+adiaeresis exec fluffychat
 
 bindsym $mod+t exec obsidian
 bindsym $mod+i exec xournalpp
 
 bindsym $mod+f exec blender
 bindsym $mod+v exec inkscape
-bindsym $mod+udiaeresis exec gimp
-bindsym $mod+adiaeresis exec godot4
+bindsym $mod+udiaeresis exec godot4
 
 bindsym $mod+Return exec alacritty
 bindsym $mod+Shift+q kill

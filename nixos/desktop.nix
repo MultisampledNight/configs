@@ -101,6 +101,7 @@ in {
       helvum
       libsForQt5.kruler
       gucharmap
+      fluffychat
     ] ++ (with cfg.pkgs-unstable; [
       # zathura for viewing, evince for live-reloading
       # since zathura flickers white when reloading, but evince does so only with the background color

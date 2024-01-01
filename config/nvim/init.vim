@@ -226,6 +226,9 @@ endfunction
 " markdown
 autocmd BufNewFile,BufRead *.md set tw=0 sw=2 ts=2 sts=0 et
 
+" agda
+autocmd BufNewFile,BufRead *.agda set ft=agda
+
 " python
 autocmd BufWritePost *.py,*.pyw call jobstart(["black", expand("%")], { "detach": v:false })
 

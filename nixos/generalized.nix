@@ -143,6 +143,7 @@ in {
 
         overlays = [
           (final: prev: {
+            # update random stuff
             neovim-unwrapped = prev.neovim-unwrapped.overrideAttrs {
               version = "0.10.0";
               src = pkgs.fetchFromGitHub {
@@ -151,7 +152,8 @@ in {
                 rev = "eae6727325111e596b49bb04337a467e8833397c";
                 hash = "sha256-7SXH84C3+XW9TsBAA4LnW+Q4DzPAWartKBvedByla+s=";
               };
-            };          })
+            };
+          })
           (final: prev: if cfg.wayland then {
             godot_4 = prev.godot_4.overrideAttrs {
               src = final.fetchFromGitHub {
@@ -341,8 +343,10 @@ in {
         ffmpeg mpv jq unzip zip
         sqlite-interactive
         btop sysstat
-        helix
       ]
+      ++ (with cfg.pkgs-unstable; [
+        helix
+      ])
       ++ (if cfg.wireless.wlan then [iw] else [])
       ++ (if cfg.xorg then [xclip] else [])
       ++ (if cfg.wayland then with cfg.pkgs-unstable; [
