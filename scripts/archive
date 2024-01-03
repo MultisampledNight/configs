@@ -30,7 +30,7 @@ def archive(subject_path, home_dir=HOME_DIR, archive_dir=ARCHIVE_DIR, time_tag=T
     Does nothing if `subject_path` does not exist.
     """
     if not Path(subject_path).exists():
-        return
+        return 1
 
     if time_tag is None:
         time_tag = Path("backup") / datetime.now().isoformat()
