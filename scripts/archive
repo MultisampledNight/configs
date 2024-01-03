@@ -1,5 +1,4 @@
-#!/usr/bin/env nix-shell
-#!nix-shell -i python3 -p python3
+#!/usr/bin/env python3
 # vim: ft=python
 import argparse
 import os
@@ -9,18 +8,49 @@ from datetime import datetime
 from pathlib import Path
 
 
-BACKUP_DIR = "~/_archive/backup"
+HOME_DIR = "/home/multisn8"
+ARCHIVE_DIR = "~/_archive"
+# None means "generate it on-the-fly"
+TIME_TAG = None
 
 
-def archive(subject_path, backup_dir=BACKUP_DIR) -> int:
-    time_tag = datetime.now().isoformat()
-    backup_dir = Path(os.path.expanduser(backup_dir)) / time_tag
-    backup_dir.mkdir(parents=True, exist_ok=True)
+def archive(subject_path, home_dir=HOME_DIR, archive_dir=ARCHIVE_DIR, time_tag=TIME_TAG) -> int:
+    """
+    Moves `subject_path` under `backup_dir` after the pattern:
+
+    if <time_tag> is None:
+        subject_path = <home_dir>/A/B/C.txt
+        => <backup_dir>/backup/<TIMESTAMP>/A/B/C.txt
+    else:
+        subject_path = <home_dir>/A/B/C.txt
+        => <backup_dir>/<time_tag>/A/B/C.txt
+
+    Essentially generating a timestamp if `time_tag` is None, and archiving
+    `subject_path` while preserving its subdirectory under `home_path`.
+    Does nothing if `subject_path` does not exist.
+    """
+    if not Path(subject_path).exists():
+        return
+
+    if time_tag is None:
+        time_tag = Path("backup") / datetime.now().isoformat()
+
+    archive_dir = Path(str(archive_dir).replace("~", HOME_DIR))
+    archive_dir /= time_tag
+
+    subject_path = Path(subject_path).resolve()
+    try:
+        rel_path = subject_path.relative_to(home_dir)
+    except ValueError:
+        # not a subpath of home_dir
+        # in that case just archive it based on its relativeness from root
+        rel_path = subject_path.relative_to("/")
+        
+    target_path = archive_dir / rel_path
 
     try:
-        shutil.move(subject_path, backup_dir)
-    except FileNotFoundError:
-        pass
+        target_path.parent.mkdir(parents=True, exist_ok=True)
+        shutil.move(subject_path, target_path)
     except PermissionError:
         print(
             f"Skipping {subject_path} due to missing perms",
@@ -36,13 +66,15 @@ def parse_args():
         description="quick and dirty archival, ignoring nonexistent dirs"
     )
     parser.add_argument("path")
-    parser.add_argument("--backup-dir", default=BACKUP_DIR)
+    parser.add_argument("--home-dir", default=HOME_DIR)
+    parser.add_argument("--archive-dir", default=ARCHIVE_DIR)
+    parser.add_argument("--time-tag", default=TIME_TAG)
     return parser.parse_args()
 
 
 def main():
-    args = parse_args()
-    exit_code = archive(args.path, backup_dir=args.backup_dir)
+    args = vars(parse_args())
+    exit_code = archive(args.pop("path"), **args)
     sys.exit(exit_code)
 
 

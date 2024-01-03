@@ -135,6 +135,8 @@ in {
       manrope
       source-code-pro
 
+      atkinson-hyperlegible
+      montserrat
       noto-fonts
       cantarell-fonts
       inter
