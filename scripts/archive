@@ -14,7 +14,7 @@ ARCHIVE_DIR = "~/_archive"
 TIME_TAG = None
 
 
-def archive(subject_path, home_dir=HOME_DIR, archive_dir=ARCHIVE_DIR, time_tag=TIME_TAG) -> int:
+def archive(subject_path, home_dir=HOME_DIR, archive_dir=ARCHIVE_DIR, time_tag=TIME_TAG, copy_only=False) -> int:
     """
     Moves `subject_path` under `backup_dir` after the pattern:
 
@@ -50,7 +50,13 @@ def archive(subject_path, home_dir=HOME_DIR, archive_dir=ARCHIVE_DIR, time_tag=T
 
     try:
         target_path.parent.mkdir(parents=True, exist_ok=True)
-        shutil.move(subject_path, target_path)
+        if copy_only:
+            if subject_path.is_dir():
+                shutil.copytree(subject_path, target_path)
+            else:
+                shutil.copy2(subject_path, target_path)
+        else:
+            shutil.move(subject_path, target_path)
     except PermissionError:
         print(
             f"Skipping {subject_path} due to missing perms",
@@ -69,6 +75,7 @@ def parse_args():
     parser.add_argument("--home-dir", default=HOME_DIR)
     parser.add_argument("--archive-dir", default=ARCHIVE_DIR)
     parser.add_argument("--time-tag", default=TIME_TAG)
+    parser.add_argument("--copy-only", action="store_true", default=False)
     return parser.parse_args()
 
 
