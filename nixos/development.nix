@@ -114,6 +114,7 @@ in {
               diff query vimdoc
               agda
             ]))
+            nvim-treesitter-context
             playground # nvim-treesitter's playground
             vim-polyglot vim-signify
           ];
