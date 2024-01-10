@@ -30,8 +30,8 @@ rustPlatform.buildRustPackage.override { stdenv = clangStdenv; } rec {
   src = fetchFromGitHub {
     owner = "neovide";
     repo = "neovide";
-    rev = version;
-    sha256 = "sha256-lmhTTBlhyEepUNHrm2hq42G1kA7siAsJUcYjBfajaHA=";
+    rev = "b4b804095e2c75cf5a806b9b74a8ae7d9e3b53f7";
+    sha256 = "sha256-X6R+zic7/R0yY9ryTrzvShy7EwPfpO+o19pbX5ba6Tk=";
   };
 
   cargoSha256 = "sha256-1R1JrNhcgC16anr5Gl1b9rHgfRLPJElef5D65joHxj0=";

@@ -129,41 +129,40 @@ function RenameCurrentFile()
   exe "silent !rm " . old
 endfunction
 
-nnoremap tt <Cmd>Telescope resume<CR>
-nnoremap ti <Cmd>call TelescopeOnToplevel("find_files follow=true")<CR>
-nnoremap te <Cmd>call TelescopeOnToplevel("live_grep")<CR> 
-nnoremap td <Cmd>call TelescopeOnToplevel("lsp_definitions")<CR>
-nnoremap tu <Cmd>call TelescopeOnToplevel("lsp_references")<CR>
-nnoremap ta <Cmd>call TelescopeOnToplevel("lsp_implementations")<CR>
+nnoremap <Space><Space> <Cmd>Telescope resume<CR>
+nnoremap <Space>f <Cmd>call TelescopeOnToplevel("find_files follow=true")<CR>
+nnoremap <Space>/ <Cmd>call TelescopeOnToplevel("live_grep")<CR> 
+nnoremap gd <Cmd>call TelescopeOnToplevel("lsp_definitions")<CR>
+nnoremap gu <Cmd>call TelescopeOnToplevel("lsp_references")<CR>
+nnoremap <Space>i <Cmd>call TelescopeOnToplevel("lsp_implementations")<CR>
 
-nnoremap to <Cmd>TroubleToggle<CR>
-nnoremap tb <Cmd>update \| Trouble<CR>
+nnoremap <Space>o <Cmd>TroubleToggle<CR>
+nnoremap <Space>b <Cmd>update \| Trouble<CR>
 
-nnoremap tn <Cmd>update \| lua if require("dap").session() == nil then vim.lsp.buf.hover() else require("dap.ui.widgets").hover() end<CR>
-vnoremap tn <Cmd>update \| lua if require("dap").session() == nil then vim.lsp.buf.hover() else require("dap.ui.widgets").hover() end<CR>
-nnoremap tr <Cmd>update \| lua vim.lsp.buf.rename()<CR>
-nnoremap ts <Cmd>update \| lua vim.lsp.buf.code_action()<CR>
-vnoremap ts <Cmd>update \| lua vim.lsp.buf.code_action()<CR>
-nnoremap tg <Cmd>call TelescopeOnToplevel("lsp_workspace_symbols")<CR>
+nnoremap <Space>n <Cmd>update \| lua if require("dap").session() == nil then vim.lsp.buf.hover() else require("dap.ui.widgets").hover() end<CR>
+vnoremap <Space>n <Cmd>update \| lua if require("dap").session() == nil then vim.lsp.buf.hover() else require("dap.ui.widgets").hover() end<CR>
+nnoremap <Space>r <Cmd>update \| lua vim.lsp.buf.rename()<CR>
+vnoremap <Space>a <Cmd>update \| lua vim.lsp.buf.code_action()<CR>
+nnoremap <Space>g <Cmd>call TelescopeOnToplevel("lsp_workspace_symbols")<CR>
 
-nnoremap th <Cmd>call TelescopeOnToplevel("lsp_document_symbols")<CR>
-nnoremap tl <Cmd>call TelescopeOnToplevel("treesitter")<CR>
-nnoremap tm <Cmd>call TelescopeOnToplevel("man_pages")<CR>
-nnoremap tw <Cmd>call TelescopeOnToplevel("keymaps")<CR>
+nnoremap <Space>S <Cmd>call TelescopeOnToplevel("lsp_document_symbols")<CR>
+nnoremap <Space>l <Cmd>call TelescopeOnToplevel("treesitter")<CR>
+nnoremap <Space>m <Cmd>call TelescopeOnToplevel("man_pages")<CR>
+nnoremap <Space>w <Cmd>call TelescopeOnToplevel("keymaps")<CR>
 
-nnoremap t. <Cmd>call TelescopeOnToplevel("git_status")<CR>
-nnoremap tj <Cmd>call CreateNewFile()<CR>
-nnoremap tc <Cmd>call RenameCurrentFile()<CR>
+nnoremap <Space>. <Cmd>call TelescopeOnToplevel("git_status")<CR>
+nnoremap <Space>j <Cmd>call CreateNewFile()<CR>
+nnoremap <Space>c <Cmd>call RenameCurrentFile()<CR>
 
-nnoremap tq <Cmd>update \| call jobstart("cargo fmt")<CR>
+nnoremap <Space>q <Cmd>update \| call jobstart("cargo fmt")<CR>
 
-nnoremap tf <Cmd>lua require("dap").toggle_breakpoint()<CR>
-nnoremap tv <Cmd>lua require("dap").step_over()<CR>
-nnoremap tü <Cmd>lua require("dap").step_into()<CR>
-nnoremap tä <Cmd>lua require("dap").step_out()<CR>
-nnoremap tö <Cmd>lua require("dap").continue()<CR>
-nnoremap ty <Cmd>lua require("dap").terminate()<CR>
-nnoremap tz <Cmd>lua require("dapui").toggle()<CR>
+nnoremap <Space>z <Cmd>lua require("dap").toggle_breakpoint()<CR>
+nnoremap <Space>v <Cmd>lua require("dap").step_over()<CR>
+nnoremap <Space>ü <Cmd>lua require("dap").step_into()<CR>
+nnoremap <Space>ä <Cmd>lua require("dap").step_out()<CR>
+nnoremap <Space>ö <Cmd>lua require("dap").continue()<CR>
+nnoremap <Space>y <Cmd>lua require("dap").terminate()<CR>
+nnoremap <Space>k <Cmd>lua require("dapui").toggle()<CR>
 
 nnoremap <F1> <NOP>
 inoremap <F1> <NOP>
@@ -413,6 +412,10 @@ require("nvim-treesitter.configs").setup {
   playground = {
     enable = true,
   },
+}
+
+require("treesitter-context").setup {
+  max_lines = 4,
 }
 
 local feedkey = function(key, mode)
