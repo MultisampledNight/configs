@@ -142,6 +142,7 @@ nnoremap <Space>b <Cmd>update \| Trouble<CR>
 nnoremap <Space>n <Cmd>update \| lua if require("dap").session() == nil then vim.lsp.buf.hover() else require("dap.ui.widgets").hover() end<CR>
 vnoremap <Space>n <Cmd>update \| lua if require("dap").session() == nil then vim.lsp.buf.hover() else require("dap.ui.widgets").hover() end<CR>
 nnoremap <Space>r <Cmd>update \| lua vim.lsp.buf.rename()<CR>
+nnoremap <Space>a <Cmd>update \| lua vim.lsp.buf.code_action()<CR>
 vnoremap <Space>a <Cmd>update \| lua vim.lsp.buf.code_action()<CR>
 nnoremap <Space>g <Cmd>call TelescopeOnToplevel("lsp_workspace_symbols")<CR>
 
