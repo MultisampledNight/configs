@@ -90,6 +90,5 @@ in {
   };
 
   formatAttr = "raw";
-  # might be renamed to fileExtension, dropping the *, if it fails
   fileExtension = ".img";
 }

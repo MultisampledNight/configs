@@ -149,8 +149,8 @@ in {
               src = pkgs.fetchFromGitHub {
                 owner = "neovim";
                 repo = "neovim";
-                rev = "eae6727325111e596b49bb04337a467e8833397c";
-                hash = "sha256-7SXH84C3+XW9TsBAA4LnW+Q4DzPAWartKBvedByla+s=";
+                rev = "061a0d5a48e4e3c4a72930de806e5957763f4dc8";
+                hash = "sha256-XQ1QABR9frT2kXl2qZnm1+o2EysbWon25fbA+Ya4KM0=";
               };
             };
           })
@@ -159,8 +159,8 @@ in {
               src = final.fetchFromGitHub {
                 owner = "godotengine";
                 repo = "godot";
-                rev = "df3949045fd9fa523c493ecce3c96955764aed0d"; # PR #86180 adding Wayland support
-                sha256 = "sha256-H4NzCQK7nP6J7c2zkMyxb/pTRwPpS6H0wSJ/R7YuQgU=";
+                rev = "12b7296457feaf9e7c2324e8669ee54c73f83506"; # PR #86180 adding Wayland support
+                hash = "sha256-IvLuAT/yCfznLmA15jkgGmxBftukukd/JxwEkb+rrB0=";
               };
 
               nativeBuildInputs = prev.godot_4.nativeBuildInputs ++ (with final; [

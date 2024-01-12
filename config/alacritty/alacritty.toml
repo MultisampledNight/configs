@@ -1,0 +1,18 @@
+import = ["/home/multisn8/.config/alacritty/duality.toml"]
+
+[cursor]
+thickness = 0.05
+
+[cursor.style]
+shape = "Block"
+
+[font]
+size = 14
+normal = { family = "IBM Plex Mono" }
+
+[mouse]
+hide_when_typing = true
+
+[window]
+dynamic_padding = true
+title = "Terminal"

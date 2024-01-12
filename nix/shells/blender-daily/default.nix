@@ -1,7 +1,7 @@
-with import <nixpkgs> {};
+{ pkgs ? import <nixpkgs> {}, lib ? pkgs.lib }:
 
-mkShell {
-  NIX_LD_LIBRARY_PATH = lib.makeLibraryPath ([
+pkgs.mkShell {
+  NIX_LD_LIBRARY_PATH = lib.makeLibraryPath (with pkgs; [
     stdenv.cc.cc
     libz
     libGL
@@ -11,5 +11,5 @@ mkShell {
     libXext libICE libX11 libSM libXi libxkbcommon libXfixes libXrender libXxf86vm libX11
     libXcursor libXinerama libXrandr
   ]));
-  NIX_LD = lib.fileContents "${stdenv.cc}/nix-support/dynamic-linker";
+  NIX_LD = lib.fileContents "${pkgs.stdenv.cc}/nix-support/dynamic-linker";
 }
