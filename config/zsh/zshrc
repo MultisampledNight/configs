@@ -68,6 +68,19 @@ alias cm='cargo miri'
 alias ca='cargo apk'
 alias cfg='CARGO_PROFILE_RELEASE_DEBUG=true cargo flamegraph'
 
+alias gst='git status'
+alias gd='git diff'
+alias gds='git diff --staged'
+alias ga='git add'
+alias ga.='git add .'
+alias gco='git commit'
+alias gca='git commit --amend'
+alias gr='git rebase'
+alias gri='git rebase --interactive'
+alias gp='git pull'
+alias gps='git push'
+alias gpsf='git push --force-with-lease'
+
 man() {
   if [[ ! -n $1 ]]; then
 	echo "which manual page do you want?"

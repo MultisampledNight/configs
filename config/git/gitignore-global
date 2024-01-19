@@ -1,3 +1,4 @@
 .envrc
 .ide
 neovide_backtraces.log
+*.pdf
