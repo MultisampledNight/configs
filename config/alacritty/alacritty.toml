@@ -1,4 +1,4 @@
-import = ["/home/multisn8/.config/alacritty/duality.toml"]
+import = ["~/.config/alacritty/duality.toml"]
 
 [cursor]
 thickness = 0.05
