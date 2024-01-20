@@ -135,6 +135,7 @@ in {
       ibm-plex
       manrope
       source-code-pro
+      (nerdfonts.override { fonts = ["FiraCode" "JetBrainsMono"]; })
 
       atkinson-hyperlegible
       montserrat

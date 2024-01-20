@@ -27,7 +27,7 @@ else
   set pumblend=10
 endif
 
-set guifont=IBM_Plex_Mono:h14:#h-slight
+set guifont=JetBrainsMonoNL_NF_Light:h14
 set linespace=4
 set number
 set noshowmode
