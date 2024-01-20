@@ -8,7 +8,7 @@ shape = "Block"
 
 [font]
 size = 14
-normal = { family = "IBM Plex Mono" }
+normal = { family = "JetBrainsMono NL NF Light" }
 
 [mouse]
 hide_when_typing = true
