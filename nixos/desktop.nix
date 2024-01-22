@@ -102,10 +102,11 @@ in {
       libsForQt5.kruler
       gucharmap
       fluffychat signal-desktop
+      evince
     ] ++ (with cfg.pkgs-unstable; [
       # zathura for viewing, evince for live-reloading
       # since zathura flickers white when reloading, but evince does so only with the background color
-      zathura evince
+      zathura
       blender
       obsidian 
       scrcpy

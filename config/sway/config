@@ -1,5 +1,5 @@
 xwayland enable
-font pango:JetBrainsMonoNL NF 10
+font pango:IBM Plex Sans 10
 
 set $mod Mod4
 
