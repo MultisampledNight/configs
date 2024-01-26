@@ -35,7 +35,6 @@ in {
     ]
     ++ (if cfg.graphical then [
       ghidra sqlitebrowser neovideSmooth
-      kicad
     ] else [])
     ++ (if cfg.forTheGeneralPublic then [
       jetbrains.pycharm-community
