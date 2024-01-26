@@ -146,7 +146,7 @@ nnoremap <Space>a <Cmd>update \| lua vim.lsp.buf.code_action()<CR>
 vnoremap <Space>a <Cmd>update \| lua vim.lsp.buf.code_action()<CR>
 nnoremap <Space>g <Cmd>call TelescopeOnToplevel("lsp_workspace_symbols")<CR>
 
-nnoremap <Space>S <Cmd>call TelescopeOnToplevel("lsp_document_symbols")<CR>
+nnoremap <Space>s <Cmd>call TelescopeOnToplevel("lsp_document_symbols")<CR>
 nnoremap <Space>l <Cmd>call TelescopeOnToplevel("treesitter")<CR>
 nnoremap <Space>m <Cmd>call TelescopeOnToplevel("man_pages")<CR>
 nnoremap <Space>w <Cmd>call TelescopeOnToplevel("keymaps")<CR>
@@ -372,7 +372,6 @@ lspconfig.rust_analyzer.setup {
       },
       checkOnSave = {
         command = "clippy",
-        extraArgs = {"--", "-Wclippy::pedantic"},
       },
     }
   }

@@ -15,6 +15,7 @@ pkgs.mkShell rec {
     wasm-pack evcxr tokei
     libxkbcommon
     wayland xorg.libX11 xorg.libXcursor xorg.libXrandr xorg.libXi
+    alsa-lib
     fontconfig freetype
 
     shaderc directx-shader-compiler
