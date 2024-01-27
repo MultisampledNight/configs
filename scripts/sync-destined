@@ -1,5 +1,11 @@
 #!/usr/bin/env sh
 set -xueo pipefail
+
+if [[ $(hostname) == "destined" ]]; then
+	echo "syncing from destined to destined is a no-op" 1>&2
+	exit 1
+fi
+
 for category in media notes studio; do
 	abs="$HOME/$category/"
 	rsync -r --delete destined:$abs $abs
