@@ -1,0 +1,6 @@
+#!/usr/bin/env sh
+set -xueo pipefail
+for category in media notes studio; do
+	abs="$HOME/$category/"
+	rsync -r --delete destined:$abs $abs
+done
