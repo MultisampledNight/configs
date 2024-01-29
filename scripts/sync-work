@@ -1,0 +1,38 @@
+#!/usr/bin/env sh
+set -euo pipefail
+
+if [ "$#" -ne 2 ]; then
+	echo "usage: sync-work SOURCE TARGET"
+	echo "SOURCE is the machine with the work to copy from"
+	echo "TARGET is the machine to copy to"
+	echo "replace SOURCE or TARGET each with this machine name or localhost to refer to this machine instead"
+	exit 1
+fi
+
+function fmt() {
+	if [[ $1 == "$(hostname)" || $1 == "localhost" ]]; then
+		echo -n ""
+	else
+		echo -n "$1:"
+	fi
+}
+
+source=$(fmt $1)
+target=$(fmt $2)
+
+if [[ (-n $source) && (-n $target) ]]; then
+	echo "neither source nor target are this machine"
+	echo "can only sync if either source or target are this machine"
+	echo "note to self: make this better in future and ssh to the source machine to run to target, or use port forwarding"
+	exit 1
+fi
+
+if [[ $source == $target ]]; then
+	echo "syncing from one machine to the same machine is a no-op"
+	exit 1
+fi
+
+for category in media notes studio; do
+	abs="$HOME/$category/"
+	rsync --recursive --delete "$source$abs" "$target$abs"
+done
