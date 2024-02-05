@@ -32,7 +32,8 @@ if [[ $source == $target ]]; then
 	exit 1
 fi
 
-for category in media notes studio; do
+for category in notes studio media; do
 	abs="$HOME/$category/"
-	rsync --recursive --delete "$source$abs" "$target$abs"
+	rsync --progress --compress --recursive --partial --delete --update \
+		"$source$abs" "$target$abs"
 done

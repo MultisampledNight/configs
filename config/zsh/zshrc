@@ -50,7 +50,7 @@ alias evcxr='evcxr --edit-mode vi'
 alias nv='neovide'
 alias wh='wormhole-rs'
 alias sqlite='sqlite3 -box'
-alias rsync='rsync --progress --compress'
+alias rsync='rsync --progress --update --partial --compress'
 
 alias cr='cargo run'
 alias crr='cargo run --release'
