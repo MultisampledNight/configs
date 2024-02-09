@@ -268,8 +268,9 @@ in {
 
       nvidia = if cfg.videoDriver == "nvidia"
         then {
+          package = config.boot.kernelPackages.nvidiaPackages.beta;
           modesetting.enable = true;
-          open = true;
+          open = false;
         }
         else {};
     };
