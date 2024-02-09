@@ -454,17 +454,6 @@ in {
       experimental-features = ["nix-command" "flakes"];
     };
     nixpkgs.overlays = [
-      (final: prev: {
-        inkscape = prev.inkscape.overrideAttrs rec {
-          version = "1.3";
-          src = pkgs.fetchurl {
-            url = "https://inkscape.org/release/inkscape-${version}/source/archive/xz/dl/inkscape-${version}.tar.xz";
-            sha256 = "sha256-v08oawJeAWm4lIzBTVGZqbTCBNdhyJTEtISWVx7HYwc=";
-          };
-
-          buildInputs = prev.inkscape.buildInputs ++ (with pkgs; [double-conversion libepoxy]);
-        };
-      })
       (final: prev: if cfg.profileGuided then {
         linuxZenFast = prev.linuxPackagesFor (prev.linuxKernel.kernels.linux_zen.override {
           stdenv = final.fastStdenv;
