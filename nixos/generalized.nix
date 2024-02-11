@@ -258,17 +258,17 @@ in {
           if cfg.videoDriver == "intel"
             then [mesa.drivers intel-media-driver intel-compute-runtime]
           else if cfg.videoDriver == "nvidia"
-            then [config.boot.kernelPackages.nvidia_x11]
+            then [config.hardware.nvidia.package]
           else [];
-          extraPackages32 =
-            if cfg.videoDriver == "nvidia"
-              then [config.boot.kernelPackages.nvidia_x11.lib32]
-            else [];
+        extraPackages32 =
+          if cfg.videoDriver == "nvidia"
+            then [config.hardware.nvidia.package.lib32]
+          else [];
       };
 
       nvidia = if cfg.videoDriver == "nvidia"
         then {
-          package = config.boot.kernelPackages.nvidiaPackages.beta;
+          package = config.boot.kernelPackages.nvidiaPackages.stable;
           modesetting.enable = true;
           open = false;
         }

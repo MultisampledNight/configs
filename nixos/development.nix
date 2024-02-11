@@ -65,7 +65,7 @@ in {
     } else {});
 
     extraInit = (if cfg.videoDriver == "nvidia" && cfg.xorg then ''
-      export LD_LIBRARY_PATH="${config.boot.kernelPackages.nvidia_x11}/lib:$LD_LIBRARY_PATH"
+      export LD_LIBRARY_PATH="${config.hardware.nvidia.package}/lib:$LD_LIBRARY_PATH"
     '' else "")
     + (if cfg.xorg then ''
       # is X even running yet?
