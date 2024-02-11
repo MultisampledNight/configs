@@ -268,7 +268,30 @@ in {
 
       nvidia = if cfg.videoDriver == "nvidia"
         then {
-          package = config.boot.kernelPackages.nvidiaPackages.stable;
+          package =
+          # composed from https://github.com/NixOS/nixpkgs/tree/d08d996a529a4b0102dd61c17853915a6f32ebce/pkgs/os-specific/linux/nvidia-x11
+          let
+            rcu_patch = pkgs.fetchpatch {
+              url = "https://github.com/gentoo/gentoo/raw/c64caf53/x11-drivers/nvidia-drivers/files/nvidia-drivers-470.223.02-gpl-pfn_valid.patch";
+              hash = "sha256-eZiQQp2S/asE7MfGvfe6dA/kdCvek9SYa/FFGp24dVg=";
+            };
+            locked = import <nixpkgs/pkgs/os-specific/linux/nvidia-x11/generic.nix> {
+              version = "545.29.02";
+              sha256_64bit = "sha256-RncPlaSjhvBFUCOzWdXSE3PAfRPCIrWAXyJMdLPKuIU=";
+              openSha256 = "sha256-PukpOBtG5KvZKWYfJHVQO6SuToJUd/rkjpOlEi8pSmk=";
+              settingsSha256 = "sha256-zj173HCZJaxAbVV/A2sbJ9IPdT1+3yrwyxD+AQdkSD8=";
+              persistencedSha256 = "sha256-mmMi2pfwzI1WYOffMVdD0N1HfbswTGg7o57x9/IiyVU=";
+
+              patches = [rcu_patch];
+            };
+          in
+            pkgs.callPackage locked {
+              lib32 = (pkgs.pkgsi686Linux.callPackage locked {
+                libsOnly = true;
+                kernel = null;
+              }).out;
+              kernel = config.boot.kernelPackages.kernel;
+            };
           modesetting.enable = true;
           open = false;
         }
