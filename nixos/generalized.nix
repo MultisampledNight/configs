@@ -344,6 +344,7 @@ in {
         ffmpeg mpv jq unzip zip
         sqlite-interactive
         btop sysstat
+        hexyl
       ]
       ++ (with cfg.pkgs-unstable; [
         helix
