@@ -70,6 +70,7 @@ alias cfg='CARGO_PROFILE_RELEASE_DEBUG=true cargo flamegraph'
 
 alias gst='git status'
 alias gl='git log'
+alias glo='git log --oneline'
 alias grl='git reflog'
 alias gd='git diff'
 alias gds='git diff --staged'
