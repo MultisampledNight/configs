@@ -245,6 +245,9 @@ autocmd BufNewFile,BufRead *.kdl set ft=kdl
 " scm (treesitter queries)
 autocmd BufNewFile,BufRead *.scm set ft=scm
 
+" html
+autocmd BufNewFile,BufRead *.html set ts=2 sw=2 noet
+
 " latex
 autocmd BufNewFile,BufRead *.tex
   \ set filetype=latex sw=2 ts=2 sts=0 et
