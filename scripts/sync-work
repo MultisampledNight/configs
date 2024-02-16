@@ -34,6 +34,6 @@ fi
 
 for category in notes studio media; do
 	abs="$HOME/$category/"
-	rsync --progress --compress --recursive --partial --delete --update \
+	rsync --progress --compress --recursive --links --partial --delete --update \
 		"$source$abs" "$target$abs"
 done

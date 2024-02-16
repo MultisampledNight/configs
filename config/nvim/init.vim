@@ -176,8 +176,8 @@ let g:neovide_cursor_animation_length = 0.08
 let g:neovide_floating_blur_amount_x = 16.0
 let g:neovide_floating_blur_amount_y = 16.0
 let g:neovide_floating_shadow = v:true
-let g:neovide_light_angle_degrees = 20
-let g:neovide_light_radius = 40
+let g:neovide_light_angle_degrees = 40
+let g:neovide_light_radius = 10
 let g:neovide_underline_automatic_scaling = v:true
 let g:neovide_hide_mouse_when_typing = v:true
 
