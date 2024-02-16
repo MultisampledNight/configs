@@ -92,6 +92,7 @@ in {
     ++ (if cfg.graphical then [
       # normal applications
       configuredFirefox tor-browser-bundle-bin thunderbird
+      keepassxc
       gimp inkscape scribus
       libreoffice-fresh
       pavucontrol carla
@@ -101,7 +102,7 @@ in {
       helvum
       libsForQt5.kruler
       gucharmap
-      fluffychat signal-desktop
+      element-desktop signal-desktop
       evince
       gnome.gnome-boxes
     ] ++ (with cfg.pkgs-unstable; [
