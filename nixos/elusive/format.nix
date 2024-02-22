@@ -50,7 +50,7 @@ let
   shells =
     lib.mapAttrsToList
       (name: _: pkgs.callPackage (shellDir + "/${name}/default.nix") {})
-      (lib.filterAttrs (_: type: type == "directory") (builtins.readDir shellDir));
+      (lib.filterAttrs (name: type: type == "directory" && name != "sec") (builtins.readDir shellDir));
 in {
   fileSystems."/" = {
     device = "/dev/disk/by-label/nixos";
