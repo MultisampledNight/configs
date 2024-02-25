@@ -51,6 +51,7 @@ alias nv='neovide'
 alias wh='wormhole-rs'
 alias sqlite='sqlite3 -box'
 alias rsync='rsync --progress --update --partial --compress'
+alias curl='curl -LC -'
 
 alias cr='cargo run'
 alias crr='cargo run --release'
