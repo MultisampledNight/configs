@@ -4,6 +4,7 @@ pkgs.mkShell rec {
   buildInputs = with pkgs; [
     rustup
     cargo-audit cargo-expand cargo-flamegraph cargo-nextest cargo-make cargo-watch
+    cargo-vet
     typos just
     fd
 
@@ -19,6 +20,7 @@ pkgs.mkShell rec {
     fontconfig freetype
 
     shaderc directx-shader-compiler
+    ocl-icd
     libGL
     vulkan-headers vulkan-loader
     vulkan-tools vulkan-tools-lunarg
