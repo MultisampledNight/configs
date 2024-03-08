@@ -129,7 +129,7 @@ in {
       libsForQt5.kdenlive
 
       # audio
-      audacity lmms musescore polyphone
+      audacity lmms musescore vcv-rack polyphone
       easyeffects
     ] else []);
 
