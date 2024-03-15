@@ -1,4 +1,4 @@
-{ pkgs ? import <nixpkgs> {} }:
+{ pkgs ? import <nixos-unstable> {} }:
 
 pkgs.mkShell rec {
   buildInputs = with pkgs; [
@@ -29,7 +29,7 @@ pkgs.mkShell rec {
     # vulkan-extension-layer
     monado openxr-loader openxr-loader.dev
 
-    intelrealsense-gui
+    librealsense-gui opencv
 
     mdbook mdbook-linkcheck mdbook-pagetoc
 
