@@ -29,6 +29,8 @@ pkgs.mkShell rec {
     # vulkan-extension-layer
     monado openxr-loader openxr-loader.dev
 
+    intelrealsense-gui
+
     mdbook mdbook-linkcheck mdbook-pagetoc
 
     python3 valgrind lldb rr
