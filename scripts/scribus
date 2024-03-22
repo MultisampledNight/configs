@@ -1,0 +1,3 @@
+#!/usr/bin/env sh
+
+WAYLAND_DISPLAY= QT_QPA_PLATFORM=xcb /run/current-system/sw/bin/scribus
