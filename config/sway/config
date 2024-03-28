@@ -60,10 +60,8 @@ input type:touchpad {
 }
 
 bindsym $mod+Tab exec fuzzel
-bindsym $mod+j exec firefox -p fedi
 bindsym $mod+d exec firefox
 bindsym $mod+u exec discord
-bindsym $mod+a exec github
 bindsym $mod+x exec thunderbird
 bindsym $mod+p exec spotify
 bindsym $mod+adiaeresis exec element-desktop

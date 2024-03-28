@@ -16,7 +16,7 @@ function ProjectToplevel()
 endfunction
 
 " general settings
-colorscheme base16-abnormalize-alt
+colorscheme base16-white-on-black
 set termguicolors
 
 if exists("g:neovide")
