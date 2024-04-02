@@ -33,7 +33,7 @@ export PATH
 export ALL_SHELLDEFS_PATH="$HOME/zukunftslosigkeit/shells"
 export NIX_PATH="$NIX_PATH:$ALL_SHELLDEFS_PATH"
 
-export PAGER='hx'
+export PAGER='less -R'
 
 # see also https://grml.org/zsh/zsh-lovers.html
 rationalise-dot() {

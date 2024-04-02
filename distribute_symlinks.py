@@ -21,7 +21,6 @@ CONFIG_DESTINATIONS = {
     "config/gtk-3.0": "~/.config/gtk-3.0",
     "config/helix": "~/.config/helix",
     "config/i3": "~/.config/i3",
-    "config/mako": "~/.config/mako",
     "config/nvim": "~/.config/nvim",
     "config/pipewire": "~/.config/pipewire/pipewire.conf.d",
     "config/ripgrep/rgignore": "~/.rgignore",
