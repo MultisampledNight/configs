@@ -11,17 +11,25 @@ if (( $# != 1 )); then
 fi
 
 project_name="$1"
+os_specific_args=""
 
-base_image=$(readlink -- "/nix/var/nix/gcroots/per-user/$USER/elusive-base")
-overlay_image="$HOME/zukunftslosigkeit/state/elusive/$project_name/overlay.qcow2"
+if [[ $project_name == "woe" ]]; then
+  overlay_image="$HOME/zukunftslosigkeit/state/vm/woe-10.qcow2"
+  os_specific_args=(
+    -cdrom "$HOME/media/iso/Win10_22H2_English_x64v1.iso"
+  )
+else
+  base_image=$(readlink -- "/nix/var/nix/gcroots/per-user/$USER/elusive-base")
+  overlay_image="$HOME/zukunftslosigkeit/state/elusive/$project_name/overlay.qcow2"
 
-# set up the overlay image first, if not already done
-if [[ ! -f $overlay_image ]]; then
-  echo "creating overlay at $overlay_image since it doesn't exist yet"
-  mkdir -p $(dirname -- "$overlay_image")
-  qemu-img create \
-    -o backing_file=$base_image,backing_fmt=raw \
-    -f qcow2 $overlay_image
+  # set up the overlay image first, if not already done
+  if [[ ! -f $overlay_image ]]; then
+    echo "creating overlay at $overlay_image since it doesn't exist yet"
+    mkdir -p $(dirname -- "$overlay_image")
+    qemu-img create \
+      -o backing_file=$base_image,backing_fmt=raw \
+      -f qcow2 $overlay_image
+  fi
 fi
 
 args=(
@@ -50,4 +58,5 @@ fi
 # everything's ready, launch
 qemu-system-x86_64 \
   $args \
-  $maybe_gui_args
+  $maybe_gui_args \
+  $os_specific_args
