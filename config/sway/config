@@ -25,11 +25,12 @@ output Virtual-1 {
 }
 output HDMI-A-1 position 0,0
 
-# 16:10
-#output eDP-1 position 390,1200
-# 4k
-output eDP-1 position 396,1080
-output HDMI-A-1 scale 2
+# 16:10 1080p
+output eDP-1 position 390,1200
+output HDMI-A-1 scale 1
+# 16:9  4k
+#output eDP-1 position 396,1080
+#output HDMI-A-1 scale 2
 
 output DP-3 max_render_time 13
 
