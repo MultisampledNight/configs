@@ -8,7 +8,8 @@ pkgs.mkShell rec {
     typos just
     fd
 
-    gdb lldb
+    valgrind
+    gdb lldb rr
     clang llvmPackages.libclang
     libgcc.lib
     mold 
@@ -25,15 +26,14 @@ pkgs.mkShell rec {
     vulkan-headers vulkan-loader
     vulkan-tools vulkan-tools-lunarg
     vulkan-validation-layers
-    # TODO: for some reason fails when building the image for elusive due to XDG_DATA_DIRS being unbound in the setup hook
-    # vulkan-extension-layer
+    vulkan-extension-layer
     monado openxr-loader openxr-loader.dev
 
     librealsense-gui opencv
 
     mdbook mdbook-linkcheck mdbook-pagetoc
 
-    python3 valgrind lldb rr
+    python3
     renderdoc
     gnuplot
   ];

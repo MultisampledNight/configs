@@ -368,7 +368,7 @@ in {
       ++ (if cfg.wireless.wlan then [iw] else [])
       ++ (if cfg.xorg then [xclip] else [])
       ++ (if cfg.wayland then with cfg.pkgs-unstable; [
-        fuzzel waybar grim slurp swappy hyprpicker
+        fuzzel waybar grim slurp swappy hyprpicker fnott
         swaybg swaylock wl-clipboard
         waypipe
       ] else [])
