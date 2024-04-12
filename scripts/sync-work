@@ -1,10 +1,11 @@
 #!/usr/bin/env sh
 set -euo pipefail
 
-if [ "$#" -ne 2 ]; then
-	echo "usage: sync-work SOURCE TARGET"
+if [ "$#" -lt 2 ]; then
+	echo "usage: sync-work SOURCE TARGET [DIR...]"
 	echo "SOURCE is the machine with the work to copy from"
 	echo "TARGET is the machine to copy to"
+	echo "DIR, if given, are the directories which are copied. If not given, ~/{notes,studio,media} are assumed"
 	echo "replace SOURCE or TARGET each with this machine name or localhost to refer to this machine instead"
 	exit 1
 fi
@@ -19,6 +20,9 @@ function fmt() {
 
 source=$(fmt $1)
 target=$(fmt $2)
+shift 2
+defaultdirs=$(echo ~/{notes,studio,media})
+dirs=${@:-$defaultdirs}
 
 if [[ (-n $source) && (-n $target) ]]; then
 	echo "neither source nor target are this machine"
@@ -32,8 +36,8 @@ if [[ $source == $target ]]; then
 	exit 1
 fi
 
-for category in notes studio media; do
-	abs="$HOME/$category/"
+for dir in $dirs; do
+	abs="$(realpath $dir)"
 	rsync --progress --compress --recursive --links --partial --delete --update \
 		"$source$abs" "$target$abs"
 done
