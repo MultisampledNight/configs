@@ -2,6 +2,6 @@
 # thanks arch wiki
 screenshot_folder="$HOME/media/pic/screenshots"
 moment="$(date --rfc-3339=seconds -u)"
-#sleep 2
+sleep 2
 grim -g "$(swaymsg -t get_tree | jq -r '.. | select(.focused?) | .rect | "\(.x),\(.y) \(.width)x\(.height)"')" "$screenshot_folder/$moment.png"
 cp "$screenshot_folder/$moment.png" "$screenshot_folder/unknown.png"

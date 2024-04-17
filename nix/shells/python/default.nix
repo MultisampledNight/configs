@@ -1,4 +1,4 @@
-{ pkgs ? import <nixpkgs> {} }:
+{ pkgs ? import <nixos-unstable> {} }:
 
 let
   python3Ext = pkgs.python3.withPackages (ps: [
@@ -8,6 +8,7 @@ in
 pkgs.mkShell {
   buildInputs = with pkgs; [
     python3Ext black
+    ruff-lsp
   ];
 
   shellHook = ''

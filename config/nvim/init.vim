@@ -363,6 +363,7 @@ lspconfig.util.default_config = vim.tbl_extend(
 )
 
 lspconfig.gdscript.setup {}
+lspconfig.ruff_lsp.setup {}
 lspconfig.rust_analyzer.setup {
   capabilities = capabilities,
   flags = flags,
