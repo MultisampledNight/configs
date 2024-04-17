@@ -251,7 +251,7 @@ autocmd BufNewFile,BufRead *.html set ts=2 sw=2 noet
 " latex
 autocmd BufNewFile,BufRead *.tex
   \ set filetype=latex sw=2 ts=2 sts=0 et
-  \|noremap <buffer> <Leader>1 <Cmd>call ExecAtFile(["pdflatex", "-halt-on-error", expand("%")])<CR>
+  \|noremap <buffer> <Leader>1 <Cmd>call ExecAtFile(["pdflatex", "-halt-on-error", "-jobname=view", expand("%")])<CR>
   \|noremap <buffer> <Leader>2 <Cmd>call ViewCurrentPdf()<CR>
 autocmd VimLeavePre *.tex
   \ call StopProgram("evince")
@@ -259,8 +259,10 @@ autocmd VimLeavePre *.tex
 " typst
 autocmd BufNewFile,BufRead *.typ
   \ set filetype=typst sw=2 ts=2 sts=0 et
-  \|call LaunchProgram("typst" . bufnr(), ["typst", "watch", expand("%:p")])
+  \|call LaunchProgram("typst" . bufnr(), ["typst", "watch", "--input", "dev=true", expand("%:p"), CurrentPdfPath()])
   \|noremap <buffer> <Leader>2 <Cmd>call ViewCurrentPdf()<CR>
+autocmd BufLeave *.typ
+  \ call StopProgram("typst" . bufnr())
 autocmd VimLeavePre *.typ
   \ call StopProgram("typst" . bufnr())
   \|call StopProgram("evince")
@@ -270,7 +272,7 @@ autocmd BufEnter *.tex,*.typ call ViewCurrentPdf()
 let g:tracked_programs = {}
 
 function CurrentPdfPath()
-  return expand("%:p:r") . ".pdf"
+  return expand("%:p:h") . "/view.pdf"
 endfunction
 
 function ViewCurrentPdf()
