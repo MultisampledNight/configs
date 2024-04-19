@@ -72,10 +72,12 @@ input type:touchpad {
 exec fnott
 
 bindsym $mod+Tab exec fuzzel
+bindsym $mod+j exec firefox -p fedi
 bindsym $mod+d exec firefox
 bindsym $mod+u exec discord
+bindsym $mod+a exec firefox -p github
 bindsym $mod+x exec thunderbird
-bindsym $mod+p exec spotify
+bindsym $mod+p exec firefox -p zulip
 bindsym $mod+adiaeresis exec element-desktop
 
 bindsym $mod+t exec obsidian
@@ -87,8 +89,8 @@ bindsym $mod+udiaeresis exec godot4
 
 bindsym $mod+Return exec alacritty
 bindsym $mod+Shift+q kill
-bindsym $mod+Shift+x exec swaylock
-bindsym $mod+Shift+m exec swaylock --daemonize && sleep 0.25 && systemctl suspend-then-hibernate
+bindsym $mod+Shift+comma exec swaylock
+bindsym $mod+Shift+period exec swaylock --daemonize && sleep 0.25 && systemctl suspend-then-hibernate
 bindsym $mod+F11 exec window-screenshot
 bindsym $mod+F12 exec screenshot
 bindsym $mod+y input type:keyboard xkb_variant "bone"

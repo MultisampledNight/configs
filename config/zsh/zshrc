@@ -103,6 +103,13 @@ bydir() {
 	touch $dir$1
 }
 
+flash() {
+	sudo dd if=$1 of=$2 \
+		status=progress \
+		bs=4M \
+		oflag=sync
+}
+
 # wrapper for nix-shell to make it launch zsh and cause less friction in my workflow
 nix-shell() {
 	command nix-shell $@ \
