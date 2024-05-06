@@ -9,16 +9,16 @@
 
 rustPlatform.buildRustPackage rec {
   pname = "light-please";
-  version = "0.1.2";
+  version = "0.2.1";
 
   src = fetchFromGitHub {
     owner = "MultisampledNight";
     repo = pname;
     rev = version;
-    sha256 = "sha256-FSdADmCzi5K2nL4xoeR4BhZceLSToXcaU9Xqp2pu/Cg=";
+    sha256 = "sha256-e41SD7XTbt+Io2opHMoYmAMW5WuqD9Gs1C+kXBOHZpg=";
   };
 
-  cargoSha256 = "sha256-GKI+/n+8+HZmKzVgD57gFPVzZjUItc4I+D6hEkCHc9Y=";
+  cargoSha256 = "sha256-xS2kZnZcTceeSs5kmTDUJugVH/hQf/Kb33C6uZLvavI=";
 
   postFixup = let
     libPath = lib.makeLibraryPath [
