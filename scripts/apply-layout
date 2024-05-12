@@ -1,0 +1,119 @@
+#!/usr/bin/env python
+from dataclasses import dataclass
+from enum import IntEnum, Enum
+from socket import gethostname
+from subprocess import run
+from typing import Iterator, Optional
+
+
+@dataclass
+class Screen:
+    x: int = 0
+    y: int = 0
+    scale: Optional[int] = None
+
+    def sway_commands(self, name: str) -> Iterator[Iterator[str]]:
+        cmds = []
+        name = name.replace("_", "-")
+
+        if self.x != 0 or self.y != 0:
+            cmds.append(["output", name, "position", self.x, self.y])
+        if self.scale is not None:
+            cmds.append(["output", name, "scale", self.scale])
+
+        return map(
+            lambda cmd: map(str, arg),
+            cmds,
+        )
+
+
+@dataclass
+class Layout:
+    eDP_1: Optional[Screen] = None
+    DP_3: Optional[Screen] = None
+    HDMI_A_1: Optional[Screen] = None
+
+    def sway_commands(self) -> list[list[str]]:
+        cmds = []
+
+        for name, config in self.__dict__.items():
+            if config is None:
+                continue
+
+            cmds.extend(config.sway_commands(name))
+
+        return cmds
+
+
+# layout syntax in ABNF:
+#
+# layout = screen *(sp "+" sp screen)
+# screen =           connector
+#         [sp "@" sp resolution]
+#         [sp "/" sp pos]
+# sp = *(WSP / CR / LF)
+#
+# connector = plug-type sp [number]
+# plug-type = "edp" / "hdmi" / "dp"
+# number = 1*DIGIT
+#
+# resolution = "720p" / "1080p" / "1200p" / "4k"
+#
+# pos =   hori
+#       / vert
+#       / hori sp "," sp vert
+#       / vert sp "," sp hori
+# hori = "c" ["enter"]
+#      / "l" ["eft"]
+#      / "r" ["ight"]
+# vert = "t" ["op"]
+#      / "h" ["orizon"]
+#      / "b" ["ot" ["tom"]]
+#
+# notes:
+# - pos
+#   - defaults to "right"
+#   - specifies on where to place the current screen
+#     when viewing the entire bounding box
+#     of all layout until now
+# - connector number defaults to "1"
+# - size defaults to "1080p"
+#
+# yes this will be actually automatized some day
+# yes i will rewrite this in rust and make it non-hardcoded
+LAYOUTS = {
+    "hdmi + edp/center,bottom": Layout(
+        eDP_1=Screen(x=390, y=1080), HDMI_A_1=Screen(scale=1)
+    ),
+    "hdmi@1200p + edp/center,bottom": Layout(
+        eDP_1=Screen(x=390, y=1200), HDMI_A_1=Screen(scale=1)
+    ),
+    "hdmi@4k + edp/center,bottom": Layout(
+        eDP_1=Screen(x=396, y=1080),
+        HDMI_A_1=Screen(scale=2),
+    ),
+    "dp3@1200p + hdmi": Layout(
+        DP_3=Screen(),
+        HDMI_A_1=Screen(x=1920, y=1200)
+    ),
+}
+
+MACHINES = {
+    "destined": "hdmi@1200p + edp/center,bottom",
+    "overloaded": "dp3@1200p + hdmi",
+}
+
+
+def apply_layout(layout: Optional[Layout | str] = None):
+    if layout is None:
+        layout = MACHINES[gethostname()]
+
+    if isinstance(layout, str):
+        layout = LAYOUTS[layout]
+
+    for cmd in layout.sway_commands():
+        run(["swaymsg"] + cmd)
+
+
+if __name__ == "__main__":
+    apply_layout()

@@ -16,7 +16,7 @@ os_specific_args=""
 if [[ $project_name == "woe" ]]; then
   overlay_image="$HOME/zukunftslosigkeit/state/vm/woe-10.qcow2"
   os_specific_args=(
-    -cdrom "$HOME/media/iso/Win10_22H2_English_x64v1.iso"
+    -cdrom "$HOME/media/iso/Win10_22H2_EnglishInternational_x64v1.iso"
   )
 else
   base_image=$(readlink -- "/nix/var/nix/gcroots/per-user/$USER/elusive-base")
@@ -52,6 +52,9 @@ else
     -audio driver=alsa,model=hda,out.buffer-length=48000
     -device virtio-vga-gl,max_outputs=1
     -display gtk,full-screen=on,gl=on
+
+    -device qemu-xhci
+    -device usb-mouse
   )
 fi
 

@@ -11,6 +11,7 @@ pkgs.mkShell rec {
     ngrok
 
     intelmetool coreboot-utils
+    wireshark
   ];
 
   shellHook = ''

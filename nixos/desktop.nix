@@ -33,7 +33,10 @@ in {
 
   services = {
     udisks2.enable = true;
-    printing.enable = true;
+    printing = {
+      enable = true;
+      drivers = with pkgs; [brlaser];
+    };
     joycond.enable = true;
 
     # hide the mouse cursor when not moved
