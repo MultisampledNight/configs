@@ -16,8 +16,7 @@ class Screen:
         cmds = []
         name = name.replace("_", "-")
 
-        if self.x != 0 or self.y != 0:
-            cmds.append(["output", name, "position", self.x, self.y])
+        cmds.append(["output", name, "position", self.x, self.y])
         if self.scale is not None:
             cmds.append(["output", name, "scale", self.scale])
 
@@ -86,25 +85,25 @@ class Layout:
 # yes this will be actually automatized some day
 # yes i will rewrite this in rust and make it non-hardcoded
 LAYOUTS = {
-    "hdmi + edp/center,bottom": Layout(
+    "hdmi + edp/bottom,center": Layout(
         eDP_1=Screen(x=390, y=1080), HDMI_A_1=Screen(scale=1)
     ),
-    "hdmi@1200p + edp/center,bottom": Layout(
+    "hdmi@1200p + edp/bottom,center": Layout(
         eDP_1=Screen(x=390, y=1200), HDMI_A_1=Screen(scale=1)
     ),
-    "hdmi@4k + edp/center,bottom": Layout(
+    "hdmi@4k + edp/bottom,center": Layout(
         eDP_1=Screen(x=396, y=1080),
         HDMI_A_1=Screen(scale=2),
     ),
-    "dp3@1200p + hdmi": Layout(
+    "dp3@1200p + hdmi/right,bottom": Layout(
         DP_3=Screen(),
-        HDMI_A_1=Screen(x=1920, y=1200)
+        HDMI_A_1=Screen(x=1920, y=120)
     ),
 }
 
 MACHINES = {
-    "destined": "hdmi@1200p + edp/center,bottom",
-    "overloaded": "dp3@1200p + hdmi",
+    "destined": "hdmi@1200p + edp/bottom,center",
+    "overloaded": "dp3@1200p + hdmi/right,bottom",
 }
 
 
