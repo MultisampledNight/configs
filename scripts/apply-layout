@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 from dataclasses import dataclass
-from enum import IntEnum, Enum
+from enum import IntEnum
 from socket import gethostname
 from subprocess import run
 from typing import Iterator, Optional
@@ -12,7 +12,7 @@ class Screen:
     y: int = 0
     scale: Optional[int] = None
 
-    def sway_commands(self, name: str) -> Iterator[Iterator[str]]:
+    def sway_commands(self, name: str) -> Iterator[list[str]]:
         cmds = []
         name = name.replace("_", "-")
 
@@ -22,7 +22,7 @@ class Screen:
             cmds.append(["output", name, "scale", self.scale])
 
         return map(
-            lambda cmd: map(str, arg),
+            lambda cmd: list(map(str, cmd)),
             cmds,
         )
 
@@ -50,6 +50,7 @@ class Layout:
 # layout = screen *(sp "+" sp screen)
 # screen =           connector
 #         [sp "@" sp resolution]
+#         [sp ":" sp scale]
 #         [sp "/" sp pos]
 # sp = *(WSP / CR / LF)
 #
@@ -59,25 +60,28 @@ class Layout:
 #
 # resolution = "720p" / "1080p" / "1200p" / "4k"
 #
+# scale = 1*DIGIT ["." 1*DIGIT]
+#
 # pos =   hori
 #       / vert
 #       / hori sp "," sp vert
 #       / vert sp "," sp hori
-# hori = "c" ["enter"]
-#      / "l" ["eft"]
+# hori = "l" ["eft"]
+#      / "c" ["enter"]
 #      / "r" ["ight"]
 # vert = "t" ["op"]
 #      / "h" ["orizon"]
 #      / "b" ["ot" ["tom"]]
 #
 # notes:
+# - connector number defaults to "1"
+# - resolution defaults to "1080p"
+# - scale defaults to "1" if under 4k, otherwise "2"
 # - pos
-#   - defaults to "right"
+#   - defaults to "right,top"
 #   - specifies on where to place the current screen
 #     when viewing the entire bounding box
 #     of all layout until now
-# - connector number defaults to "1"
-# - size defaults to "1080p"
 #
 # yes this will be actually automatized some day
 # yes i will rewrite this in rust and make it non-hardcoded
