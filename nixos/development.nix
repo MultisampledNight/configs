@@ -85,6 +85,16 @@ in {
     };
   };
 
+  fileSystems = let
+    as-path = user: "/home/${user}/studio/games/antisuns";
+  in {
+    ${as-path "uedev"} = {
+      device = as-path "multisn8";
+      fsType = "none";
+      options = ["bind"];
+    };
+  };
+
   programs = {
     neovim = {
       defaultEditor = !cfg.forTheGeneralPublic;
