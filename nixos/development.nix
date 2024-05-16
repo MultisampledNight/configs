@@ -78,6 +78,13 @@ in {
     '' else "");
   };
 
+  users.users = {
+    uedev = {
+      isNormalUser = true;
+      useDefaultShell = true;
+    };
+  };
+
   programs = {
     neovim = {
       defaultEditor = !cfg.forTheGeneralPublic;
