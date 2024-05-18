@@ -78,10 +78,16 @@ in {
     '' else "");
   };
 
-  users.users = {
-    uedev = {
-      isNormalUser = true;
-      useDefaultShell = true;
+  users = {
+    users = {
+      uedev = {
+        isNormalUser = true;
+        useDefaultShell = true;
+        extraGroups = ["antisuns"];
+      };
+    };
+    groups = {
+      antisuns = {};
     };
   };
 

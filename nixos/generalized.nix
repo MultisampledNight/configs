@@ -310,7 +310,7 @@ in {
           multisn8 = {
             isNormalUser = true;
             extraGroups =
-              ["wheel" "plugdev"]
+              ["wheel" "plugdev" "antisuns"]
               ++ (if cfg.graphical then ["input" "video" "audio"] else [])
               ++ (if config.programs.adb.enable then ["adbusers"] else []);
             shell = pkgs.zsh;
