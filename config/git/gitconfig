@@ -24,3 +24,5 @@
 	required = true
 [pull]
 	rebase = true
+[safe]
+	directory = /home/multisn8/studio/games/antisuns
