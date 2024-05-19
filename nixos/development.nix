@@ -53,6 +53,7 @@ in {
           "/run/opengl-driver-32/share/vulkan/icd.d/${cfg.videoDriver}_icd.i686.json"
         ]
         else [];
+      NEOVIDE_FORK = "1";
     }
     // (if cfg.videoDriver == "nvidia" then {
       # both required for blender

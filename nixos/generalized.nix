@@ -150,18 +150,6 @@ in {
         };
 
         overlays = [
-          (final: prev: {
-            # update random stuff
-            neovim-unwrapped = prev.neovim-unwrapped.overrideAttrs {
-              version = "0.10.0";
-              src = pkgs.fetchFromGitHub {
-                owner = "neovim";
-                repo = "neovim";
-                rev = "061a0d5a48e4e3c4a72930de806e5957763f4dc8";
-                hash = "sha256-XQ1QABR9frT2kXl2qZnm1+o2EysbWon25fbA+Ya4KM0=";
-              };
-            };
-          })
           (final: prev: if cfg.wayland then {
             godot_4 = prev.godot_4.overrideAttrs {
               src = final.fetchFromGitHub {
