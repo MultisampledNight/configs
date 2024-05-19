@@ -29,6 +29,7 @@ class Screen:
 @dataclass
 class Layout:
     eDP_1: Optional[Screen] = None
+    DP_1: Optional[Screen] = None
     DP_3: Optional[Screen] = None
     HDMI_A_1: Optional[Screen] = None
 
@@ -95,6 +96,10 @@ LAYOUTS = {
         eDP_1=Screen(x=396, y=1080),
         HDMI_A_1=Screen(scale=2),
     ),
+    "dp@1440p + edp/bottom,center": Layout(
+        eDP_1=Screen(x=152, y=1440),
+        DP_1=Screen(scale=1.25),
+    ),
     "dp3@1200p + hdmi/right,bottom": Layout(
         DP_3=Screen(),
         HDMI_A_1=Screen(x=1920, y=120)
@@ -102,7 +107,7 @@ LAYOUTS = {
 }
 
 MACHINES = {
-    "destined": "hdmi@1200p + edp/bottom,center",
+    "destined": "dp@1440p + edp/bottom,center",
     "overloaded": "dp3@1200p + hdmi/right,bottom",
 }
 
