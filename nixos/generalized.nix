@@ -298,7 +298,7 @@ in {
           multisn8 = {
             isNormalUser = true;
             extraGroups =
-              ["wheel" "plugdev" "antisuns"]
+              ["wheel" "plugdev" "antisuns" "kvm"]
               ++ (if cfg.graphical then ["input" "video" "audio"] else [])
               ++ (if config.programs.adb.enable then ["adbusers"] else []);
             shell = pkgs.zsh;
@@ -335,6 +335,9 @@ in {
       };
 
       udev.extraRules = ''
+        # Quest 1
+        SUBSYSTEM=="usb", ATTR{idVendor}=="2833", ATTR{idProduct}=="0186", MODE="0666", GROUP="plugdev"
+
         # Device rules for Intel RealSense devices (D405)
         SUBSYSTEMS=="usb", ATTRS{idVendor}=="8086", ATTRS{idProduct}=="0b5b", MODE:="0666", GROUP:="plugdev"
 
@@ -465,6 +468,11 @@ in {
     qt = {
       enable = true;
       platformTheme = "qt5ct";
+    };
+
+    virtualisation = {
+      libvirtd.enable = true;
+      kvmgt.enable = true;
     };
 
     nix.settings = {

@@ -41,6 +41,7 @@ args=(
   -m size=8G
   -accel kvm
   -nic user,restrict=off,hostfwd=tcp::50022-:22
+  -monitor stdio
 )
 
 if (( $#nogui )); then
@@ -54,7 +55,8 @@ else
     -display gtk,full-screen=on,gl=on
 
     -device qemu-xhci
-    -device usb-mouse
+    -device usb-tablet
+    -device usb-kbd
   )
 fi
 
