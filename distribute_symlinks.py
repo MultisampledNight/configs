@@ -21,6 +21,7 @@ CONFIG_DESTINATIONS = {
     "config/gtk-3.0": "~/.config/gtk-3.0",
     "config/helix": "~/.config/helix",
     "config/i3": "~/.config/i3",
+    "config/layaway": "~/.config/layaway",
     "config/nvim": "~/.config/nvim",
     "config/pipewire": "~/.config/pipewire/pipewire.conf.d",
     "config/ripgrep/rgignore": "~/.rgignore",
@@ -57,21 +58,18 @@ def distribute_symlinks(
         link_target = (repo_root / repo_subpath).resolve()
 
         # back up the old content (if any)
-        if not no_backup:
-            try:
-                subprocess.run(
-                    ["python3", repo_root / "scripts" / "archive", link_name],
-                    check=True,
-                )
-            except subprocess.CalledProcessError:
-                # most likely a permission error, just ignore this entry
-                continue
+        if no_backup:
+            remove(link_name)
+        else:
+            subprocess.run(
+                ["python3", repo_root / "scripts" / "archive", link_name],
+            )
 
         try:
             link_name.parent.mkdir(parents=True, exist_ok=True)
             if actually_install:
                 # directly copy to the destination instead
-                if Path(link_target).is_file():
+                if link_target.is_file():
                     shutil.copy2(link_target, link_name)
                 else:
                     shutil.copytree(link_target, link_name)
@@ -109,6 +107,17 @@ def parse_args():
     parser.add_argument("--no-backup", action="store_true")
     parser.add_argument("--actually-install", action="store_true")
     return parser.parse_args()
+
+
+def remove(path: Path):
+    if not path.exists():
+        # can't delete something that doesn't exist
+        return
+
+    if path.is_file() or path.is_symlink():
+        path.unlink()
+    else:
+        shutil.rmtree(path)
 
 
 def main():

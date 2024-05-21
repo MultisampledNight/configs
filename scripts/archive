@@ -29,7 +29,8 @@ def archive(subject_path, home_dir=HOME_DIR, archive_dir=ARCHIVE_DIR, time_tag=T
     `subject_path` while preserving its subdirectory under `home_path`.
     Does nothing if `subject_path` does not exist.
     """
-    if not Path(subject_path).exists():
+    subject_path = Path(subject_path)
+    if not subject_path.exists():
         return 1
 
     if time_tag is None:
@@ -38,7 +39,7 @@ def archive(subject_path, home_dir=HOME_DIR, archive_dir=ARCHIVE_DIR, time_tag=T
     archive_dir = Path(str(archive_dir).replace("~", HOME_DIR))
     archive_dir /= time_tag
 
-    subject_path = Path(subject_path).resolve()
+    subject_path = subject_path.absolute()
     try:
         rel_path = subject_path.relative_to(home_dir)
     except ValueError:
@@ -56,7 +57,10 @@ def archive(subject_path, home_dir=HOME_DIR, archive_dir=ARCHIVE_DIR, time_tag=T
             else:
                 shutil.copy2(subject_path, target_path)
         else:
-            shutil.move(subject_path, target_path)
+            # assumes they're on the same FS
+            # which... is not necessarily the case
+            # but i just care about the atomicity for now
+            subject_path.rename(target_path)
     except PermissionError:
         print(
             f"Skipping {subject_path} due to missing perms",
