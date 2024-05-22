@@ -3,6 +3,7 @@
 with lib;
 let
   cfg = config.generalized;
+  layaway = cfg.pkgs-unstable.callPackage ./packages/layaway/default.nix {};
 in {
   imports =
     [
@@ -108,6 +109,8 @@ in {
       element-desktop signal-desktop
       evince
       gnome.gnome-boxes
+
+      layaway
     ] ++ (with cfg.pkgs-unstable; [
       # zathura for viewing, evince for live-reloading
       # since zathura flickers white when reloading, but evince does so only with the background color
