@@ -25,7 +25,7 @@ output Virtual-1 {
 }
 output HDMI-A-1 position 0,0
 
-exec_always apply-layout
+exec_always layaway
 
 output DP-3 max_render_time 13
 
