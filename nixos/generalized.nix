@@ -144,9 +144,6 @@ in {
               == "libnv"
             )
           );
-          permittedInsecurePackages = [
-            "electron-24.8.6" # see nixpkgs issue 263764
-          ];
         };
 
         overlays = [
@@ -188,11 +185,6 @@ in {
               '';
             });
           } else {})
-          (final: prev: {
-            obsidian = prev.obsidian.override {
-              electron = final.electron_24;
-            };
-          })
         ];
       };
       description = "From where to pull unstable packages.";
