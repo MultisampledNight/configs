@@ -1,0 +1,66 @@
+#!/usr/bin/env python3
+import argparse
+import csv
+from pathlib import Path
+from typing import Iterator
+
+# fetch yours from
+# https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xhtml
+PORT_NUMBERS = Path.home() / "media" / "tables" / "service-names-port-numbers.csv"
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        prog="free-ports",
+        description="Finds ports in the given range that have not been assigned by IANA yet. \n"
+        "Note: This does not mean they're not in use.",
+    )
+    parser.add_argument("start", type=int)
+    parser.add_argument("end", type=int)
+    args = parser.parse_args()
+
+    inside = range(args.start, args.end)
+    free = list(free_ports(inside))
+    free.sort()
+
+    for port in free:
+        print(port)
+
+
+def free_ports(inside: range) -> set[int]:
+    used = used_ports()
+    free = set(inside)
+    free -= used
+
+    return free
+
+
+def used_ports() -> set[int]:
+    # this is far too hacky
+    # feel free to build an actually useful Service type or the works
+    ports = set()
+
+    with open(PORT_NUMBERS) as fh:
+        for service in csv.DictReader(fh):
+            assigned = parse_port(service["Port Number"])
+            if not assigned:
+                continue
+
+            ports |= assigned
+
+    return ports
+
+
+def parse_port(source: str) -> set[int]:
+    if not source:
+        return set()
+
+    if "-" in source:
+        [start, end] = map(int, source.split("-"))
+        return set(range(start, end))
+
+    # just assume it's 1 port
+    return {int(source)}
+
+if __name__ == "__main__":
+    main()
