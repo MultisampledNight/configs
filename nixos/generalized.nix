@@ -421,24 +421,22 @@ in {
 
       sway = {
         enable = cfg.wayland;
-        package = cfg.pkgs-unstable.sway.override {
-          extraSessionCommands = ''
-            export PATH=$HOME/zukunftslosigkeit/scripts:$PATH
-            export SDL_VIDEODRIVER=wayland
-            export QT_QPA_PLATFORM=wayland-egl
-            export QT_WAYLAND_FORCE_DPI=physical
-            export ECORE_EVAS_ENGINE=wayland_egl
-            export ELM_ENGINE=wayland_egl
-            export _JAVA_AWT_WM_NONREPARENTING=1
-          '';
+        package = cfg.pkgs-unstable.sway;
+        extraSessionCommands = ''
+          export PATH=$HOME/zukunftslosigkeit/scripts:$PATH
+          export SDL_VIDEODRIVER=wayland
+          export QT_QPA_PLATFORM=wayland-egl
+          export QT_WAYLAND_FORCE_DPI=physical
+          export ECORE_EVAS_ENGINE=wayland_egl
+          export ELM_ENGINE=wayland_egl
+          export _JAVA_AWT_WM_NONREPARENTING=1
+        '';
 
-          extraOptions = if cfg.videoDriver == "nvidia"
-            then ["--unsupported-gpu"]
-            else [];
+        extraOptions = if cfg.videoDriver == "nvidia"
+          then ["--unsupported-gpu"]
+          else [];
 
-          withGtkWrapper = true;
-          isNixOS = true;
-        };
+        wrapperFeatures.gtk = true;
       };
 
       # shell

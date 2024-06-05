@@ -46,9 +46,15 @@ in {
       timeout = 8;
     };
 
-    displayManager.defaultSession = if cfg.forTheGeneralPublic then "gnome"
-      else if cfg.wayland then "sway"
-      else "none+i3";
+    displayManager = {
+      sddm = {
+        enable = true;
+        wayland.enable = true;
+      };
+      defaultSession = if cfg.forTheGeneralPublic then "gnome"
+        else if cfg.wayland then "sway"
+        else "none+i3";
+    };
 
     libinput.enable = true;
     xserver = {
@@ -62,11 +68,6 @@ in {
       };
 
       videoDrivers = [cfg.videoDriver];
-
-      displayManager.gdm = {
-        enable = cfg.xorg;
-        autoSuspend = false;
-      };
 
       desktopManager = {
         plasma5.enable = cfg.forTheGeneralPublic;
