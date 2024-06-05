@@ -46,25 +46,26 @@ in {
       timeout = 8;
     };
 
+    displayManager.defaultSession = if cfg.forTheGeneralPublic then "gnome"
+      else if cfg.wayland then "sway"
+      else "none+i3";
+
+    libinput.enable = true;
     xserver = {
       enable = cfg.xorg;
 
-      layout = if cfg.forTheGeneralPublic then "de"
-        else if cfg.layout == "bone" then "de"
-        else cfg.layout;
-      xkbVariant = if cfg.layout == "bone" then "bone" else "";
-      libinput.enable = true;
+      xkb = {
+        layout = if cfg.forTheGeneralPublic then "de"
+          else if cfg.layout == "bone" then "de"
+          else cfg.layout;
+        variant = if cfg.layout == "bone" then "bone" else "";
+      };
 
       videoDrivers = [cfg.videoDriver];
 
-      displayManager = {
-        defaultSession = if cfg.forTheGeneralPublic then "gnome"
-          else if cfg.wayland then "sway"
-          else "none+i3";
-        gdm = {
-          enable = cfg.xorg;
-          autoSuspend = false;
-        };
+      displayManager.gdm = {
+        enable = cfg.xorg;
+        autoSuspend = false;
       };
 
       desktopManager = {
@@ -153,7 +154,7 @@ in {
     gnupg.agent = {
       enable = true;
       enableSSHSupport = true;
-      pinentryFlavor = "curses";
+      pinentryPackage = pkgs.pinentry-curses;
     };
 
     ssh.askPassword = "${pkgs.libsForQt5.ksshaskpass}/bin/ksshaskpass";
