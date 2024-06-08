@@ -316,7 +316,7 @@ function SetupAbbrevs()
     \ "acc": Fn("accent"),
     \ "ora": "accent(, arrow)<Esc>f,i",
     \
-    \ "hat": "accent(, hat)<Esc>f,i",
+    \ "hatt": "accent(, hat)<Esc>f,i",
     \ "dott": "accent(, dot)<Esc>f,i",
     \ "ddot": "accent(, dot.double)<Esc>f,i",
     \ "dddot": "accent(, dot.triple)<Esc>f,i",
@@ -398,6 +398,7 @@ function SetupAbbrevs()
       \. Literalize(long, "calm")
   endfor
 endfunction
+
 function Literalize(seq, mode)
   " this is terrible but i could not think of anything better
   let Aggressive = {_, ch -> get({
@@ -417,6 +418,7 @@ function Literalize(seq, mode)
     return map(a:seq, Calm)
   endif
 endfunction
+
 function Fn(name)
   return $"{a:name}()<Esc>i"
 endfunction
