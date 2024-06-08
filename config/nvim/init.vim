@@ -39,6 +39,8 @@ set titlelen=0
 set linebreak
 set undofile
 set shortmess+=W
+set notimeout
+set nottimeout
 
 set clipboard+=unnamedplus
 set completeopt=menu,menuone,preview,noselect
@@ -295,7 +297,7 @@ function EmulateObsidian()
     \ "@l": "λ ",
     \ "@L": "Λ ",
     \ "@m": "μ ",
-    \ "om": "ω ",
+    \ "ome": "ω ",
     \ "@o": "ω ",
     \ "@O": "Ω ",
     \ "@r": "ρ ",
@@ -330,15 +332,6 @@ function EmulateObsidian()
     \ "tfr": Frac('""', '""'),
     \ "efr": Frac("^(", ")"),
     \
-    \ "cnc": Fn("cancel"),
-    \
-    \ "udl": Fn("underline"),
-    \ "ovl": Fn("overline"),
-    \ "ubk": Fn("underbracket"),
-    \ "obk": Fn("overbracket"),
-    \ "ube": Fn("underbrace"),
-    \ "obe": Fn("overbrace"),
-    \
     \ "acc": Fn("accent"),
     \ "ora": "accent(, arrow)<Esc>f,i",
     \
@@ -353,18 +346,6 @@ function EmulateObsidian()
     \ "d3ot": "accent(, dot.triple)<Esc>f,i",
     \ "d4ot": "accent(, dot.quad)<Esc>f,i",
     \
-    \ "abs": Fn("abs"),
-    \ "nrm": Fn("norm"),
-    \ "eil": Fn("ceil"),
-    \ "flr": Fn("floor"),
-    \ "rnd": Fn("round"),
-    \
-    \ "bb": Fn("bb"),
-    \ "cal": Fn("cal"),
-    \
-    \ "sq": Fn("sqrt"),
-    \ "rt": Fn("root"),
-    \
     \ "sr": "^2",
     \ "cb": "^3",
     \ "tsa": "^4",
@@ -372,6 +353,40 @@ function EmulateObsidian()
     \
     \ "sts": "_\"\"<Esc>i",
   \ }
+
+  " normal, un-pre-filled functions
+  let simple_funcs = #{
+    \ cnc: "cancel",
+    \ acc: "accent",
+    \
+    \ abs: "abs",
+    \ nrm: "norm",
+    \ eil: "ceil",
+    \ flr: "floor",
+    \ rnd: "round",
+    \
+    \ bb: "bb",
+    \ cal: "cal",
+    \
+    \ sq: "sqrt",
+    \ esq: "root",
+  \ }
+  " ones that need to be duplicated for under/over variants
+  let overunder = #{
+    \ vl: "line",
+    \ vk: "bracket",
+    \ be: "brace",
+  \ }
+  " merge them all
+  call map(overunder, {short, long -> extend(
+    \ simple_funcs,
+    \ {
+      \ "o" . short: "over" . long,
+      \ "u" . short: "under" . long,
+    \ },
+  \ )})
+  call extend(abbrevs, map(simple_funcs, {_, long -> Fn(long)}))
+
 
   for [short, long] in items(abbrevs)
     exe "inoremap <silent> <buffer> " . Literalize(short) . " " . long
@@ -391,10 +406,10 @@ function Literalize(seq)
   return map(a:seq, function("LiteralizeChar"))
 endfunction
 function Fn(name)
-  return $"{name}()<Esc>i"
+  return $"{a:name}()<Esc>i"
 endfunction
 function Frac(a, b)
-  return $"{a}/{b}<Esc>{len(b) + 1}hi"
+  return $"{a:a}/{a:b}<Esc>{len(a:b) + 1}hi"
 endfunction
 
 function InsertDailyTemplate()
