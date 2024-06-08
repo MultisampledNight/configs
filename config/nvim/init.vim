@@ -228,7 +228,11 @@ function RustProjectExecutable()
 endfunction
 
 " markdown
+function EmulateObsidian()
+  set tw=80 sw=4 ts=4 sts=0 noet
+endfunction
 autocmd BufNewFile,BufRead *.md set tw=0 sw=2 ts=2 sts=0 et
+autocmd BufNewFile,BufRead ~/notes/*.md call EmulateObsidian()
 
 " agda
 autocmd BufNewFile,BufRead *.agda set ft=agda
