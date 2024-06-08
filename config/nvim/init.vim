@@ -231,14 +231,14 @@ endfunction
 let zukunftslosigkeit = "~/notes/zukunftslosigkeit"
 let daily_note = zukunftslosigkeit . "/daily-note"
 let template = zukunftslosigkeit . "/template"
-let autocmds_setup = v:false
+let s:autocmds_setup = v:false
 
 function EmulateObsidian()
   call AutoWriteToggle()
   set tw=80 sw=4 ts=4 sts=0 noet
 
-  if !g:autocmds_setup
-    let g:autocmds_setup = v:true
+  if !s:autocmds_setup
+    let s:autocmds_setup = v:true
     exe "au BufNewFile " . g:daily_note . "/*.md call InsertDailyTemplate()"
   endif
 
@@ -246,6 +246,36 @@ function EmulateObsidian()
   map <Space>p <Cmd>call ToggleTask(">")<CR>
   map <Space>h <Cmd>call ToggleTask("/")<CR>
   map <Space>l <Cmd>call ToggleTask("x")<CR>
+
+  let abbrevs = {
+    \ "=>":  "⇒",
+    \ "<=":  "⇐",
+    \ "==>": "⟹",
+    \ "<=>": "⇔",
+    \ "->":  "→",
+    \ "<-":  "⟵",
+    \ "<->": "⟷",
+    \ "|->": "⟼",
+    \ "<-|": "⟻",
+    \ "|=>": "⟾",
+    \ "<=|": "⟽",
+  \ }
+
+  for [short, long] in items(abbrevs)
+    exe "inoremap <silent> <buffer> " . Literalize(short) . " " . long
+  endfor
+endfunction
+function LiteralizeChar(_idx, ch)
+  let mapping = {
+    \ "<": "<lt>",
+    \ "\\": "<Bslash>",
+    \ "|": "<Bar>",
+  \ }
+  return get(mapping, a:ch, a:ch)
+endfunction
+function Literalize(seq)
+  " this is terrible but i could not think of anything better
+  return map(a:seq, function("LiteralizeChar"))
 endfunction
 
 function InsertDailyTemplate()
@@ -614,12 +644,6 @@ dapui.setup()
 dap.listeners.after.event_initialized["dapui_config"] = function()
   dapui.open()
 end
--- dap.listeners.before.event_terminated["dapui_config"] = function()
---   dapui.close()
--- end
--- dap.listeners.before.event_exited["dapui_config"] = function()
---   dapui.close()
--- end
 
 EOF
 
