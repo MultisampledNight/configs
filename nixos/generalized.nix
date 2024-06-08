@@ -147,6 +147,11 @@ in {
         };
 
         overlays = [
+          (final: prev: {
+            obsidian = prev.obsidian.override {
+              electron = final.electron_30;
+            };
+          })
           (final: prev: if cfg.wayland then {
             godot_4 = prev.godot_4.overrideAttrs {
               src = final.fetchFromGitHub {
