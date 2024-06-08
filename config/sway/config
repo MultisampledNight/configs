@@ -72,7 +72,7 @@ bindsym $mod+x exec thunderbird
 bindsym $mod+p exec firefox -p zulip
 bindsym $mod+adiaeresis exec element-desktop
 
-bindsym $mod+t exec obsidian
+bindsym $mod+t exec notes
 bindsym $mod+i exec xournalpp
 
 bindsym $mod+f exec blender

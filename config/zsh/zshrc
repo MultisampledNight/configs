@@ -89,9 +89,6 @@ alias gp='git pull'
 alias gps='git push'
 alias gpsf='git push --force-with-lease'
 
-notes() {
-	nv -- --cmd 'cd ~/notes' "$HOME/notes/zukunftslosigkeit/daily-note/$(date --rfc-3339 date).md"
-}
 
 man() {
   if [[ ! -n $1 ]]; then
