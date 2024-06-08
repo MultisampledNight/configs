@@ -195,60 +195,8 @@ function CdProjectToplevel(_timer_id)
 endfunction
 autocmd BufEnter * call timer_start(50, "CdProjectToplevel")
 
-" godot
-function CloseIfAlreadyOpen()
-  let pidfile = "~/zukunftslosigkeit/state/neovim/editing-in-godot"
-  call system("ps -p $(cat " . pidfile . ")")
-  if v:shell_error == 0
-    " yep, already editing
-    exit
-  endif
-
-  " oh well then let's propagate that we're currently editing
-  call system("mkdir $(dirname " . pidfile . ")")
-  call system("echo -n " . getpid() . " > " . pidfile)
-endfunction
-autocmd VimEnter *.gd
-  \ call CloseIfAlreadyOpen()
-autocmd BufNewFile,BufRead *.gd
-  \ set filetype=gdscript
-  \|set updatetime=500
-
-" rust
-autocmd BufNewFile,BufRead *.rs set equalprg=rustfmt formatprg=rustfmt
-autocmd BufNewFile,BufRead *.rs lua require("dap.ext.vscode").load_launchjs(".ide/launch.json")
-function RustProjectExecutable()
-  let metadata = trim(system("cargo metadata --format-version=1 --offline --no-deps 2>/dev/null"))
-  if metadata == ""
-    return
-  endif
-  let metadata = json_decode(metadata)
-  let executable = metadata["target_directory"]
-    \ . "/debug/"
-    \ . metadata["packages"][0]["name"]
-  return executable
-endfunction
-
-" markdown
-let zukunftslosigkeit = "~/notes/zukunftslosigkeit"
-let daily_note = zukunftslosigkeit . "/daily-note"
-let template = zukunftslosigkeit . "/template"
-let s:autocmds_setup = v:false
-
-function EmulateObsidian()
-  call AutoWriteToggle()
-  set tw=80 sw=4 ts=4 sts=0 noet
-
-  if !s:autocmds_setup
-    let s:autocmds_setup = v:true
-    exe "au BufNewFile " . g:daily_note . "/*.md call InsertDailyTemplate()"
-  endif
-
-  map <Space><Enter> <Cmd>call OpenToday()<CR>
-  map <Space>p <Cmd>call ToggleTask(">")<CR>
-  map <Space>h <Cmd>call ToggleTask("/")<CR>
-  map <Space>l <Cmd>call ToggleTask("x")<CR>
-
+" abbreviations for typst and markdown
+function SetupAbbrevs()
   let abbrevs = {
     \ "=>":  "⇒",
     \ "<=":  "⇐",
@@ -312,21 +260,40 @@ function EmulateObsidian()
     \ "land": "∧",
     \ "lxor": "⊻",
     \ "neg ": "¬",
+    \
+    \ "andd": "∩",
+    \ "orr": "∪",
+    \ "sus": "⊂",
+    \ "nsus": "⊂",
     \ "inn": "∈",
     \ "nin": "∉",
     \
+    \ "sim": "~",
     \ "deg": "°",
     \
-    \ "fal": "∀",
+    \ "ooo": "∞",
+    \
+    \ "faal": "∀",
     \ "exs": "∃",
+    \
+    \ "pm": "plus.minus",
     \
     \ "prl": "∥",
     \ "nprl": "∦",
-    \ "bot": "⊥",
+    \ "btt": "⊥",
+    \
+    \ "~~~": "≈",
+    \ "=~": "≈",
+    \ "===": "≡",
+    \ "!=": "≠",
+    \
+    \ "tim": "·",
+    \ "xx": "×",
     \
     \ "teq": "≜",
-    \ "tri": "△",
-    \ "ci": "○",
+    \ "Tri": "△",
+    \ "Ci": "○",
+    \ "Sq": "□",
     \
     \ "//": Frac("()", "()"),
     \ "tfr": Frac('""', '""'),
@@ -346,12 +313,14 @@ function EmulateObsidian()
     \ "d3ot": "accent(, dot.triple)<Esc>f,i",
     \ "d4ot": "accent(, dot.quad)<Esc>f,i",
     \
+    \ "invs": "^(-1)",
     \ "sr": "^2",
     \ "cb": "^3",
     \ "tsa": "^4",
     \ "rd": "^()<Esc>i",
     \
     \ "sts": "_\"\"<Esc>i",
+    \ "idd": "_()<Esc>i",
   \ }
 
   " normal, un-pre-filled functions
@@ -368,7 +337,7 @@ function EmulateObsidian()
     \ bb: "bb",
     \ cal: "cal",
     \
-    \ sq: "sqrt",
+    \ sqr: "sqrt",
     \ esq: "root",
   \ }
   " ones that need to be duplicated for under/over variants
@@ -410,6 +379,63 @@ function Fn(name)
 endfunction
 function Frac(a, b)
   return $"{a:a}/{a:b}<Esc>{len(a:b) + 1}hi"
+endfunction
+
+" godot
+function CloseIfAlreadyOpen()
+  let pidfile = "~/zukunftslosigkeit/state/neovim/editing-in-godot"
+  call system("ps -p $(cat " . pidfile . ")")
+  if v:shell_error == 0
+    " yep, already editing
+    exit
+  endif
+
+  " oh well then let's propagate that we're currently editing
+  call system("mkdir $(dirname " . pidfile . ")")
+  call system("echo -n " . getpid() . " > " . pidfile)
+endfunction
+autocmd VimEnter *.gd
+  \ call CloseIfAlreadyOpen()
+autocmd BufNewFile,BufRead *.gd
+  \ set filetype=gdscript
+  \|set updatetime=500
+
+" rust
+autocmd BufNewFile,BufRead *.rs set equalprg=rustfmt formatprg=rustfmt
+autocmd BufNewFile,BufRead *.rs lua require("dap.ext.vscode").load_launchjs(".ide/launch.json")
+function RustProjectExecutable()
+  let metadata = trim(system("cargo metadata --format-version=1 --offline --no-deps 2>/dev/null"))
+  if metadata == ""
+    return
+  endif
+  let metadata = json_decode(metadata)
+  let executable = metadata["target_directory"]
+    \ . "/debug/"
+    \ . metadata["packages"][0]["name"]
+  return executable
+endfunction
+
+" markdown
+let zukunftslosigkeit = "~/notes/zukunftslosigkeit"
+let daily_note = zukunftslosigkeit . "/daily-note"
+let template = zukunftslosigkeit . "/template"
+let s:autocmds_setup = v:false
+
+function EmulateObsidian()
+  call AutoWriteToggle()
+  set tw=80 sw=4 ts=4 sts=0 noet
+
+  if !s:autocmds_setup
+    let s:autocmds_setup = v:true
+    exe "au BufNewFile " . g:daily_note . "/*.md call InsertDailyTemplate()"
+  endif
+
+  map <Space><Enter> <Cmd>call OpenToday()<CR>
+  map <Space>p <Cmd>call ToggleTask(">")<CR>
+  map <Space>h <Cmd>call ToggleTask("/")<CR>
+  map <Space>l <Cmd>call ToggleTask("x")<CR>
+
+  call SetupAbbrevs()
 endfunction
 
 function InsertDailyTemplate()
