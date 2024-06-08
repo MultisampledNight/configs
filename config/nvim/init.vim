@@ -230,11 +230,33 @@ endfunction
 " markdown
 function EmulateObsidian()
   set tw=80 sw=4 ts=4 sts=0 noet
+
   map <Space><Enter> <Cmd>call OpenToday()<CR>
+  map <Space>p <Cmd>call ToggleTask(">")<CR>
+  map <Space>h <Cmd>call ToggleTask("/")<CR>
+  map <Space>l <Cmd>call ToggleTask("x")<CR>
 endfunction
+
 function OpenToday()
   let today = strftime("%Y-%m-%d")
-  execute "edit ~/notes/zukunftslosigkeit/daily-note/" . today . ".md"
+  exe "edit ~/notes/zukunftslosigkeit/daily-note/" . today . ".md"
+endfunction
+function ToggleTask(intended)
+  norm m'
+
+  set nohlsearch
+  silent exe "norm ? \\[.\\] \<CR>2l"
+  set hlsearch
+
+  let current = getline(".")[charcol(".") - 1]
+  if current == a:intended
+    let final = " "
+  else
+    let final = a:intended
+  endif
+  exe "norm r" . final
+
+  norm g`'
 endfunction
 
 autocmd BufNewFile,BufRead *.md set tw=0 sw=2 ts=2 sts=0 et
@@ -352,9 +374,9 @@ autocmd FocusGained * checktime
 " change that
 for level in ["Error", "Warn", "Info", "Hint"]
   for part in ["", "VirtualText", "Floating", "Sign"]
-    execute "hi! Diagnostic" . part . level . " guifg=#001E1B"
+    exe "hi! Diagnostic" . part . level . " guifg=#001E1B"
   endfor
-  execute "hi! DiagnosticUnderline" . level . " guisp=#003833 guibg=#003833"
+  exe "hi! DiagnosticUnderline" . level . " guisp=#003833 guibg=#003833"
 endfor
 
 lua <<EOF
