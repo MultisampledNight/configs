@@ -228,8 +228,19 @@ function RustProjectExecutable()
 endfunction
 
 " markdown
+let zukunftslosigkeit = "~/notes/zukunftslosigkeit"
+let daily_note = zukunftslosigkeit . "/daily-note"
+let template = zukunftslosigkeit . "/template"
+let autocmds_setup = v:false
+
 function EmulateObsidian()
+  call AutoWriteToggle()
   set tw=80 sw=4 ts=4 sts=0 noet
+
+  if !g:autocmds_setup
+    let g:autocmds_setup = v:true
+    exe "au BufNewFile " . g:daily_note . "/*.md call InsertDailyTemplate()"
+  endif
 
   map <Space><Enter> <Cmd>call OpenToday()<CR>
   map <Space>p <Cmd>call ToggleTask(">")<CR>
@@ -237,9 +248,14 @@ function EmulateObsidian()
   map <Space>l <Cmd>call ToggleTask("x")<CR>
 endfunction
 
+function InsertDailyTemplate()
+  exe "read " . g:template . "/Daily Note.md"
+  norm ggdd2j
+  silent update
+endfunction
 function OpenToday()
   let today = strftime("%Y-%m-%d")
-  exe "edit ~/notes/zukunftslosigkeit/daily-note/" . today . ".md"
+  exe "edit " . g:daily_note . "/" . today . ".md"
 endfunction
 function ToggleTask(intended)
   norm m'
