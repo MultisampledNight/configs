@@ -256,10 +256,18 @@ function SetupAbbrevs()
     \ "@u": "τ ",
     \ "@z": "ζ ",
     \
+    \ "NN": "bb(N)",
+    \ "QQ": "bb(Q)",
+    \ "RR": "bb(R)",
+    \ "CC": "bb(C)",
+    \
     \ "lor": "∨",
     \ "land": "∧",
     \ "lxor": "⊻",
     \ "neg ": "¬",
+    \
+    \ "o+": "⊕",
+    \ "ox": "⊗",
     \
     \ "andd": "∩",
     \ "orr": "∪",
@@ -299,6 +307,12 @@ function SetupAbbrevs()
     \ "tfr": Frac('""', '""'),
     \ "efr": Frac("^(", ")"),
     \
+    \ "prt": Frac("partial ", "partial "),
+    \ "pr2": Frac("partial^2 ", "partial^2 "),
+    \ "pr3": Frac("partial^3 ", "partial^3 "),
+    \
+    \ "itg": "integral ~d x<Esc>F~i",
+    \
     \ "acc": Fn("accent"),
     \ "ora": "accent(, arrow)<Esc>f,i",
     \
@@ -325,6 +339,8 @@ function SetupAbbrevs()
 
   " normal, un-pre-filled functions
   let simple_funcs = #{
+    \ vc: "vec",
+    \
     \ cnc: "cancel",
     \ acc: "accent",
     \
@@ -346,7 +362,6 @@ function SetupAbbrevs()
     \ vk: "bracket",
     \ be: "brace",
   \ }
-  " merge them all
   call map(overunder, {short, long -> extend(
     \ simple_funcs,
     \ {
@@ -354,25 +369,53 @@ function SetupAbbrevs()
       \ "u" . short: "under" . long,
     \ },
   \ )})
+  " matrices
+  let matrices = #{
+    \ p: v:null,
+    \ k: "[",
+    \ b: "{",
+    \ v: "|",
+    \ d: "||",
+  \ }
+  let MaybeArg = {
+    \ ch -> ch != v:null
+    \ ? '<CR>  delim: "' . ch . '",'
+    \ : ""
+  \ }
+  call map(matrices, {short, delim -> extend(
+    \ abbrevs,
+    \ { short . "mat": $"mat({MaybeArg(delim)}<CR><CR>)<Esc>kS  " },
+  \ )})
+
+  " merge them all
   call extend(abbrevs, map(simple_funcs, {_, long -> Fn(long)}))
 
 
   for [short, long] in items(abbrevs)
-    exe "inoremap <silent> <buffer> " . Literalize(short) . " " . long
+    exe "inoremap <silent> <buffer> "
+      \. Literalize(short, "aggressive")
+      \. " "
+      \. Literalize(long, "calm")
   endfor
 endfunction
-function LiteralizeChar(_idx, ch)
-  let mapping = {
+function Literalize(seq, mode)
+  " this is terrible but i could not think of anything better
+  let Aggressive = {_, ch -> get({
     \ "<": "<lt>",
     \ "\\": "<Bslash>",
     \ "|": "<Bar>",
     \ " ": "<Space>",
-  \ }
-  return get(mapping, a:ch, a:ch)
-endfunction
-function Literalize(seq)
-  " this is terrible but i could not think of anything better
-  return map(a:seq, function("LiteralizeChar"))
+  \ }, ch, ch)}
+  let Calm = {_, ch -> get({
+    \ "|": "<Bar>",
+    \ " ": "<Space>",
+  \ }, ch, ch)}
+
+  if a:mode == "aggressive"
+    return map(a:seq, Aggressive)
+  else
+    return map(a:seq, Calm)
+  endif
 endfunction
 function Fn(name)
   return $"{a:name}()<Esc>i"
