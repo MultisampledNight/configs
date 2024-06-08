@@ -259,6 +259,118 @@ function EmulateObsidian()
     \ "<-|": "⟻",
     \ "|=>": "⟾",
     \ "<=|": "⟽",
+    \
+    \ "lra": "⟶",
+    \ "eea": "→",
+    \ "sea": "↘",
+    \ "ssa": "↓",
+    \ "swa": "↙",
+    \ "wwa": "←",
+    \ "nwa": "↖",
+    \ "nna": "↑",
+    \ "nea": "↗",
+    \
+    \ "rra": "→",
+    \ "dda": "↓",
+    \ "lla": "←",
+    \ "uua": "↑",
+    \
+    \ "cbl": "```<CR>```<Esc>kA",
+    \ "mk": "$$<Esc>i",
+    \ "dm": "$<CR><CR>$<Esc>ki",
+    \
+    \ "--": "–",
+    \ "---": "—",
+    \
+    \ "@a": "α ",
+    \ "@b": "β ",
+    \ "@c": "χ ",
+    \ "@d": "δ ",
+    \ ":d": "∂ ",
+    \ "@D": "Δ ",
+    \ "@e": "ϵ ",
+    \ ":e": "ε ",
+    \ "@g": "γ ",
+    \ "@k": "κ ",
+    \ "@l": "λ ",
+    \ "@L": "Λ ",
+    \ "@m": "μ ",
+    \ "om": "ω ",
+    \ "@o": "ω ",
+    \ "@O": "Ω ",
+    \ "@r": "ρ ",
+    \ "@s": "σ ",
+    \ "@S": "Σ ",
+    \ "@t": "θ ",
+    \ "@T": "Θ ",
+    \ "@u": "τ ",
+    \ "@z": "ζ ",
+    \
+    \ "lor": "∨",
+    \ "land": "∧",
+    \ "lxor": "⊻",
+    \ "neg ": "¬",
+    \ "inn": "∈",
+    \ "nin": "∉",
+    \
+    \ "deg": "°",
+    \
+    \ "fal": "∀",
+    \ "exs": "∃",
+    \
+    \ "prl": "∥",
+    \ "nprl": "∦",
+    \ "bot": "⊥",
+    \
+    \ "teq": "≜",
+    \ "tri": "△",
+    \ "ci": "○",
+    \
+    \ "//": Frac("()", "()"),
+    \ "tfr": Frac('""', '""'),
+    \ "efr": Frac("^(", ")"),
+    \
+    \ "cnc": Fn("cancel"),
+    \
+    \ "udl": Fn("underline"),
+    \ "ovl": Fn("overline"),
+    \ "ubk": Fn("underbracket"),
+    \ "obk": Fn("overbracket"),
+    \ "ube": Fn("underbrace"),
+    \ "obe": Fn("overbrace"),
+    \
+    \ "acc": Fn("accent"),
+    \ "ora": "accent(, arrow)<Esc>f,i",
+    \
+    \ "hat": "accent(, hat)<Esc>f,i",
+    \ "dott": "accent(, dot)<Esc>f,i",
+    \ "ddot": "accent(, dot.double)<Esc>f,i",
+    \ "dddot": "accent(, dot.triple)<Esc>f,i",
+    \ "ddddot": "accent(, dot.quad)<Esc>f,i",
+    \
+    \ "d1ot": "accent(, dot)<Esc>f,i",
+    \ "d2ot": "accent(, dot.double)<Esc>f,i",
+    \ "d3ot": "accent(, dot.triple)<Esc>f,i",
+    \ "d4ot": "accent(, dot.quad)<Esc>f,i",
+    \
+    \ "abs": Fn("abs"),
+    \ "nrm": Fn("norm"),
+    \ "eil": Fn("ceil"),
+    \ "flr": Fn("floor"),
+    \ "rnd": Fn("round"),
+    \
+    \ "bb": Fn("bb"),
+    \ "cal": Fn("cal"),
+    \
+    \ "sq": Fn("sqrt"),
+    \ "rt": Fn("root"),
+    \
+    \ "sr": "^2",
+    \ "cb": "^3",
+    \ "tsa": "^4",
+    \ "rd": "^()<Esc>i",
+    \
+    \ "sts": "_\"\"<Esc>i",
   \ }
 
   for [short, long] in items(abbrevs)
@@ -270,12 +382,19 @@ function LiteralizeChar(_idx, ch)
     \ "<": "<lt>",
     \ "\\": "<Bslash>",
     \ "|": "<Bar>",
+    \ " ": "<Space>",
   \ }
   return get(mapping, a:ch, a:ch)
 endfunction
 function Literalize(seq)
   " this is terrible but i could not think of anything better
   return map(a:seq, function("LiteralizeChar"))
+endfunction
+function Fn(name)
+  return $"{name}()<Esc>i"
+endfunction
+function Frac(a, b)
+  return $"{a}/{b}<Esc>{len(b) + 1}hi"
 endfunction
 
 function InsertDailyTemplate()
