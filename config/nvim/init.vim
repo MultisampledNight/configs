@@ -493,9 +493,16 @@ function OpenToday()
 endfunction
 function ToggleTask(intended)
   norm m'
+  let checkbox = "\\[.\\]"
+
+  if getline(".")[charcol(".") - 1:] =~ $".*{checkbox}.*"
+    let search = "/"
+  else
+    let search = "?"
+  endif
 
   set nohlsearch
-  silent exe "norm ? \\[.\\] \<CR>2l"
+  silent exe $"norm {search}{checkbox}\<CR>l"
   set hlsearch
 
   let current = getline(".")[charcol(".") - 1]
