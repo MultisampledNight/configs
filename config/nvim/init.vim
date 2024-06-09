@@ -266,7 +266,7 @@ function SetupAbbrevs()
     \ "neg ": "¬",
     \
     \ "o+": "⊕",
-    \ "ox": "⊗",
+    \ "o×": "⊗",
     \
     \ "andd": "∩",
     \ "orr": "∪",
