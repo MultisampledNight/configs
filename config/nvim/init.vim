@@ -495,7 +495,7 @@ function ToggleTask(intended)
   norm m'
   let checkbox = "\\[.\\]"
 
-  if getline(".")[charcol(".") - 1:] =~ $".*{checkbox}.*"
+  if getline(".")[charcol("."):] =~ $".*{checkbox}.*"
     let search = "/"
   else
     let search = "?"
