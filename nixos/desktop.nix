@@ -46,18 +46,6 @@ in {
       timeout = 8;
     };
 
-    displayManager = {
-      sddm = {
-        enable = true;
-        wayland.enable = true;
-        extraPackages = with pkgs; [];
-        theme = "Elegant";
-      };
-      defaultSession = if cfg.forTheGeneralPublic then "gnome"
-        else if cfg.wayland then "sway"
-        else "none+i3";
-    };
-
     libinput.enable = true;
     xserver = {
       enable = cfg.xorg;
@@ -115,9 +103,6 @@ in {
       gnome.gnome-boxes
 
       layaway
-
-      # display manager theme
-      elegant-sddm
     ] ++ (with cfg.pkgs-unstable; [
       # zathura for viewing, evince for live-reloading
       # since zathura flickers white when reloading, but evince does so only with the background color
