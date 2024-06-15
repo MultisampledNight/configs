@@ -211,13 +211,9 @@ function SetupAbbrevs()
     \ "<=|": "⟽",
     \
     \ "lra": "⟶",
-    \ "eea": "→",
     \ "sea": "↘",
-    \ "ssa": "↓",
     \ "swa": "↙",
-    \ "wwa": "←",
     \ "nwa": "↖",
-    \ "nna": "↑",
     \ "nea": "↗",
     \
     \ "rra": "→",
@@ -294,7 +290,7 @@ function SetupAbbrevs()
     \ "===": "≡",
     \ "!=": "≠",
     \
-    \ "tim": "·",
+    \ "timm": "·",
     \ "xx": "×",
     \
     \ "teq": "≜",
@@ -463,16 +459,10 @@ endfunction
 let zukunftslosigkeit = "~/notes/zukunftslosigkeit"
 let daily_note = zukunftslosigkeit . "/daily-note"
 let template = zukunftslosigkeit . "/template"
-let s:autocmds_setup = v:false
 
 function EmulateObsidian()
   call AutoWriteToggle()
   set tw=80 sw=4 ts=4 sts=0 noet
-
-  if !s:autocmds_setup
-    let s:autocmds_setup = v:true
-    exe "au BufNewFile " . g:daily_note . "/*.md call InsertDailyTemplate()"
-  endif
 
   map <Space><Enter> <Cmd>call OpenToday()<CR>
   map <Space>p <Cmd>call ToggleTask(">")<CR>
@@ -518,6 +508,7 @@ endfunction
 
 autocmd BufNewFile,BufRead *.md set tw=0 sw=2 ts=2 sts=0 et
 autocmd BufNewFile,BufRead ~/notes/*.md call EmulateObsidian()
+exe "au BufNewFile " . g:daily_note . "/*.md call InsertDailyTemplate()"
 
 " agda
 autocmd BufNewFile,BufRead *.agda set ft=agda
