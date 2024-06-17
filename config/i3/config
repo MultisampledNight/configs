@@ -27,7 +27,7 @@ bindsym $mod+u exec firefox -p discord
 bindsym $mod+a exec firefox -p github
 bindsym $mod+x exec thunderbird
 
-bindsym $mod+t exec obsidian
+bindsym $mod+t exec notes
 bindsym $mod+i exec xournalpp
 
 bindsym $mod+f exec blender

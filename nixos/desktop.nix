@@ -108,7 +108,6 @@ in {
       # since zathura flickers white when reloading, but evince does so only with the background color
       zathura
       blender
-      obsidian 
       scrcpy
     ]) else [])
     ++ (if cfg.xorg then [

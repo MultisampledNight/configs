@@ -6,7 +6,7 @@ Most configs in here can be used without NixOS though, those are in the director
 
 All of my configurations which would be needed to set up a new system and develop on it. That includes [Neovim], [Neovide], [Alacritty], [Sway], [i3] and more.
 
-Where possible, I try to use open-source software. Notable exceptions to this include CUDA, [Obsidian] and Steam (and all applications installed through it). I try to move away from them, but sometimes it's simply not possible (yet).
+Where possible, I try to use open-source software. Notable exceptions to this include CUDA and Steam (and all applications installed through it). I try to move away from them, but sometimes it's simply not possible (yet).
 
 Development is actually rarely done on the actual machine, but rather in VMs, which are collectively and individually called "elusive". See the [elusive] README for details.
 
@@ -15,7 +15,6 @@ Development is actually rarely done on the actual machine, but rather in VMs, wh
 [Alacritty]: https://alacritty.org/
 [Sway]: https://alacritty.org/
 [i3]: https://i3wm.org/
-[Obsidian]: https://obsidian.md/
 
 ## Installation
 

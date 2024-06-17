@@ -129,7 +129,6 @@ in {
           allowUnfreePredicate = pkg: (
             (builtins.elem (lib.getName pkg) [
               "nvidia-x11"
-              "obsidian"
               "blender"
               # those below are all just for CUDA it's so joever
               "libnpp"
@@ -147,11 +146,6 @@ in {
         };
 
         overlays = [
-          (final: prev: {
-            obsidian = prev.obsidian.override {
-              electron = final.electron_30;
-            };
-          })
           (final: prev: if cfg.wayland then {
             godot_4 = prev.godot_4.overrideAttrs {
               src = final.fetchFromGitHub {
