@@ -91,7 +91,7 @@ in {
     ]
     ++ (if cfg.graphical then [
       # normal applications
-      configuredFirefox tor-browser-bundle-bin thunderbird
+      tor-browser-bundle-bin thunderbird
       keepassxc
       gimp inkscape scribus
       libreoffice-fresh
@@ -153,6 +153,191 @@ in {
 
     ssh.askPassword = "${pkgs.libsForQt5.ksshaskpass}/bin/ksshaskpass";
 
+    firefox = {
+      enable = true;
+      package = pkgs.firefox-esr;
+      # https://mozilla.github.io/policy-templates/
+      policies = {
+        DownloadDirectory = "\${home}/media/downloads";
+
+        Cookies = {
+          Behavior = "reject-foreign";
+          BehaviorPrivateBrowsing = "reject";
+        };
+        SanitizeOnShutdown = {
+          Cache = true;
+          Cookies = true;
+          Downloads = false;
+          FormData = true;
+          History = true;
+          Sessions = true;
+          SiteSettings = true;
+          OfflineApps = true;
+          Locked = true;
+        };
+        EnableTrackingProtection = {
+          Value = true;
+          Cryptomining = true;
+          Fingerprinting = true;
+          EmailTracking = true;
+        };
+        Permissions = {
+          Camera.BlockNewRequests = true;
+          Microphone.BlockNewRequests = true;
+          Location.BlockNewRequests = true;
+          Notifications.BlockNewRequests = true;
+          Autoplay.Default = "block-audio-video";
+        };
+
+        DNSOverHTTPS = {
+          Enabled = true;
+          Fallback = true;
+        };
+        NetworkPrediction = false;
+        HttpsOnlyMode = "enabled";
+        PostQuantumKeyAgreementEnabled = true;
+
+        NoDefaultBookmarks = true;
+        ManagedBookmarks = [
+          {
+            name = "NixOS manual";
+            url = "https://nixos.org/manual/nixos/stable/";
+          }
+          {
+            name = "Nixpkgs manual";
+            url = "https://nixos.org/manual/nixpkgs/stable/";
+          }
+          {
+            name = "Nix manual";
+            url = "https://nix.dev/manual/nix/rolling/";
+          }
+        ];
+
+        SearchSuggestEnabled = false;
+        DontCheckDefaultBrowser = true;
+        PromptForDownloadLocation = false;
+
+        AutofillAddressEnabled = false;
+        AutofillCreditCardEnabled = false;
+        OfferToSaveLogins = false;
+        PasswordManagerEnabled = false;
+        DisableFormHistory = true;
+
+        DisableFirefoxAccounts = true;
+        DisableFirefoxScreenshots = true;
+        DisableFirefoxStudies = true;
+        DisablePocket = true;
+        DisableProfileImport = true;
+        DisableTelemetry = true;
+
+        DisableSetDesktopBackground = true;
+
+        ShowHomeButton = false;
+        DisplayBookmarksToolbar = "never";
+        DisplayMenuBar = "never";
+
+        SearchBar = "unified";
+        SearchEngines = {
+          PreventInstalls = true;
+
+          Default = "DuckDuckGo";
+          Add = let
+            archLogo = "https://archlinux.org/static/favicon.51c13517c44c.png";
+            nixLogo = "https://nixos.org/_astro/flake-blue.Bf2X2kC4_Z1yqDoT.svg";
+            ytLogo = "https://www.youtube.com/s/desktop/a258f8cf/img/favicon_32x32.png";
+          in [
+            {
+              Name = "Arch Linux packages";
+              Alias = "@archpkgs";
+              URLTemplate = "https://archlinux.org/packages/?q={searchTerms}";
+              Method = "GET";
+              IconURL = archLogo;
+            }
+            {
+              Name = "Nix packages";
+              Alias = "@nixpkgs";
+              URLTemplate = "https://search.nixos.org/packages?query={searchTerms}";
+              Method = "GET";
+              IconURL = nixLogo;
+            }
+            {
+              Name = "Arch wiki";
+              Alias = "@archdoc";
+              URLTemplate = "https://wiki.archlinux.org/index.php?search={searchTerms}&title=Special%3ASearch";
+              Method = "GET";
+              IconURL = archLogo;
+            }
+            {
+              Name = "NixOS options";
+              Alias = "@nixopts";
+              URLTemplate = "https://search.nixos.org/options?query={searchTerms}";
+              Method = "GET";
+              IconURL = nixLogo;
+            }
+            {
+              Name = "NixOS wiki";
+              Alias = "@nixdoc";
+              URLTemplate = "https://nixos.wiki/index.php?search={searchTerms}&go=Go";
+              Method = "GET";
+              IconURL = nixLogo;
+            }
+            {
+              Name = "YouTube";
+              Alias = "@youtube";
+              URLTemplate = "https://www.youtube.com/results?search_query={searchTerms}";
+              Method = "GET";
+              IconURL = ytLogo;
+            }
+          ];
+
+          Remove = [
+            "Google"
+            "Bing"
+          ];
+        };
+
+        OverridePostUpdatePage = "";
+        FirefoxHome = {
+          Search = true;
+          TopSites = false;
+          SponsoredTopSites = false;
+          Highlights = false;
+          Pocket = false;
+          SponsoredPocket = false;
+          Snippets = false;
+          Locked = true;
+        };
+        UserMessaging = {
+          ExtensionsRecommendations = false;
+          FeatureRecommendations = false;
+          UrlbarInterventions = false;
+          SkipOnboarding = true;
+          MoreFromMozilla = false;
+          Locked = true;
+        };
+
+        ExtensionSettings = let
+          moz = short: "https://addons.mozilla.org/firefox/downloads/latest/${short}/latest.xpi";
+        in {
+          "*" = {
+            installation_mode = "force_installed";
+            allowed_types = ["extension" "theme"];
+          };
+          "addon@darkreader.org" = {
+            install_url = moz "darkreader";
+          };
+          "uBlock0@raymondhill.net" = {
+            install_url = moz "ublock-origin";
+          };
+        };
+      };
+
+      preferences = {
+        "browser.translations.automaticallyPopup" = "locked";
+        "extensions.activeThemeID" = "firefox-compact-dark@mozilla.org";
+      };
+    };
+
     steam = mkIf cfg.gaming {
       enable = true;
       remotePlay.openFirewall = true;
@@ -162,30 +347,7 @@ in {
   nixpkgs = {
     config.allowUnfree = true;
 
-    overlays = [
-      (final: prev: {
-        configuredFirefox = pkgs.wrapFirefox pkgs.firefox-unwrapped {
-          extraPolicies = {
-            DisableFirefoxStudies = true;
-            DisablePocket = true;
-            DisableTelemetry = true;
-            DisableFirefoxAccounts = true;
-            DisplayBookmarksToolbar = "never";
-            FirefoxHome = {
-              Pocket = false;
-              Snippets = false;
-            };
-            NoDefaultBookmarks = true;
-            OfferToSaveLogins = false;
-            SearchSuggestEnabled = false;
-            UserMessaging = {
-              ExtensionsRecommendations = false;
-              SkipOnboarding = true;
-            };
-          };
-        };
-      })
-    ];
+    overlays = [];
   };
 
   system.copySystemConfiguration = true;
