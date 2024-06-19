@@ -320,14 +320,15 @@ in {
           moz = short: "https://addons.mozilla.org/firefox/downloads/latest/${short}/latest.xpi";
         in {
           "*" = {
-            installation_mode = "force_installed";
             allowed_types = ["extension" "theme"];
           };
           "addon@darkreader.org" = {
             install_url = moz "darkreader";
+            installation_mode = "force_installed";
           };
           "uBlock0@raymondhill.net" = {
             install_url = moz "ublock-origin";
+            installation_mode = "force_installed";
           };
         };
       };
