@@ -173,7 +173,7 @@ in {
           Sessions = true;
           SiteSettings = true;
           OfflineApps = true;
-          Locked = true;
+          Locked = false;
         };
         EnableTrackingProtection = {
           Value = true;
