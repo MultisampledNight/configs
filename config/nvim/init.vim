@@ -482,17 +482,11 @@ function OpenToday()
   exe "edit " . g:daily_note . "/" . today . ".md"
 endfunction
 function ToggleTask(intended)
-  norm m'
+  norm mJ$
   let checkbox = "\\[.\\]"
 
-  if getline(".")[charcol("."):] =~ $".*{checkbox}.*"
-    let search = "/"
-  else
-    let search = "?"
-  endif
-
   set nohlsearch
-  silent exe $"norm {search}{checkbox}\<CR>l"
+  silent exe $"norm ?{checkbox}\<CR>l"
   set hlsearch
 
   let current = getline(".")[charcol(".") - 1]
@@ -503,7 +497,7 @@ function ToggleTask(intended)
   endif
   exe "norm r" . final
 
-  norm g`'
+  norm g`J
 endfunction
 
 autocmd BufNewFile,BufRead *.md set tw=0 sw=2 ts=2 sts=0 et
