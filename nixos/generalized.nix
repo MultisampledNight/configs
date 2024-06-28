@@ -348,7 +348,7 @@ in {
     environment = {
       systemPackages = with pkgs; [
         curl rsync rclone magic-wormhole-rs
-        efibootmgr
+        efibootmgr usbutils
         traceroute
         fd ripgrep
         file pv

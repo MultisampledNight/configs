@@ -464,12 +464,14 @@ function EmulateObsidian()
   call AutoWriteToggle()
   set tw=80 sw=4 ts=4 sts=0 noet
 
-  map <Space><Enter> <Cmd>call OpenToday()<CR>
-  map <Space>p <Cmd>call ToggleTask(">")<CR>
-  map <Space>h <Cmd>call ToggleTask("/")<CR>
-  map <Space>l <Cmd>call ToggleTask("x")<CR>
+  noremap <Space><Enter> <Cmd>call OpenToday()<CR>
+  noremap <Space>p <Cmd>call ToggleTask(">")<CR>
+  noremap <Space>h <Cmd>call ToggleTask("/")<CR>
+  noremap <Space>l <Cmd>call ToggleTask("x")<CR>
+  noremap <LeftRelease> <Cmd>call ToggleIfCheckbox("x")<CR>
+  noremap <RightRelease> <Cmd>call ToggleIfCheckbox("/")<CR>
 
-  call SetupAbbrevs()
+  " call SetupAbbrevs()
 endfunction
 
 function InsertDailyTemplate()
@@ -481,12 +483,12 @@ function OpenToday()
   let today = strftime("%Y-%m-%d")
   exe "edit " . g:daily_note . "/" . today . ".md"
 endfunction
+let s:checkbox = '\[.\]'
 function ToggleTask(intended)
   norm mJ$
-  let checkbox = "\\[.\\]"
 
   set nohlsearch
-  silent exe $"norm ?{checkbox}\<CR>l"
+  silent exe $"norm ?{s:checkbox}\<CR>l"
   set hlsearch
 
   let current = getline(".")[charcol(".") - 1]
@@ -498,6 +500,20 @@ function ToggleTask(intended)
   exe "norm r" . final
 
   norm g`J
+endfunction
+function ToggleIfCheckbox(intended)
+  let col = charcol(".") - 1
+  if col <= 1
+    " checkbox can start the earliest at pos 2 → can't be hit
+    return
+  endif
+
+  if getline(".")[col - 2 : col + 2] !~ $".*{s:checkbox}.*"
+    " cursor didn't hit start/end of a checkbox
+    return
+  endif
+
+  call ToggleTask(a:intended)
 endfunction
 
 autocmd BufNewFile,BufRead *.md set tw=0 sw=2 ts=2 sts=0 et
