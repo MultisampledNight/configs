@@ -469,6 +469,7 @@ function EmulateObsidian()
   noremap <Space>h <Cmd>call ToggleTask("/")<CR>
   noremap <Space>l <Cmd>call ToggleTask("x")<CR>
   noremap <LeftRelease> <Cmd>call ToggleIfCheckbox("x")<CR>
+  noremap <2-LeftMouse> <Cmd>call ToggleIfCheckbox(">")<CR>
   noremap <RightRelease> <Cmd>call ToggleIfCheckbox("/")<CR>
 
   " call SetupAbbrevs()
@@ -485,6 +486,9 @@ function OpenToday()
 endfunction
 let s:checkbox = '\[.\]'
 function ToggleTask(intended)
+  if mode() == "v"
+    norm v
+  endif
   norm mJ$
 
   set nohlsearch
@@ -502,18 +506,33 @@ function ToggleTask(intended)
   norm g`J
 endfunction
 function ToggleIfCheckbox(intended)
-  let col = charcol(".") - 1
+  if mode() =~ '[vs]'
+    let where = "'<"
+  elseif mode() =~ '[nir]'
+    let where = "."
+  else
+    " probably command or the like
+    return
+  endif
+  let [line, col] = getpos(where)[1:2]
+
   if col <= 1
     " checkbox can start the earliest at pos 2 → can't be hit
     return
   endif
 
-  if getline(".")[col - 2 : col + 2] !~ $".*{s:checkbox}.*"
+  let around = getline(line)[col - 3 : col + 1]
+  if around !~ $".*{s:checkbox}.*"
     " cursor didn't hit start/end of a checkbox
     return
   endif
 
+  set lazyredraw
   call ToggleTask(a:intended)
+
+  " position the cursor so it's at the center of the checkbox
+  silent exe $"norm $?{s:checkbox}\<CR>l"
+  set nolazyredraw
 endfunction
 
 autocmd BufNewFile,BufRead *.md set tw=0 sw=2 ts=2 sts=0 et

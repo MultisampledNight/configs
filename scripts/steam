@@ -1,0 +1,2 @@
+#!/usr/bin/env sh
+GDK_SCALE=1 /run/current-system/sw/bin/steam $@
