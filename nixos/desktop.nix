@@ -211,6 +211,10 @@ in {
             name = "Nix manual";
             url = "https://nix.dev/manual/nix/rolling/";
           }
+          {
+            name = "Typst documentation";
+            url = "https://typst.app/docs";
+          }
         ];
 
         SearchSuggestEnabled = false;
