@@ -188,7 +188,8 @@ if hostname() == "elusive"
 endif
 
 " global
-AutoWrite
+call AutoWrite(v:true)
+
 " hacky and bound to interfere with the latex or typst machinery, but it works
 function CdProjectToplevel(_timer_id)
   exe "tcd " . ProjectToplevel()
@@ -461,7 +462,7 @@ let daily_note = zukunftslosigkeit . "/daily-note"
 let template = zukunftslosigkeit . "/template"
 
 function EmulateObsidian()
-  call AutoWriteToggle()
+  call AutoWrite(v:true)
   set tw=80 sw=4 ts=4 sts=0 noet
 
   noremap <Space><Enter> <Cmd>call OpenToday()<CR>
@@ -471,8 +472,6 @@ function EmulateObsidian()
   noremap <LeftRelease> <Cmd>call ToggleIfCheckbox("x")<CR>
   noremap <2-LeftMouse> <Cmd>call ToggleIfCheckbox(">")<CR>
   noremap <RightRelease> <Cmd>call ToggleIfCheckbox("/")<CR>
-
-  " call SetupAbbrevs()
 endfunction
 
 function InsertDailyTemplate()
@@ -623,15 +622,22 @@ function ExecAtFile(command)
 endfunction
 
 " optional helper commands, if sensible for the current buffer
+let s:autowrite = v:false
 function AutoWriteToggle()
+  call AutoWrite(!s:autowrite)
+endfunction
+function AutoWrite(target)
+  if a:target == s:autowrite
+    " no change needed
+    return
+  endif
+  let s:autowrite = !s:autowrite
+
   augroup autowrite
 
     au!
-    if exists("g:autowrite") && g:autowrite
-      let g:autowrite = v:false
-    else
+    if a:target
       au CursorHold,CursorHoldI * call UpdateIfPossible()
-      let g:autowrite = v:true
     endif
 
   augroup END
@@ -643,7 +649,9 @@ function UpdateIfPossible()
   endif
 endfunction
 
-command AutoWrite call AutoWriteToggle()
+command AutoWriteToggle call AutoWriteToggle()
+command AutoWrite call AutoWrite(v:true)
+command AutoWriteDisable call AutoWrite(v:false)
 autocmd FocusGained * checktime
 
 
