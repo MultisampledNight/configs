@@ -157,7 +157,12 @@ in {
       enable = true;
       package = pkgs.firefox-esr;
       # https://mozilla.github.io/policy-templates/
-      policies = {
+      policies = let
+        archIcon = "https://archlinux.org/static/favicon.51c13517c44c.png";
+        nixIcon = "https://nixos.org/_astro/flake-blue.Bf2X2kC4_Z1yqDoT.svg";
+        ytIcon = "https://www.youtube.com/s/desktop/a258f8cf/img/favicon_32x32.png";
+        typstIcon = "https://typst.app/assets/favicon-32x32.png";
+      in {
         DownloadDirectory = "\${home}/media/downloads";
 
         Cookies = {
@@ -194,30 +199,21 @@ in {
           Fallback = true;
         };
         NetworkPrediction = false;
-        HttpsOnlyMode = "enabled";
-        PostQuantumKeyAgreementEnabled = true;
 
         NoDefaultBookmarks = true;
-        ManagedBookmarks = [
-          {
-            name = "NixOS manual";
-            url = "https://nixos.org/manual/nixos/stable/";
-          }
-          {
-            name = "Nixpkgs manual";
-            url = "https://nixos.org/manual/nixpkgs/stable/";
-          }
-          {
-            name = "Nix manual";
-            url = "https://nix.dev/manual/nix/rolling/";
-          }
-          {
-            name = "Typst documentation";
-            url = "https://typst.app/docs";
-          }
-        ];
+        Bookmarks = mapAttrsToList (name: url: {
+          Title = name;
+          URL = url;
+          Favicon = if hasPrefix "Nix" name then nixIcon
+            else if hasPrefix "Typst" name then typstIcon
+            else "";
+        }) {
+          "NixOS manual" = "https://nixos.org/manual/nixos/stable/";
+          "Nixpkgs manual" = "https://nixos.org/manual/nixpkgs/stable/";
+          "Nix manual" = "https://nix.dev/manual/nix/rolling/";
+          "Typst documentation" = "https://typst.app/docs";
+        };
 
-        SearchSuggestEnabled = false;
         DontCheckDefaultBrowser = true;
         PromptForDownloadLocation = false;
 
@@ -245,52 +241,48 @@ in {
           PreventInstalls = true;
 
           Default = "DuckDuckGo";
-          Add = let
-            archLogo = "https://archlinux.org/static/favicon.51c13517c44c.png";
-            nixLogo = "https://nixos.org/_astro/flake-blue.Bf2X2kC4_Z1yqDoT.svg";
-            ytLogo = "https://www.youtube.com/s/desktop/a258f8cf/img/favicon_32x32.png";
-          in [
+          Add = [
             {
               Name = "Arch Linux packages";
               Alias = "@archpkgs";
               URLTemplate = "https://archlinux.org/packages/?q={searchTerms}";
               Method = "GET";
-              IconURL = archLogo;
+              IconURL = archIcon;
             }
             {
               Name = "Nix packages";
               Alias = "@nixpkgs";
               URLTemplate = "https://search.nixos.org/packages?query={searchTerms}";
               Method = "GET";
-              IconURL = nixLogo;
+              IconURL = nixIcon;
             }
             {
               Name = "Arch wiki";
               Alias = "@archdoc";
               URLTemplate = "https://wiki.archlinux.org/index.php?search={searchTerms}&title=Special%3ASearch";
               Method = "GET";
-              IconURL = archLogo;
+              IconURL = archIcon;
             }
             {
               Name = "NixOS options";
               Alias = "@nixopts";
               URLTemplate = "https://search.nixos.org/options?query={searchTerms}";
               Method = "GET";
-              IconURL = nixLogo;
+              IconURL = nixIcon;
             }
             {
               Name = "NixOS wiki";
               Alias = "@nixdoc";
               URLTemplate = "https://nixos.wiki/index.php?search={searchTerms}&go=Go";
               Method = "GET";
-              IconURL = nixLogo;
+              IconURL = nixIcon;
             }
             {
               Name = "YouTube";
               Alias = "@youtube";
               URLTemplate = "https://www.youtube.com/results?search_query={searchTerms}";
               Method = "GET";
-              IconURL = ytLogo;
+              IconURL = ytIcon;
             }
           ];
 
@@ -337,9 +329,47 @@ in {
         };
       };
 
-      preferences = {
-        "browser.translations.automaticallyPopup" = "locked";
-        "extensions.activeThemeID" = "firefox-compact-dark@mozilla.org";
+      preferences = concatMapAttrs (prefix: settings:
+        mapAttrs' (key: value:
+          nameValuePair
+            (if prefix == ""
+              then key
+              else "${prefix}.${key}")
+            value
+        ) settings
+      ) {
+        "" = {
+          "browser.translations.automaticallyPopup" = "locked";
+          "extensions.activeThemeID" = "firefox-compact-dark@mozilla.org";
+        };
+        "browser.search.suggest" = {
+          "enabled" = false;
+          "enabled.private" = false;
+          "addons" = false;
+          "bestmatch" = false;
+          "bookmark" = true;
+          "engines" = true;
+          "history" = false;
+          "openpage" = false;
+          "topsites" = false;
+          "weather" = false;
+        };
+        "browser.urlbar" = {
+          "placeholderName" = "nyaaa~~ rawr!! mrrp";
+          "sponsoredTopSites" = false;
+        };
+        "browser.urlbar.suggest" = {
+          "addons" = false;
+          "bestmatch" = false;
+          "bookmark" = true;
+          "calculator" = true;
+          "searches" = false;
+          "engines" = false;
+          "history" = false;
+          "openpage" = false;
+          "topsites" = false;
+          "weather" = false;
+        };
       };
     };
 

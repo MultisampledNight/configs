@@ -133,14 +133,9 @@ in {
               # those below are all just for CUDA it's so joever
               "libnpp"
             ]) || (
-              builtins.substring 0 4 (lib.getName pkg)
-              == "cuda"
-            ) || (
-              builtins.substring 0 5 (lib.getName pkg)
-              == "libcu"
-            ) || (
-              builtins.substring 0 5 (lib.getName pkg)
-              == "libnv"
+              any
+                (prefix: hasPrefix (lib.getName pkg) prefix)
+                ["cuda" "libcu" "libnv"]
             )
           );
         };
