@@ -278,6 +278,13 @@ in {
               IconURL = nixIcon;
             }
             {
+              Name = "Typst universe";
+              Alias = "@typpkgs";
+              URLTemplate = "https://typst.app/universe/search?q={searchTerms}";
+              Method = "GET";
+              IconURL = typstIcon;
+            }
+            {
               Name = "YouTube";
               Alias = "@youtube";
               URLTemplate = "https://www.youtube.com/results?search_query={searchTerms}";
