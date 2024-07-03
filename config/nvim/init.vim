@@ -466,9 +466,9 @@ function EmulateObsidian()
   set tw=80 sw=4 ts=4 sts=0 noet
 
   noremap <Space><Enter> <Cmd>call OpenToday()<CR>
-  noremap <Space>p <Cmd>call ToggleTask(">")<CR>
-  noremap <Space>h <Cmd>call ToggleTask("/")<CR>
-  noremap <Space>l <Cmd>call ToggleTask("x")<CR>
+  noremap <Space>p <Cmd>call InteractTask(">")<CR>
+  noremap <Space>h <Cmd>call InteractTask("/")<CR>
+  noremap <Space>l <Cmd>call InteractTask("x")<CR>
   noremap <LeftRelease> <Cmd>call ToggleIfCheckbox("x")<CR>
   noremap <2-LeftMouse> <Cmd>call ToggleIfCheckbox(">")<CR>
   noremap <RightRelease> <Cmd>call ToggleIfCheckbox("/")<CR>
@@ -483,37 +483,69 @@ function OpenToday()
   let today = strftime("%Y-%m-%d")
   exe "edit " . g:daily_note . "/" . today . ".md"
 endfunction
-let s:checkbox = '\[.\]'
-function ToggleTask(intended)
+
+" no i can't use treesitter for this,
+" as e.g. [/] is not parsed by it (it's a cancelled checkbox)
+let s:marker = '^\s*[-+/] '
+let s:any_checkbox = s:marker . '\[.\]'
+let s:empty_checkbox = s:marker . '\[\s\]'
+let s:filled_checkbox = s:marker . '\[\S\]'
+
+function InteractTask(intended)
   if mode() == "v"
     norm v
   endif
-  norm mJ$
 
-  set nohlsearch
-  silent exe $"norm ?{s:checkbox}\<CR>l"
-  set hlsearch
+  " remember where we started
+  norm mJ
 
-  let current = getline(".")[charcol(".") - 1]
-  if current == a:intended
-    let final = " "
+  " find the start of the paragraph (or start of file)
+  norm {
+  let limit = line(".")
+  norm g`J$
+
+  " let's look at what we actually want to do
+  let entry = search(s:marker, "bn", limit)
+  let task = search(s:any_checkbox, "be", limit)
+
+  " did any of them match at all?
+  if entry == 0 && task == 0
+    call CreateTask()
+  elseif entry <= task
+    call ToggleTask(a:intended)
   else
-    let final = a:intended
+    call ConvertEntryToTask(entry)
   endif
-  exe "norm r" . final
 
+  " reset so the user can continue typing where they left off
   norm g`J
 endfunction
-function ToggleIfCheckbox(intended)
-  if mode() =~ '[vs]'
-    let where = "'<"
-  elseif mode() =~ '[nir]'
-    let where = "."
-  else
-    " probably command or the like
-    return
+
+function CreateTask()
+  " assume the user wants to do so at the start of the line
+  exe 'norm ^i- [ ] '
+endfunction
+
+function ToggleTask(intended)
+  " cursor is at end of match atm, let's look inside
+  norm h
+
+  let current = getline(".")[charcol(".") - 1]
+  let final = a:intended
+  if current == a:intended
+    let final = " "
   endif
-  let [line, col] = getpos(where)[1:2]
+
+  exe $"norm r{final}"
+endfunction
+
+function ConvertEntryToTask(entry_line)
+  call setcursorcharpos(a:entry_line, 2)
+  exe 'norm a[ ] '
+endfunction
+
+function ToggleIfCheckbox(intended)
+  let [line, col] = getpos("v")[1:2]
 
   if col <= 1
     " checkbox can start the earliest at pos 2 → can't be hit
@@ -521,13 +553,13 @@ function ToggleIfCheckbox(intended)
   endif
 
   let around = getline(line)[col - 3 : col + 1]
-  if around !~ $".*{s:checkbox}.*"
+  if around !~ $".*{s:any_checkbox}.*"
     " cursor didn't hit start/end of a checkbox
     return
   endif
 
   set lazyredraw
-  call ToggleTask(a:intended)
+  call InteractTask(a:intended)
 
   " position the cursor so it's at the center of the checkbox
   silent exe $"norm $?{s:checkbox}\<CR>l"
@@ -733,10 +765,6 @@ require("nvim-treesitter.configs").setup {
     enable = true,
   },
   indent = {
-    enable = true,
-  },
-
-  playground = {
     enable = true,
   },
 }

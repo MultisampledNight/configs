@@ -212,6 +212,7 @@ in {
           "Nixpkgs manual" = "https://nixos.org/manual/nixpkgs/stable/";
           "Nix manual" = "https://nix.dev/manual/nix/rolling/";
           "Typst documentation" = "https://typst.app/docs";
+          "oklch" = "https://oklch.com/";
         };
 
         DontCheckDefaultBrowser = true;
@@ -290,6 +291,12 @@ in {
               URLTemplate = "https://www.youtube.com/results?search_query={searchTerms}";
               Method = "GET";
               IconURL = ytIcon;
+            }
+            {
+              Name = "ProtonDB";
+              Alias = "@protondb";
+              URLTemplate = "https://www.protondb.com/search?q={searchTerms}";
+              Method = "GET";
             }
           ];
 
