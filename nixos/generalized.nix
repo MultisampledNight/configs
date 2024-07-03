@@ -134,7 +134,7 @@ in {
               "libnpp"
             ]) || (
               any
-                (prefix: hasPrefix (lib.getName pkg) prefix)
+                (prefix: hasPrefix prefix (lib.getName pkg))
                 ["cuda" "libcu" "libnv"]
             )
           );
