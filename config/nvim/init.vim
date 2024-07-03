@@ -487,9 +487,8 @@ endfunction
 " no i can't use treesitter for this,
 " as e.g. [/] is not parsed by it (it's a cancelled checkbox)
 let s:marker = '^\s*[-+/] '
-let s:any_checkbox = s:marker . '\[.\]'
-let s:empty_checkbox = s:marker . '\[\s\]'
-let s:filled_checkbox = s:marker . '\[\S\]'
+let s:checkbox = '\[.\]'
+let s:task = s:marker . s:checkbox
 
 function InteractTask(intended)
   if mode() == "v"
@@ -506,7 +505,7 @@ function InteractTask(intended)
 
   " let's look at what we actually want to do
   let entry = search(s:marker, "bn", limit)
-  let task = search(s:any_checkbox, "be", limit)
+  let task = search(s:task, "be", limit)
 
   " did any of them match at all?
   if entry == 0 && task == 0
@@ -553,17 +552,15 @@ function ToggleIfCheckbox(intended)
   endif
 
   let around = getline(line)[col - 3 : col + 1]
-  if around !~ $".*{s:any_checkbox}.*"
+  if around !~ $".*{s:checkbox}.*"
     " cursor didn't hit start/end of a checkbox
     return
   endif
 
-  set lazyredraw
   call InteractTask(a:intended)
 
   " position the cursor so it's at the center of the checkbox
   silent exe $"norm $?{s:checkbox}\<CR>l"
-  set nolazyredraw
 endfunction
 
 autocmd BufNewFile,BufRead *.md set tw=0 sw=2 ts=2 sts=0 et
