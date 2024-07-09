@@ -503,7 +503,7 @@ function InteractTask(intended)
   let [ctx, start_line] = Context(v:true)
   if ctx == "task"
     call ToggleTask(a:intended)
-  elseif ctx == "line"
+  elseif ctx == "list"
     call ConvertEntryToTask(start_line)
   else
     call CreateTask()
@@ -595,7 +595,8 @@ function ToggleIfCheckbox(intended)
 endfunction
 
 " Presses enter and creates an empty checkbox on the next line
-" if the current line is not 
+" if the context on the line before is "task".
+" (Also fixes the space at the end of task continuation.)
 function MaybeContinueTaskList()
   norm mJk
   let [ctx, _] = Context()
