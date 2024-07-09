@@ -472,6 +472,8 @@ function EmulateObsidian()
   noremap <LeftRelease> <Cmd>call ToggleIfCheckbox("x")<CR>
   noremap <2-LeftMouse> <Cmd>call ToggleIfCheckbox(">")<CR>
   noremap <RightRelease> <Cmd>call ToggleIfCheckbox("/")<CR>
+
+  inoremap <Enter> <Enter><Cmd>call MaybeContinueTaskList()<CR>
 endfunction
 
 function InsertDailyTemplate()
@@ -498,26 +500,53 @@ function InteractTask(intended)
   " remember where we started
   norm mJ
 
-  " find the start of the paragraph (or start of file)
-  norm {
-  let limit = line(".")
-  norm g`J$
-
-  " let's look at what we actually want to do
-  let entry = search(s:marker, "bn", limit)
-  let task = search(s:task, "be", limit)
-
-  " did any of them match at all?
-  if entry == 0 && task == 0
-    call CreateTask()
-  elseif entry <= task
+  let [ctx, start_line] = Context(v:true)
+  if ctx == "task"
     call ToggleTask(a:intended)
+  elseif ctx == "line"
+    call ConvertEntryToTask(start_line)
   else
-    call ConvertEntryToTask(entry)
+    call CreateTask()
   endif
 
   " reset so the user can continue typing where they left off
   norm g`J
+endfunction
+
+" Returns in which context the user is currently typing in.
+"
+" One of (cursor is not moved unless explicitly listed and
+" `move_cursor` is truthy):
+" [v:null, 0] => no notable context
+" ["list", line] => user is in a list entry *without* a checkbox.
+"                   The list entry starts at `line`.
+" ["task", line] => user is in a list entry *with* a checkbox,
+"                   the cursor moves to the checkbox fill.
+"                   The list entry starts at `line`.
+"
+" This overwrites the `K` mark with the initial cursor position
+" as a side effect.
+function Context(move_cursor = v:false)
+  " find the start of the paragraph (or start of file)
+  norm mK
+  norm {
+  let limit = line(".")
+  norm g`K$
+
+  " let's look at what we actually want to do
+  let entry = search(s:marker, "bn", limit)
+  let flags = a:move_cursor ? "be" : "bn"
+  let task = search(s:task, flags, limit)
+
+  " did any of them match at all?
+  if entry == 0 && task == 0
+    return [v:null, 0]
+  elseif entry <= task
+    norm h
+    return ["task", task]
+  else
+    return ["list", entry]
+  endif
 endfunction
 
 function CreateTask()
@@ -525,10 +554,10 @@ function CreateTask()
   exe 'norm ^i- [ ] '
 endfunction
 
+" Assumes the cursor is already on the checkbox fill.
+" If in doubt, use `Context` to do this for you.
 function ToggleTask(intended)
   " cursor is at end of match atm, let's look inside
-  norm h
-
   let current = getline(".")[charcol(".") - 1]
   let final = a:intended
   if current == a:intended
@@ -539,6 +568,8 @@ function ToggleTask(intended)
 endfunction
 
 function ConvertEntryToTask(entry_line)
+  " TODO: this doesn't work for indented list entries
+  " instead go from `^` and use `2l`?
   call setcursorcharpos(a:entry_line, 2)
   exe 'norm a[ ] '
 endfunction
@@ -561,6 +592,20 @@ function ToggleIfCheckbox(intended)
 
   " position the cursor so it's at the center of the checkbox
   silent exe $"norm $?{s:checkbox}\<CR>l"
+endfunction
+
+" Presses enter and creates an empty checkbox on the next line
+" if the current line is not 
+function MaybeContinueTaskList()
+  norm mJk
+  let [ctx, _] = Context()
+  norm g`J
+
+  if ctx == "task"
+    exe "norm a[ ]  "
+  elseif ctx == "list"
+    exe "norm a "
+  endif
 endfunction
 
 autocmd BufNewFile,BufRead *.md set tw=0 sw=2 ts=2 sts=0 et
