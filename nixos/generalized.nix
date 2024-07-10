@@ -166,11 +166,6 @@ in {
               stdenv = final.fastStdenv;
             };
           } else {})
-          (final: prev: if (cfg.videoDriver == "nvidia") then {
-            blender = prev.blender.override {
-              cudaSupport = true;
-            };
-          } else {})
           (final: prev: if (cfg.videoDriver == "nvidia" && cfg.wayland) then {
             # blatantly taken from https://wiki.hyprland.org/hyprland-wiki/pages/Nvidia/
             wlroots = prev.wlroots.overrideAttrs (finalAttrs: prevAttrs: {
@@ -469,6 +464,18 @@ in {
         linuxZenFast = prev.linuxPackagesFor (prev.linuxKernel.kernels.linux_zen.override {
           stdenv = final.fastStdenv;
         });
+      } else {})
+      (final: prev: if (cfg.videoDriver == "nvidia") then {
+        blender = prev.blender.override {
+          cudaSupport = true;
+        };
+      } else {})
+      (final: prev: if cfg.wayland then {
+        # assume the user will use VCV Rack only on wayland
+        # too tired to cover the other cases lol lmao
+        vcv-rack = prev.vcv-rack.override {
+          glfw = final.glfw-wayland;
+        };
       } else {})
     ];
   };

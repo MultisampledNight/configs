@@ -105,13 +105,13 @@ in {
       element-desktop signal-desktop
       evince
       gnome.gnome-boxes
+      blender
 
       layaway
     ] ++ (with cfg.pkgs-unstable; [
       # zathura for viewing, evince for live-reloading
       # since zathura flickers white when reloading, but evince does so only with the background color
       zathura
-      blender
       scrcpy
     ]) else [])
     ++ (if cfg.xorg then [
