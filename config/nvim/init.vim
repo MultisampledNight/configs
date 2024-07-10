@@ -478,7 +478,7 @@ endfunction
 
 function InsertDailyTemplate()
   exe "read " . g:template . "/Daily Note.md"
-  norm ggdd2j
+  norm gg"_dd2j
   silent update
 endfunction
 function OpenToday()
