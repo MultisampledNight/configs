@@ -470,13 +470,6 @@ in {
           cudaSupport = true;
         };
       } else {})
-      (final: prev: if cfg.wayland then {
-        # assume the user will use VCV Rack only on wayland
-        # too tired to cover the other cases lol lmao
-        vcv-rack = prev.vcv-rack.override {
-          glfw = final.glfw-wayland;
-        };
-      } else {})
     ];
   };
 }
