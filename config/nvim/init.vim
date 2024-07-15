@@ -498,7 +498,8 @@ function InteractTask(intended)
     norm v
   endif
 
-  " remember where we started
+  " remember where we started, the individual functions take care of resetting
+  " as suited for them
   norm mJ
 
   let [ctx, start_line] = Context(v:true)
@@ -509,9 +510,6 @@ function InteractTask(intended)
   else
     call CreateTask()
   endif
-
-  " reset so the user can continue typing where they left off
-  norm g`J
 endfunction
 
 " Returns in which context the user is currently typing in.
@@ -556,11 +554,6 @@ function Context(move_cursor = v:false)
   return ctx
 endfunction
 
-function CreateTask()
-  " assume the user wants to do so at the start of the line
-  exe 'norm ^i- [ ] '
-endfunction
-
 " Assumes the cursor is already on the checkbox fill.
 " If in doubt, use `Context` to do this for you.
 function ToggleTask(intended)
@@ -572,11 +565,24 @@ function ToggleTask(intended)
   endif
 
   exe $"norm r{final}"
+
+  " reset so the user can continue typing where they left off
+  norm g`J
 endfunction
 
 function ConvertEntryToTask(entry_line)
   call setcursorcharpos(a:entry_line, 0)
   exe 'norm ^la[ ] '
+  norm g`J
+endfunction
+
+function CreateTask()
+  " assume the user wants to do so at the start of the line
+  let inserted = '- [ ] '
+  exe 'norm ^i' . inserted
+
+  " reset, but move just enough so the cursor is at the same text
+  exe 'norm g`J' . len(inserted) . 'l'
 endfunction
 
 function ToggleIfCheckbox(intended)
