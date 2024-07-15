@@ -506,7 +506,7 @@ function InteractTask(intended)
   if ctx == "task"
     call ToggleTask(a:intended)
   elseif ctx == "list"
-    call ConvertEntryToTask(start_line)
+    call CreateTask(start_line)
   else
     call CreateTask()
   endif
@@ -576,13 +576,23 @@ function ConvertEntryToTask(entry_line)
   norm g`J
 endfunction
 
-function CreateTask()
-  " assume the user wants to do so at the start of the line
-  let inserted = '- [ ] '
-  exe 'norm ^i' . inserted
+function CreateTask(start_line = line("."))
+  call setcursorcharpos(a:start_line, 0)
 
-  " reset, but move just enough so the cursor is at the same text
-  exe 'norm g`J' . len(inserted) . 'l'
+  " does the line contain a list marker already? if so, move to its end
+  norm ^
+  if search(s:marker, "cWe", line("."))
+    " reuse the marker then
+    let action = 'a[ ] '
+  else
+    " nope, no marker qwq
+    let action = 'i- [ ] '
+  endif
+
+  " insert the task chars
+  exe 'norm ' . action
+  " reset to where the user was, but such that the cursor is at the same text
+  exe 'norm g`J' . (len(action) - 1) . 'l'
 endfunction
 
 function ToggleIfCheckbox(intended)
