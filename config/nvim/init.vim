@@ -603,11 +603,22 @@ function MaybeContinueTaskList()
   let [ctx, _] = Context()
   norm g`J
 
-  if ctx == "task"
-    exe "norm a[ ]  "
-  elseif ctx == "list"
-    exe "norm a "
+  " vim automatically inserts the list marker
+  " but not the checkbox
+  if ctx !~ 'task\|list'
+    return
+  elseif ctx == "task"
+    exe "norm a[ ] "
   endif
+
+  " we are in insert mode already
+  " but due to the norm usage, vim appears to go into normal mode and back
+  " into insert mode
+  " which causes the cursor to be one character before the end of the line
+  " so a space is always after the cursor
+  " which we don't want
+  " hence let's tell vim to append to this line and stay there
+  startinsert!
 endfunction
 
 autocmd BufNewFile,BufRead *.md set tw=0 sw=2 ts=2 sts=0 et
