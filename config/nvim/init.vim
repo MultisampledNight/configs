@@ -575,10 +575,8 @@ function ToggleTask(intended)
 endfunction
 
 function ConvertEntryToTask(entry_line)
-  " TODO: this doesn't work for indented list entries
-  " instead go from `^` and use `2l`?
-  call setcursorcharpos(a:entry_line, 2)
-  exe 'norm a[ ] '
+  call setcursorcharpos(a:entry_line, 0)
+  exe 'norm ^la[ ] '
 endfunction
 
 function ToggleIfCheckbox(intended)
