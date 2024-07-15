@@ -530,13 +530,13 @@ endfunction
 function Context(move_cursor = v:false)
   " find the start of the paragraph (or start of file)
   norm mK
-  norm ?\n\nj
-  let limit = line(".")
-  norm g`K$
+  " \n\n cannot be used since search seems to accept only single-line matches
+  let limit = search("^$", "bWn")
+  norm $
 
   " let's look at what we actually want to do
-  let entry = search(s:marker, "bn", limit)
-  let flags = a:move_cursor ? "be" : "bn"
+  let entry = search(s:marker, "cbWn", limit)
+  let flags = a:move_cursor ? "cbWe" : "cbWn"
   let task = search(s:task, flags, limit)
 
   " did any of them match at all?
