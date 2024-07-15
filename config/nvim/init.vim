@@ -181,6 +181,7 @@ let g:neovide_floating_shadow = v:true
 let g:neovide_light_angle_degrees = 40
 let g:neovide_light_radius = 10
 let g:neovide_underline_automatic_scaling = v:true
+let g:neovide_underline_stroke_scale = 2
 let g:neovide_hide_mouse_when_typing = v:true
 
 if hostname() == "elusive"
