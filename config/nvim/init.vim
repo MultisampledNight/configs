@@ -530,7 +530,7 @@ endfunction
 function Context(move_cursor = v:false)
   " find the start of the paragraph (or start of file)
   norm mK
-  norm ?\n\n
+  norm ?\n\nj
   let limit = line(".")
   norm g`K$
 
@@ -541,13 +541,19 @@ function Context(move_cursor = v:false)
 
   " did any of them match at all?
   if entry == 0 && task == 0
-    return [v:null, 0]
+    let ctx = [v:null, 0]
   elseif entry <= task
     norm h
-    return ["task", task]
+    let ctx = ["task", task]
   else
-    return ["list", entry]
+    let ctx = ["list", entry]
   endif
+
+  if !a:move_cursor
+    norm g`K
+  endif
+
+  return ctx
 endfunction
 
 function CreateTask()
