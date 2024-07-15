@@ -530,7 +530,7 @@ endfunction
 function Context(move_cursor = v:false)
   " find the start of the paragraph (or start of file)
   norm mK
-  norm {
+  norm ?\n\n
   let limit = line(".")
   norm g`K$
 
