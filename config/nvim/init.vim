@@ -603,12 +603,19 @@ function MaybeContinueTaskList()
   let [ctx, _] = Context()
   norm g`J
 
-  " vim automatically inserts the list marker
-  " but not the checkbox
-  if ctx !~ 'task\|list'
-    return
-  elseif ctx == "task"
+  if ctx == "task"
+    " vim automatically inserts the list marker
+    " but not the checkbox
     exe "norm a[ ] "
+  elseif ctx == "list"
+    " neovim appears to insert a "fake space" after the marker
+    " that's not actually visible to Context()
+    " but will be inserted if typed further
+    " however, we actually want a real space
+    " so we insert something, then delete /shrug
+    exe "norm a \<BS>"
+  else
+    return
   endif
 
   " we are in insert mode already
@@ -968,5 +975,8 @@ dap.listeners.after.event_initialized["dapui_config"] = function()
 end
 
 EOF
+
+" uncomment if debugging "interesting" behavior with spaces and the works
+"colo default | exe '/\s'
 
 " vim: sw=2 ts=2 et
