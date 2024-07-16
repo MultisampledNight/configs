@@ -158,8 +158,18 @@ in {
       package = pkgs.firefox-esr;
       # https://mozilla.github.io/policy-templates/
       policies = let
+        librsIcon = "https://lib.rs/logo.svg";
+        cratesIcon = "https://crates.io/favicon.ico";
+        pypiIcon = "https://pypi.org/static/images/favicon.35549fe8.ico";
+
+        pythonIcon = "https://docs.python.org/3/_static/py.svg";
+        rustIcon = "https://doc.rust-lang.org/static.files/favicon-32x32-422f7d1d52889060.png";
+
+        docsrsIcon = "https://docs.rs/-/static/favicon.ico";
+
         archIcon = "https://archlinux.org/static/favicon.51c13517c44c.png";
         nixIcon = "https://nixos.org/_astro/flake-blue.Bf2X2kC4_Z1yqDoT.svg";
+
         ytIcon = "https://www.youtube.com/s/desktop/a258f8cf/img/favicon_32x32.png";
         typstIcon = "https://typst.app/assets/favicon-32x32.png";
       in {
@@ -168,6 +178,14 @@ in {
         Cookies = {
           Behavior = "reject-foreign";
           BehaviorPrivateBrowsing = "reject";
+
+          # surprisingly many websites just... don't work without third-party cookies
+          # so yeah, here we allow them. unfortunately.
+          Allow = [
+            "https://www.zdf.de/"
+            "https://docs.python.org/"
+            "https://doc.rust-lang.org/"
+          ];
         };
         SanitizeOnShutdown = {
           Cache = true;
@@ -244,6 +262,28 @@ in {
           Default = "DuckDuckGo";
           Add = [
             {
+              Name = "Lib.rs";
+              Description = "Static frontend to the Rust crate index";
+              Alias = "@rspkgs";
+              URLTemplate = "https://lib.rs/search?q={searchTerms}";
+              Method = "GET";
+              IconURL = librsIcon;
+            }
+            {
+              Name = "Rust crate registry";
+              Alias = "@rspkgs-slow";
+              URLTemplate = "https://lib.rs/search?q={searchTerms}";
+              Method = "GET";
+              IconURL = cratesIcon;
+            }
+            {
+              Name = "Python package index";
+              Alias = "@pypkgs";
+              URLTemplate = "https://pypi.org/search/?q={searchTerms}";
+              Method = "GET";
+              IconURL = pypiIcon;
+            }
+            {
               Name = "Arch Linux packages";
               Alias = "@archpkgs";
               URLTemplate = "https://archlinux.org/packages/?q={searchTerms}";
@@ -263,6 +303,27 @@ in {
               URLTemplate = "https://wiki.archlinux.org/index.php?search={searchTerms}&title=Special%3ASearch";
               Method = "GET";
               IconURL = archIcon;
+            }
+            {
+              Name = "Python stdlib documentation";
+              Alias = "@pydoc";
+              URLTemplate = "https://docs.python.org/3/search.html?q={searchTerms}";
+              Method = "GET";
+              IconURL = pythonIcon;
+            }
+            {
+              Name = "Rust stdlib documentation";
+              Alias = "@rsdoc";
+              URLTemplate = "https://doc.rust-lang.org/std/index.html?search={searchTerms}";
+              Method = "GET";
+              IconURL = rustIcon;
+            }
+            {
+              Name = "Rust crate documentation";
+              Alias = "@rsext";
+              URLTemplate = "https://docs.rs/releases/search?query={searchTerms}&sort=recent-downloads";
+              Method = "GET";
+              IconURL = docsrsIcon;
             }
             {
               Name = "NixOS options";
