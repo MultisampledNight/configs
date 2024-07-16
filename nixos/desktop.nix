@@ -185,6 +185,8 @@ in {
             "https://www.zdf.de/"
             "https://docs.python.org/"
             "https://doc.rust-lang.org/"
+            "https://www.openstreetmap.org/"
+            "https://tile.openstreetmap.org/"
           ];
         };
         SanitizeOnShutdown = {
