@@ -41,6 +41,7 @@ set undofile
 set shortmess+=W
 set notimeout
 set nottimeout
+set noequalalways
 
 set clipboard+=unnamedplus
 set completeopt=menu,menuone,preview,noselect
