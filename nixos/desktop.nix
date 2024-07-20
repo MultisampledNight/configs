@@ -274,7 +274,7 @@ in {
             {
               Name = "Rust crate registry";
               Alias = "@rspkgs-slow";
-              URLTemplate = "https://lib.rs/search?q={searchTerms}";
+              URLTemplate = "https://crates.io/search?q={searchTerms}";
               Method = "GET";
               IconURL = cratesIcon;
             }
