@@ -11,7 +11,7 @@ exec dunst
 exec flameshot
 
 
-client.focused "#212224" "#212224" "#B6B3B4" "#B6B3B4" "#B6B3B4"
+client.focused "#212224" "#212224" "#B6B3B4" "#B6B3B4" "#212224"
 client.focused_inactive "#212224" "#212224" "#B6B3B4" "#212224"
 client.unfocused "#212224" "#212224" "#B6B3B4" "#212224"
 client.urgent "#212224" "#212224" "#B6B3B4" "#212224"

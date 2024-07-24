@@ -133,7 +133,7 @@ in {
               vim nix proto godot_resource
               kdl ini toml yaml json json5
               css html
-              sql dot mermaid latex bibtex markdown typst
+              sql dot mermaid latex bibtex markdown
               diff query vimdoc
               agda
             ]))
