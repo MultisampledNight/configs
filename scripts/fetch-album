@@ -1,0 +1,50 @@
+#!/usr/bin/env nix-shell
+#!nix-shell -i python -p python3 yt-dlp
+import subprocess
+import sys
+from pathlib import Path
+
+
+def main():
+    download(sys.argv[1])
+    rename_all()
+
+
+def download(target: str):
+    cmd = [
+        "yt-dlp",
+        "--extract-audio",
+        "--audio-format",
+        "opus",
+        "--audio-quality",
+        "0",
+        "--output",
+        "%(playlist_index)s-%(title)s",
+        target,
+    ]
+    subprocess.run(cmd)
+
+
+def rename_all():
+    for file in Path(".").iterdir():
+        new = normalize(file.name)
+        file.rename(new)
+
+
+def normalize(name: str):
+    [name, ext] = name.rsplit(".", maxsplit=1)
+    [idx, title] = name.split("-", maxsplit=1)
+
+    if "-" in title:
+        title = title.split("-")[1]
+    for delim in "([":
+        if delim in title:
+            title = title.split(delim)[0]
+
+    title = title.strip().lower().replace(" ", "-").replace(".", "")
+
+    return f"{idx}-{title}.{ext}"
+
+
+if __name__ == "__main__":
+    main()
