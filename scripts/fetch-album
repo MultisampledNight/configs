@@ -41,7 +41,10 @@ def normalize(name: str):
         if delim in title:
             title = title.split(delim)[0]
 
-    title = title.strip().lower().replace(" ", "-").replace(".", "")
+    title = title.strip().lower()
+    trans = {" ": "-", ".": "", ",": "", "-&-": "-and-"}
+    for source, target in trans.items():
+        title = title.replace(source, target)
 
     return f"{idx}-{title}.{ext}"
 
