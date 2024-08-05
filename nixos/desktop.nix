@@ -172,6 +172,9 @@ in {
 
         ytIcon = "https://www.youtube.com/s/desktop/a258f8cf/img/favicon_32x32.png";
         typstIcon = "https://typst.app/assets/favicon-32x32.png";
+
+        blenderIcon = "https://docs.blender.org/manual/en/latest/_static/favicon.png";
+        steamdbIcon = "https://steamdb.info/static/logos/vector_prefers_schema.svg";
       in {
         DownloadDirectory = "\${home}/media/downloads";
 
@@ -360,6 +363,20 @@ in {
               Alias = "@protondb";
               URLTemplate = "https://www.protondb.com/search?q={searchTerms}";
               Method = "GET";
+            }
+            {
+              Name = "SteamDB";
+              Alias = "@steamdb";
+              URLTemplate = "https://steamdb.info/search/?a=all&q={searchTerms}";
+              Method = "GET";
+              IconURL = steamdbIcon;
+            }
+            {
+              Name = "Blender user manual";
+              Alias = "@blender";
+              URLTemplate = "https://docs.blender.org/manual/en/latest/search.html?q={searchTerms}&check_keywords=yes&area=default";
+              Method = "GET";
+              IconURL = blenderIcon;
             }
           ];
 
