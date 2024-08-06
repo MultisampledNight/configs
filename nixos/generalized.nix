@@ -341,6 +341,7 @@ in {
         efibootmgr usbutils
         traceroute
         fd ripgrep
+        tree
         file pv
         ffmpeg mpv jq unzip zip
         sqlite-interactive
