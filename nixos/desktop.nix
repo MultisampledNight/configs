@@ -94,6 +94,7 @@ in {
       tor-browser-bundle-bin thunderbird
       keepassxc
       gimp inkscape scribus
+      libresprite
       libreoffice-fresh
       pavucontrol carla
       mate.eom
