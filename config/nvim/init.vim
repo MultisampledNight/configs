@@ -682,7 +682,14 @@ autocmd VimLeavePre *.tex
 " typst
 autocmd BufNewFile,BufRead *.typ
   \ set filetype=typst sw=2 ts=2 sts=0 et
-  \|call LaunchProgram("typst" . bufnr(), ["typst", "watch", "--input", "dev=true", expand("%:p"), CurrentPdfPath()])
+  \|call LaunchProgram("typst" . bufnr(), [
+    \ "typst",
+    \ "watch",
+    \ "--input", "dev=true",
+    \ "--input", "filename=" . expand("%:t"),
+    \ expand("%:p"),
+    \ CurrentPdfPath(),
+  \ ])
   \|noremap <buffer> <Leader>2 <Cmd>call ViewCurrentPdf()<CR>
 autocmd BufLeave *.typ
   \ call StopProgram("typst" . bufnr())
