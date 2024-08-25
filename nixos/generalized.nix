@@ -141,26 +141,6 @@ in {
         };
 
         overlays = [
-          (final: prev: if cfg.wayland then {
-            godot_4 = prev.godot_4.overrideAttrs {
-              src = final.fetchFromGitHub {
-                owner = "godotengine";
-                repo = "godot";
-                rev = "12b7296457feaf9e7c2324e8669ee54c73f83506"; # PR #86180 adding Wayland support
-                hash = "sha256-IvLuAT/yCfznLmA15jkgGmxBftukukd/JxwEkb+rrB0=";
-              };
-
-              nativeBuildInputs = prev.godot_4.nativeBuildInputs ++ (with final; [
-                autoPatchelfHook
-              ]);
-              buildInputs = prev.godot_4.buildInputs ++ (with final; [
-                wayland libdecor
-              ]);
-              runtimeDependencies = prev.godot_4.runtimeDependencies ++ (with final; [
-                wayland libdecor
-              ]);
-            };
-          } else {})
           (final: prev: if cfg.profileGuided then {
             godot_4 = prev.godot_4.override {
               stdenv = final.fastStdenv;
