@@ -15,10 +15,10 @@ rustPlatform.buildRustPackage rec {
     owner = "MultisampledNight";
     repo = pname;
     rev = version;
-    sha256 = "sha256-e41SD7XTbt+Io2opHMoYmAMW5WuqD9Gs1C+kXBOHZpg=";
+    hash = "sha256-e41SD7XTbt+Io2opHMoYmAMW5WuqD9Gs1C+kXBOHZpg=";
   };
 
-  cargoSha256 = "sha256-xS2kZnZcTceeSs5kmTDUJugVH/hQf/Kb33C6uZLvavI=";
+  cargoHash = "sha256-xS2kZnZcTceeSs5kmTDUJugVH/hQf/Kb33C6uZLvavI=";
 
   postFixup = let
     libPath = lib.makeLibraryPath [

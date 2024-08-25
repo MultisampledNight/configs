@@ -12,7 +12,7 @@ in final: prev: {
       owner = "MultisampledNight";
       repo = "colorschemes";
       rev = "main";
-      sha256 = "sha256-SYpWCPR2ORrfraMuvTRoQ4zE9FSFHTpbIh9G+vElzK8=";
+      hash = "sha256-SYpWCPR2ORrfraMuvTRoQ4zE9FSFHTpbIh9G+vElzK8=";
     };
     meta.homepage = "https://github.com/MultisampledNight/colorschemes";
   };
