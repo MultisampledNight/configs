@@ -4,7 +4,6 @@ with lib;
 let
   cfg = config.generalized;
 
-  neovideSmooth = cfg.pkgs-unstable.callPackage ./packages/neovide/default.nix {};
   customVimPlugins = cfg.pkgs-unstable.vimPlugins.extend (
     cfg.pkgs-unstable.callPackage ./neovim/custom-plugins.nix {}
   );
@@ -34,7 +33,7 @@ in {
       direnv
     ]
     ++ (if cfg.graphical then [
-      ghidra sqlitebrowser neovideSmooth
+      ghidra sqlitebrowser cfg.pkgs-unstable.neovide
     ] else [])
     ++ (if cfg.forTheGeneralPublic then [
       jetbrains.pycharm-community
