@@ -4,6 +4,11 @@ with lib;
 let
   cfg = config.generalized;
   layaway = cfg.pkgs-unstable.callPackage ./packages/layaway/default.nix {};
+  mapKeyValue = keyOp: valueOp: mapAttrs'
+    (key: value: nameValuePair
+      (keyOp key)
+      (valueOp value)
+    );
 in {
   imports =
     [
@@ -422,14 +427,12 @@ in {
         };
       };
 
-      preferences = concatMapAttrs (prefix: settings:
-        mapAttrs' (key: value:
-          nameValuePair
-            (if prefix == ""
-              then key
-              else "${prefix}.${key}")
-            value
-        ) settings
+      preferences = concatMapAttrs (prefix:
+        mapKeyValue 
+          (key: if prefix == ""
+            then key
+            else "${prefix}.${key}")
+          id
       ) {
         "" = {
           "browser.translations.automaticallyPopup" = "locked";
@@ -481,21 +484,19 @@ in {
       };
     in json {
       policies = {
-        Preferences = mapAttrs'
-          (key: value: nameValuePair
-            "intl.date_time.pattern_override.${key}"
-            (preference value)
-          )
-        # adjust to adhere to RFC 3339 (apart from the space separator)
-        # and that even regardless of locale, whew
-        # https://support.mozilla.org/en-US/kb/customize-date-time-formats-thunderbird
-        {
-          "date_short" = "yyyy-MM-dd";
-          "time_short" = "HH:mm:ss";
-          # {1} refers to the date, {0} to the time
-          # any char other than `,` or ` ` has to be escaped in single-quotes
-          "connector_short" = "{1} {0}";
-        };
+        Preferences = mapKeyValue
+          (key: "intl.date_time.pattern_override.${key}")
+          preference
+          # adjust to adhere to RFC 3339 (apart from the space separator)
+          # and that even regardless of locale, whew
+          # https://support.mozilla.org/en-US/kb/customize-date-time-formats-thunderbird
+          {
+            "date_short" = "yyyy-MM-dd";
+            "time_short" = "HH:mm:ss";
+            # {1} refers to the date, {0} to the time
+            # any char other than `,` or ` ` has to be escaped in single-quotes
+            "connector_short" = "{1} {0}";
+          };
       };
     };
   nixpkgs = {
