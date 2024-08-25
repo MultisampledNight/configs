@@ -55,10 +55,13 @@ in {
         else [];
       NEOVIDE_FORK = "1";
     }
-    // (if cfg.videoDriver == "nvidia" then {
+    // (if cfg.videoDriver == "nvidia" then
+    let
+      cuda = cfg.pkgs-unstable.cudatoolkit;
+    in {
       # both required for blender
-      CUDA_PATH = "${cfg.pkgs-unstable.cudatoolkit}";
-      CYCLES_CUDA_EXTRA_CFLAGS = "-I${cfg.pkgs-unstable.cudatoolkit}/targets/x86_64-linux/include";
+      CUDA_PATH = "${cuda}";
+      CYCLES_CUDA_EXTRA_CFLAGS = "-I${cuda}/targets/x86_64-linux/include";
     } else {})
     // (if cfg.wayland then {
       NIXOS_OZONE_WL = "1";

@@ -129,7 +129,7 @@ in {
           allowUnfreePredicate = pkg: (
             (builtins.elem (lib.getName pkg) [
               "nvidia-x11"
-              "blender"
+              "nvidia-settings"
               # those below are all just for CUDA it's so joever
               "libnpp"
             ]) || (
@@ -145,6 +145,11 @@ in {
             godot_4 = prev.godot_4.override {
               stdenv = final.fastStdenv;
             };
+          } else {})
+          (final: prev: if cfg.profileGuided then {
+            linuxZenFast = prev.linuxPackagesFor (prev.linuxKernel.kernels.linux_zen.override {
+              stdenv = final.fastStdenv;
+            });
           } else {})
           (final: prev: if (cfg.videoDriver == "nvidia" && cfg.wayland) then {
             # blatantly taken from https://wiki.hyprland.org/hyprland-wiki/pages/Nvidia/
@@ -175,8 +180,8 @@ in {
 
       kernelPackages = mkDefault (
         if cfg.profileGuided
-        then pkgs.linuxZenFast
-        else pkgs.linuxKernel.packages.linux_zen
+        then cfg.pkgs-unstable.linuxZenFast
+        else cfg.pkgs-unstable.linuxKernel.packages.linux_zen
       );
     };
 
@@ -225,9 +230,8 @@ in {
 
       nvidia = if cfg.videoDriver == "nvidia"
         then {
-          package = config.boot.kernelPackages.nvidiaPackages.production;
           modesetting.enable = true;
-          open = false;
+          open = true;
         }
         else {};
     };
@@ -441,11 +445,6 @@ in {
       experimental-features = ["nix-command" "flakes"];
     };
     nixpkgs.overlays = [
-      (final: prev: if cfg.profileGuided then {
-        linuxZenFast = prev.linuxPackagesFor (prev.linuxKernel.kernels.linux_zen.override {
-          stdenv = final.fastStdenv;
-        });
-      } else {})
       (final: prev: if (cfg.videoDriver == "nvidia") then {
         blender = prev.blender.override {
           cudaSupport = true;

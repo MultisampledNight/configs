@@ -32,9 +32,7 @@ in {
       };
     };
 
-  hardware = {
-    sane.enable = true;
-  };
+  hardware.sane.enable = true;
 
   services = {
     udisks2.enable = true;
