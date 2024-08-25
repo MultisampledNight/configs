@@ -472,6 +472,32 @@ in {
     };
   };
 
+  environment.etc."thunderbird/policies/policies.json".source =
+    let
+      json = (pkgs.formats.json {}).generate "thunderbird-policies.json";
+      preference = value: {
+        Value = value;
+        Status = "locked";
+      };
+    in json {
+      policies = {
+        Preferences = mapAttrs'
+          (key: value: nameValuePair
+            "intl.date_time.pattern_override.${key}"
+            (preference value)
+          )
+        # adjust to adhere to RFC 3339 (apart from the space separator)
+        # and that even regardless of locale, whew
+        # https://support.mozilla.org/en-US/kb/customize-date-time-formats-thunderbird
+        {
+          "date_short" = "yyyy-MM-dd";
+          "time_short" = "HH:mm:ss";
+          # {1} refers to the date, {0} to the time
+          # any char other than `,` or ` ` has to be escaped in single-quotes
+          "connector_short" = "{1} {0}";
+        };
+      };
+    };
   nixpkgs = {
     config.allowUnfree = true;
 
