@@ -435,7 +435,7 @@ in {
           id
       ) {
         "" = {
-          "browser.translations.automaticallyPopup" = "locked";
+          "browser.translations.automaticallyPopup" = false;
           "extensions.activeThemeID" = "firefox-compact-dark@mozilla.org";
         };
         "browser.search.suggest" = {
