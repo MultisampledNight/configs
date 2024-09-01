@@ -112,6 +112,13 @@ flash() {
 		oflag=sync
 }
 
+# evaluates the pattern on the device and then pulls the files over
+adb-pull-pattern() {
+	adb shell "cd $(dirname $1) && tar -zcf - $(basename $1)" \
+		| pv \
+		| tar -zxf -
+}
+
 # wrapper for nix-shell to make it launch zsh and cause less friction in my workflow
 nix-shell() {
 	command nix-shell $@ \
