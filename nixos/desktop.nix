@@ -233,6 +233,7 @@ in {
           URL = url;
           Favicon = if hasPrefix "Nix" name then nixIcon
             else if hasPrefix "Typst" name then typstIcon
+            else if hasPrefix "Rust" name then rustIcon
             else "";
         }) {
           "NixOS manual" = "https://nixos.org/manual/nixos/stable/";
@@ -240,6 +241,7 @@ in {
           "Nix manual" = "https://nix.dev/manual/nix/rolling/";
           "Typst documentation" = "https://typst.app/docs";
           "oklch" = "https://oklch.com/";
+          "Rust API guidelines" = "https://rust-lang.github.io/api-guidelines/checklist.html";
         };
 
         DontCheckDefaultBrowser = true;
