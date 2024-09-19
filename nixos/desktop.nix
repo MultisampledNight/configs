@@ -241,7 +241,15 @@ in {
           "Nix manual" = "https://nix.dev/manual/nix/rolling/";
           "Typst documentation" = "https://typst.app/docs";
           "oklch" = "https://oklch.com/";
+
+          "Rust nomicon" = "https://doc.rust-lang.org/nomicon/";
+          "Rust reference" = "https://doc.rust-lang.org/reference/";
           "Rust API guidelines" = "https://rust-lang.github.io/api-guidelines/checklist.html";
+          "Rust edition guide" = "https://doc.rust-lang.org/edition-guide/";
+          "Rust Cargo book" = "https://doc.rust-lang.org/cargo/";
+          "Rust rustc book" = "https://doc.rust-lang.org/rustc/";
+          "Rust rustdoc book" = "https://doc.rust-lang.org/rustdoc/";
+          "Rust unstable book" = "https://doc.rust-lang.org/nightly/unstable-book/";
         };
 
         DontCheckDefaultBrowser = true;
