@@ -11,6 +11,10 @@ SUBJECTS = {
             "target/",
             "*/target/",
         ],
+        "crea/**": [
+            "*.blend?",
+            "*.blend??",
+        ],
     },
     "lab/lang": {
         "rust/*": "target/",
@@ -38,17 +42,19 @@ def clean(subject: dict | list | str | Path, under=Path.home(), destructive=True
             clean(
                 next,
                 under = under / mid,
+                destructive = destructive,
             )
         return
     elif isinstance(subject, list):
         for next in subject:
-            clean(next, under=under)
+            clean(next, under=under, destructive=destructive)
         return
 
     # alright, it's not a collection!
     # then let's instantiate the glob and remove each yielded path
     full = str(under / subject)
-    for target in glob.glob(full):
+    matches = glob.iglob(full, recursive=True)
+    for target in matches:
         print(target)
         if destructive:
             remove(Path(target))
