@@ -1,0 +1,67 @@
+#!/usr/bin/env python
+import glob
+import os
+import shutil
+from pathlib import Path
+
+
+SUBJECTS = {
+    "studio": {
+        "rust/*/*": [
+            "target/",
+            "*/target/",
+        ],
+    },
+    "lab/lang": {
+        "rust/*": "target/",
+        "typst/*": "*.pdf",
+        "latex/*": ["*.pdf", "*.aux", "*.log"],
+    },
+    "notes": "**/view.pdf",
+}
+
+
+def main():
+    clean(SUBJECTS)
+
+
+def clean(subject: dict | list | str | Path, under=Path.home(), destructive=True):
+    """
+    Interprets the given structure as a tree to glob,
+    removing everything that matches.
+    Nested subjects have their paths joined.
+    """
+
+    # just recurse down until we have something that is not a collection (→ a str or Path)
+    if isinstance(subject, dict):
+        for mid, next in subject.items():
+            clean(
+                next,
+                under = under / mid,
+            )
+        return
+    elif isinstance(subject, list):
+        for next in subject:
+            clean(next, under=under)
+        return
+
+    # alright, it's not a collection!
+    # then let's instantiate the glob and remove each yielded path
+    full = str(under / subject)
+    for target in glob.glob(full):
+        print(target)
+        if destructive:
+            remove(Path(target))
+
+
+
+def remove(target: Path):
+    """Removes whatever is under the given path."""
+    if target.is_dir():
+        shutil.rmtree(target)
+    else:
+        os.remove(target)
+
+
+if __name__ == "__main__":
+    main()
