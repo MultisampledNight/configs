@@ -1,5 +1,5 @@
 #!/bin/sh
-screenshot_folder="$HOME/media/pic/screenshots"
+screenshot_folder="$HOME/media/pic/screenshot"
 moment="$(date --rfc-3339=seconds -u)" &&\
 selection="$(slurp)"
 
