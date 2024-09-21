@@ -294,6 +294,7 @@ in {
 
     services = {
       fstrim.enable = cfg.ssd;
+      fwupd.enable = true;
 
       openssh = {
         enable = cfg.ssh;
