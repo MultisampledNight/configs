@@ -476,10 +476,6 @@ in {
           "topsites" = false;
           "weather" = false;
         };
-        "cookiebanners.service" = {
-            "mode" = 1;
-            "mode.privateBrowsing" = 1;
-        };
       };
     };
 
