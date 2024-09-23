@@ -160,6 +160,7 @@ in {
       manrope
       source-code-pro
       (nerdfonts.override { fonts = ["FiraCode" "JetBrainsMono"]; })
+      departure-mono
 
       atkinson-hyperlegible
       montserrat
