@@ -29,8 +29,8 @@ window#waybar {
 }
 
 
-#clock, #battery, #cpu, #memory, #temperature, #backlight, #pulseaudio, #mode {
-    padding: 0 5px;
+#clock, #battery, #cpu, #memory, #temperature, #backlight, #pulseaudio, #mode, #custom-int-kb {
+    padding: 0 8px;
 }
 
 #mode {

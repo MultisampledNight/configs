@@ -7,7 +7,7 @@
 	"margin": 0,
 	"modules-left": ["sway/workspaces", "sway/mode"],
 	"modules-center": ["clock"],
-	"modules-right": ["battery", "tray"],
+	"modules-right": ["custom/int-kb", "battery", "tray"],
 	
 	"clock": {
 		"interval": 1,
@@ -36,5 +36,13 @@
 		"format-muted": "VOL muted",
 		"smooth-scrolling-threshold": 1.5,
 		"tooltip": false,
-	}
+	},
+	"custom/int-kb": {
+		"format": "INTKB {}",
+		"interval": "once",
+		"exec": "show-internal-keyboard",
+		"exec-if": "[[ $(hostname) == destined ]]",
+		"on-click": "toggle-internal-keyboard; pkill -SIGRTMIN+8",
+		"signal": 8,
+	},
 }

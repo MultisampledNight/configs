@@ -1,0 +1,9 @@
+#!/usr/bin/env sh
+swaymsg --raw -t get_inputs \
+	| jq --raw-output '
+		.[]
+		| select(.identifier=="1:1:AT_Translated_Set_2_keyboard")
+		.libinput
+		.send_events
+	' \
+	| sed 's/disabled/off/; s/enabled/on/'
