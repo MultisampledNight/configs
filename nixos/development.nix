@@ -10,7 +10,8 @@ let
   latexWithTikz = (pkgs.texlive.combine {
     inherit (pkgs.texlive) scheme-basic pgf standalone german babel;
   });
-
+  cuda = cfg.pkgs-unstable.cudatoolkit;
+  nvidia = config.boot.kernelPackages.nvidia_x11;
 in {
   documentation = {
     enable = true;
@@ -40,7 +41,8 @@ in {
       R nodejs openjdk
     ] else [])
     ++ (if cfg.videoDriver == "nvidia" then [
-      cudatoolkit
+      cuda
+      nvidia
     ] else []);
 
     sessionVariables = {
@@ -54,13 +56,13 @@ in {
         else [];
       NEOVIDE_FORK = "1";
     }
-    // (if cfg.videoDriver == "nvidia" then
-    let
-      cuda = cfg.pkgs-unstable.cudatoolkit;
-    in {
+    // (if cfg.videoDriver == "nvidia" then {
       # both required for blender
       CUDA_PATH = "${cuda}";
-      CYCLES_CUDA_EXTRA_CFLAGS = "-I${cuda}/targets/x86_64-linux/include";
+      CYCLES_CUDA_EXTRA_CFLAGS = concatStringsSep " " [
+        "-I${cuda}/targets/x86_64-linux/include"
+        "-I${nvidia}/lib"
+      ];
     } else {})
     // (if cfg.wayland then {
       NIXOS_OZONE_WL = "1";

@@ -109,7 +109,7 @@ in {
       element-desktop signal-desktop
       evince
       gnome.gnome-boxes
-      blender
+      cfg.pkgs-unstable.blender
 
       layaway
     ] ++ (with cfg.pkgs-unstable; [

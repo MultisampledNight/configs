@@ -147,6 +147,8 @@ in {
             (builtins.elem (lib.getName pkg) [
               "nvidia-x11"
               "nvidia-settings"
+              "vimplugin-treesitter-grammar-cuda_merged"
+              "blender"
               # those below are all just for CUDA it's so joever
               "libnpp"
             ]) || (
@@ -175,6 +177,11 @@ in {
                 substituteInPlace render/gles2/renderer.c --replace "glFlush();" "glFinish();"
               '';
             });
+          } else {})
+          (final: prev: if (cfg.videoDriver == "nvidia") then {
+            blender = prev.blender.override {
+              cudaSupport = true;
+            };
           } else {})
         ];
       };
@@ -481,12 +488,5 @@ in {
       auto-optimise-store = true;
       experimental-features = ["nix-command" "flakes"];
     };
-    nixpkgs.overlays = [
-      (final: prev: if (cfg.videoDriver == "nvidia") then {
-        blender = prev.blender.override {
-          cudaSupport = true;
-        };
-      } else {})
-    ];
   };
 }
