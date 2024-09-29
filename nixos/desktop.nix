@@ -179,6 +179,7 @@ in {
 
         blenderIcon = "https://docs.blender.org/manual/en/latest/_static/favicon.png";
         steamdbIcon = "https://steamdb.info/static/logos/vector_prefers_schema.svg";
+        wikipediaIcon = "https://en.wikipedia.org/static/favicon/wikipedia.ico";
       in {
         DownloadDirectory = "\${home}/media/downloads";
 
@@ -392,6 +393,13 @@ in {
               Method = "GET";
               IconURL = blenderIcon;
             }
+            {
+              Name = "Wikipedia";
+              Alias = "@wikipedia";
+              URLTemplate = "https://en.wikipedia.org/wiki/Special:Search?go=Go&search={searchTerms}";
+              Method = "GET";
+              IconURL = wikipediaIcon;
+            }
           ];
 
           Remove = [
@@ -422,18 +430,17 @@ in {
 
         ExtensionSettings = let
           moz = short: "https://addons.mozilla.org/firefox/downloads/latest/${short}/latest.xpi";
+          addon = short: {
+            install_url = moz short;
+            installation_mode = "force_installed";
+          };
         in {
           "*" = {
-            allowed_types = ["extension" "theme"];
+            allowed_types = ["extension" "theme" "locale"];
           };
-          "addon@darkreader.org" = {
-            install_url = moz "darkreader";
-            installation_mode = "force_installed";
-          };
-          "uBlock0@raymondhill.net" = {
-            install_url = moz "ublock-origin";
-            installation_mode = "force_installed";
-          };
+          "addon@darkreader.org" = addon "darkreader";
+          "uBlock0@raymondhill.net" = addon "ublock-origin";
+          "langpack-de@firefox.mozilla.org" = addon "deutsch-de-language-pack";
         };
       };
 
