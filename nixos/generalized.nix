@@ -484,6 +484,16 @@ in {
       kvmgt.enable = true;
     };
 
+    nixpkgs.overlays = [
+      (final: prev: {
+        mpv = prev.mpv.override {
+          scripts = with final.mpvScripts; [
+            evafast
+            mpris
+          ];
+        };
+      })
+    ];
     nix.settings = {
       auto-optimise-store = true;
       experimental-features = ["nix-command" "flakes"];
