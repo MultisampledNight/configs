@@ -106,7 +106,6 @@ in {
       helvum
       libsForQt5.kruler
       gucharmap
-      element-desktop signal-desktop
       evince
       gnome.gnome-boxes
       cfg.pkgs-unstable.blender
@@ -117,6 +116,7 @@ in {
       # since zathura flickers white when reloading, but evince does so only with the background color
       zathura
       scrcpy
+      element-desktop signal-desktop
     ]) else [])
     ++ (if cfg.xorg then [
       xorg.xauth rofi flameshot
