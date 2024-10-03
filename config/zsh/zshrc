@@ -35,6 +35,12 @@ export NIX_PATH="$NIX_PATH:$ALL_SHELLDEFS_PATH"
 
 export PAGER='less -R'
 
+# for some reason COLORTERM isn't exported over ssh but TERM is
+# hence just set COLORTERM afterwards on the target machine i guess
+if [[ $TERM = alacritty ]]; then
+	export COLORTERM=truecolor
+fi
+
 # see also https://grml.org/zsh/zsh-lovers.html
 rationalise-dot() {
   if [[ $LBUFFER = *.. ]]; then
