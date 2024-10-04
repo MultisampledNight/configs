@@ -139,7 +139,8 @@ nnoremap gd <Cmd>call TelescopeOnToplevel("lsp_definitions")<CR>
 nnoremap gu <Cmd>call TelescopeOnToplevel("lsp_references")<CR>
 nnoremap <Space>i <Cmd>call TelescopeOnToplevel("lsp_implementations")<CR>
 
-nnoremap <Space>o <Cmd>Trouble diagnostics toggle<CR>
+nnoremap <Space>o <Cmd>Trouble diagnostics toggle filter.severity = vim.diagnostic.severity.ERROR<CR>
+nnoremap <Space>x <Cmd>Trouble diagnostics toggle filter.severity.min = vim.diagnostic.severity.WARN<CR>
 nnoremap <Space>b <Cmd>update \| Trouble diagnostics<CR>
 
 nnoremap <Space>n <Cmd>update \| lua if require("dap").session() == nil then vim.lsp.buf.hover() else require("dap.ui.widgets").hover() end<CR>
@@ -839,7 +840,6 @@ require("trouble").setup({
   open_no_results = true,
   focus = true,
   filter = {
-    severity = vim.diagnostic.severity.ERROR,
   },
   win = {
     position = "bottom",
