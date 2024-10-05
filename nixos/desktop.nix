@@ -151,11 +151,20 @@ in {
 
     gnupg.agent = {
       enable = true;
-      enableSSHSupport = true;
       pinentryPackage = pkgs.pinentry-curses;
+      settings = let
+        hours = n: n * 60 * 60;
+      in {
+        default-cache-ttl = hours 2;
+        max-cache-ttl = hours 6;
+      };
     };
 
-    ssh.askPassword = "${pkgs.libsForQt5.ksshaskpass}/bin/ksshaskpass";
+    ssh = {
+      startAgent = true;
+      enableAskPassword = false;
+      agentTimeout = "4h";
+    };
 
     firefox = {
       enable = true;
