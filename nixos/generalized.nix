@@ -115,18 +115,6 @@ in {
       description = "What video driver to use for Xorg. Only in effect on development setups.";
     };
 
-    forMulti = mkOption {
-      type = types.bool;
-      default = true;
-      description = "If an account for Multi should be added.";
-    };
-
-    forTheGeneralPublic = mkOption {
-      type = types.bool;
-      default = false;
-      description = "If this system should stay usable to the general public, by forcing common layouts and installing common desktop environments. Setting this to `true` implicitly overrides `layout`.";
-    };
-
     gaming = mkOption {
       type = types.bool;
       default = false;
@@ -275,24 +263,20 @@ in {
         then null
         else "Lat2-Terminus16";
 
-      keyMap = if cfg.forTheGeneralPublic then "de" else cfg.layout;
+      keyMap = cfg.layout;
     };
 
     users = {
       defaultUserShell = pkgs.zsh;
-      mutableUsers = mkDefault true; # needed for passwd changes to persist
 
-      users =
-        if cfg.forMulti then {
-          multisn8 = {
-            isNormalUser = true;
-            extraGroups =
-              ["wheel" "plugdev" "antisuns" "kvm" "scanner" "lp"]
-              ++ (if cfg.graphical then ["input" "video" "audio"] else [])
-              ++ (if config.programs.adb.enable then ["adbusers"] else []);
-            shell = pkgs.zsh;
-          };
-        } else {};
+      users.multisn8 = {
+        isNormalUser = true;
+        extraGroups =
+          ["wheel" "plugdev" "antisuns" "kvm" "scanner" "lp"]
+          ++ (if cfg.graphical then ["input" "video" "audio"] else [])
+          ++ (if config.programs.adb.enable then ["adbusers"] else []);
+        shell = pkgs.zsh;
+      };
 
       groups = {
         plugdev = {};

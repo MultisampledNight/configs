@@ -20,7 +20,6 @@ in {
     hidpi = false;
     videoDriver = "virtio";
     audio = true;
-    forMulti = false;
   };
 
   boot = {

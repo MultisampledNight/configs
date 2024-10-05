@@ -21,24 +21,22 @@ in {
   environment = {
     systemPackages = with pkgs;
     [
-      python3 black delta
+      black delta
       inotify-tools geoipWithDatabase
       sshfs
       cfg.pkgs-unstable.godot_4
 
       # languages (for Rust it's probably better to directly use a shell.nix instead)
       python3 black
+      jdk
       llvmPackages_latest.llvm llvmPackages_latest.bintools llvmPackages_latest.lld
       clang sccache latexWithTikz texlab
 
       direnv
     ]
     ++ (if cfg.graphical then [
-      ghidra sqlitebrowser cfg.pkgs-unstable.neovide
-    ] else [])
-    ++ (if cfg.forTheGeneralPublic then [
-      jetbrains.pycharm-community
-      R nodejs openjdk
+        ghidra sqlitebrowser cfg.pkgs-unstable.neovide
+        jetbrains.idea-community
     ] else [])
     ++ (if cfg.videoDriver == "nvidia" then [
       cuda
@@ -108,7 +106,7 @@ in {
 
   programs = {
     neovim = {
-      defaultEditor = !cfg.forTheGeneralPublic;
+      defaultEditor = true;
       package = cfg.pkgs-unstable.neovim-unwrapped;
       withNodeJs = true;
       withRuby = false;

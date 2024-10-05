@@ -57,28 +57,30 @@ in {
     xserver = {
       enable = cfg.xorg;
 
-      xkb = {
-        layout = if cfg.forTheGeneralPublic then "de"
-          else if cfg.layout == "bone" then "de"
-          else cfg.layout;
-        variant = if cfg.layout == "bone" then "bone" else "";
-      };
+      xkb = let
+        inNeoFamily = layout:
+          (elem layout ["bone" "adnw"])
+          || (hasPrefix "neo" layout);
+      in (
+        { options = ""; }
+        // (if inNeoFamily cfg.layout
+          then {
+            layout = "de";
+            variant = cfg.layout;
+          }
+          else {
+            layout = cfg.layout;
+            variant = "";
+          })
+      );
 
       videoDrivers = [cfg.videoDriver];
 
-      desktopManager = {
-        plasma5.enable = cfg.forTheGeneralPublic;
-        gnome.enable = cfg.forTheGeneralPublic;
-        wallpaper = {
-          mode = "fill";
-          combineScreens = false;
-        };
+      desktopManager.wallpaper = {
+        mode = "fill";
+        combineScreens = false;
       };
-      windowManager = {
-        i3 = {
-          enable = true;
-        };
-      };
+      windowManager.i3.enable = true;
     };
   };
 

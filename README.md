@@ -129,8 +129,6 @@ you could
     audio = true;
     profileGuided = true;
     videoDriver = "nvidia";
-
-    forMulti = true;
   };
 
   # Before changing this value read the documentation for this option
