@@ -1,0 +1,57 @@
+#!/usr/bin/env echo "Not intended to be run manually. Instead, it's to be imported by scripts."
+# vim: ft=zsh
+
+indent() {
+  repeat ${1:-7}; do
+    echo -n ' '
+  done
+}
+
+colorize() {
+  color=$1
+  shift
+  text="$*"
+  printf "$(tput setaf $color)$text$(tput sgr0)"
+}
+
+emit() {
+  symbol="$(colorize $1 $2)"
+  shift 2
+
+  indent
+  printf "$symbol %s\n" "$*"
+}
+
+begin() {
+  emit 4 - "$*"
+}
+
+hint() {
+  emit 6 "$(indent 2)o" "$*"
+}
+
+part() {
+  emit 5 "$(indent 2)>" "$*"
+}
+
+cancel() {
+  emit 8 / "$*"
+}
+
+warn() {
+  emit 3 ! "$*"
+}
+
+error() {
+  emit 1 ! "$*"
+}
+
+complete() {
+  emit 2 x "$*"
+}
+
+# common paths i feel like i use all the time
+gcroots="/nix/var/nix/gcroots/per-user/$USER"
+zukunft="$HOME/zukunftslosigkeit"
+config="$zukunft/configs"
+state="$zukunft/state"

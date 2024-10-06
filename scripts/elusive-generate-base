@@ -1,35 +1,57 @@
 #!/usr/bin/env nix-shell
-#!nix-shell -p zsh nixos-generators -i zsh
+#!nix-shell -p zsh qemu -i zsh
 # vim: ft=zsh
 set -euo pipefail
+. _util
 
-image_target="/nix/var/nix/gcroots/per-user/$USER/elusive-base"
-old_in_store="$(dirname -- "$image_target")/elusive-base-old"
-state_dir="$HOME/zukunftslosigkeit/state/elusive"
+# note that these are symlinks *and* directories
+# the actual images are called base.qcow2 in each
+current="$gcroots/elusive"
+new="$(dirname $current)/elusive-new"
 
-# actually generate the image
-image_in_store=$(nixos-generate \
-	--format-path "$HOME/zukunftslosigkeit/configs/nixos/elusive/format.nix" \
-	--configuration "$HOME/zukunftslosigkeit/configs/nixos/elusive/configuration.nix" \
-	$@ \
-  | tail --lines 1)
+# idea:
+# 1. generate the image and symlink to $new
+# 2. rebase from $(readlink $current) to $(readlink $new)
+# 3. move $new to $current
 
-# replace the old image, both in the GC root and the symlink on the disk
-echo "installing symlinks"
-mkdir -p $(dirname -- "$image_target")
-if [[ -h $image_target ]]; then
-	mv $image_target $old_in_store
-fi
-ln -sf "$image_in_store" "$image_target"
+state="$state/elusive"
 
-# and rebase back again
-if [[ -h $old_in_store ]]; then
-	echo "rebasing from old image onto new image"
-	# agreed that `ls` is suboptimal for "just" globbing, but globbing wouldn't expand if the directory is empty
-	for project in $(ls $state_dir); do
-		echo $project
-		qemu-img rebase -p -b "$image_in_store" -F raw "$state_dir/$project/overlay.qcow2"
+# step 1
+begin building image
+hint "might take some time, but it's worth it"
+hint compression makes the final base image small and cute
+nix-build \
+  "$config/nixos/elusive" \
+  --out-link "$new" \
+  $@
+
+# step 2
+# need to do so only iff all off these apply:
+#
+# - there is an old image
+# - there's any overlays
+#
+# otherwise there's nothing qemu could rebase
+if [[ -h $current && -d $state && -n "$(ls $state)" ]]; then
+  begin rebasing images
+
+	for project in $state/*; do
+		part $project
+
+    qemu-img rebase \
+      -c -p \
+      -b "$(readlink $new)/base.qcow2" -F qcow2 \
+      "$state/$project/overlay.qcow2"
 	done
-	rm "/nix/var/nix/gcroots/per-user/$USER/elusive-base-old"
+elif [[ ! -d $state || -z "$(ls $state)" ]]; then
+  cancel "rebasing skipped: no overlays to rebase"
+else
+  cancel "rebasing skipped: no old image from"
 fi
+
+# step 3
+begin replacing current image
+mv $new $current
+
+complete generation finished
 

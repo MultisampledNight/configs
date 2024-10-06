@@ -1,7 +1,8 @@
 #!/usr/bin/env nix-shell
-#!nix-shell -p zsh qemu_kvm -i zsh
+#!nix-shell -p OVMF.fd zsh qemu -i zsh
 # vim: ft=zsh
-set -eu
+set -euo pipefail
+. _util
 
 zparseopts -E -D -nogui=nogui
 
@@ -10,62 +11,33 @@ if (( $# != 1 )); then
   exit 1
 fi
 
-project_name="$1"
-base_image=""
-overlay_image=""
-os_specific_args=""
+project="$1"
+shift
 
-state="$HOME/zukunftslosigkeit/state"
-iso="$HOME/media/iso"
+base="$(realpath $gcroots)/elusive/base.qcow2"
+overlay="$state/elusive/$project/overlay.qcow2"
 
-case $project_name in
-  "woe")
-    overlay_image="$state/vm/woe-10.qcow2"
-    os_specific_args=(
-      -cdrom "$iso/Win10_22H2_EnglishInternational_x64v1.iso"
-    )
-    ;;
-
-  "ubuntu")
-    overlay_image="$state/vm/ubuntu.qcow2"
-    os_specific_args=(
-      -cdrom "$iso/ubuntu-24.04-desktop-amd64.iso"
-    )
-    ;;
-
-  "fedora")
-    overlay_image="$state/vm/fedora.qcow2"
-    os_specific_args=(
-      -cdrom "$iso/Fedora-Workstation-Live-x86_64-40-1.14.iso"
-    )
-    ;;
-
-  *)
-    base_image=$(readlink -- "/nix/var/nix/gcroots/per-user/$USER/elusive-base")
-    overlay_image="$state/elusive/$project_name/overlay.qcow2"
-
-    # set up the overlay image first, if not already done
-    if [[ ! -f $overlay_image ]]; then
-    fi
-    ;;
-esac
-
-if [[ -n $base_image && ! -f $overlay_image ]]; then
-  echo "creating overlay $overlay_image over $base_image"
-  mkdir -p $(dirname -- "$overlay_image")
-  qemu-img create \
-    -o backing_file=$base_image,backing_fmt=raw \
-    -f qcow2 $overlay_image
-elif [[ ! -f $overlay_image ]]; then
-  echo "creating standalone image $overlay_image"
-  mkdir -p $(dirname -- "$overlay_image")
-  qemu-img create \
-    -f qcow2 $overlay_image 50G
+if [[ ! -r $base ]]; then
+  error base image does not exist
+  hint run $(colorize 2 elusive-generate-base) to create one
+  exit 1
 fi
 
-args=(
-  $overlay_image
-  -name "elusive-$project_name"
+# set up the overlay image first, if not already done
+if [[ ! -f $overlay ]]; then
+  begin creating overlay $overlay over $base
+  mkdir -p $(dirname "$overlay")
+  qemu-img create \
+    -o backing_file=$base,backing_fmt=qcow2 \
+    -f qcow2 \
+    $overlay
+fi
+
+# then construct the command line
+base=(
+  -drive file=$overlay,if=virtio,cache.direct=on,aio=native
+  -bios "$(echo $buildInputs | cut -d ' ' -f 1)/FV/OVMF.fd"
+  -name "elusive-$project"
   -machine q35
   -cpu host
   -smp cpus=8,cores=4,threads=2
@@ -76,12 +48,11 @@ args=(
 )
 
 if (( $#nogui )); then
-  maybe_gui_args=(
+  io=(
     -nographic
   )
 else
-  maybe_gui_args=(
-    -audio driver=alsa,model=hda,out.buffer-length=48000
+  io=(
     -device virtio-vga-gl,max_outputs=1
     -display gtk,full-screen=on,gl=on
 
@@ -92,7 +63,9 @@ else
 fi
 
 # everything's ready, launch
+begin running
 qemu-system-x86_64 \
-  $args \
-  $maybe_gui_args \
-  $os_specific_args
+  $base \
+  $io \
+  $@
+complete virtual machine ended

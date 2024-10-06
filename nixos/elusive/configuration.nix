@@ -38,7 +38,6 @@ in {
           Label = "P_BOOT";
           Format = "vfat";
           SizeMinBytes = "256M";
-          SizeMaxBytes = "256M";
         };
       };
       root = {
@@ -47,13 +46,14 @@ in {
           Type = "root";
           Label = "p_${name}";
           Format = "ext4";
-          SizeMinBytes = "40G";
+          SizeMinBytes = "75G";
         };
       };
     };
   };
 
   fileSystems."/".device = "/dev/disk/by-label/p_${name}";
+  fileSystems."/boot".device = "/dev/disk/by-label/P_BOOT";
 
   boot = {
     kernelParams = ["console=ttyS0"];

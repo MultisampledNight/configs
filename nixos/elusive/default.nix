@@ -13,6 +13,7 @@ in pkgs.runCommand
 ''
   mkdir -p $out
   qemu-img convert \
+    -c -o compression_type=zstd \
     -f raw -O qcow2 \
     ${raw} ${target}
 ''
