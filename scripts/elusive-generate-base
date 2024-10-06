@@ -4,8 +4,8 @@
 set -euo pipefail
 . _util
 
-# note that these are symlinks *and* directories
-# the actual images are called base.qcow2 in each
+# note that these are symlinks to *directories*
+# the actual images are called base.qcow2 in there
 current="$gcroots/elusive"
 new="$gcroots/elusive-new"
 
@@ -35,18 +35,18 @@ nix-build \
 if [[ -h $current && -d $state && -n "$(ls $state)" ]]; then
   begin rebasing images
 
-	for project in $state/*; do
-		part $project
+  for project in $state/*; do
+    part $project
 
     qemu-img rebase \
-      -c -p \
+      -p \
       -b "$(readlink $new)/base.qcow2" -F qcow2 \
       "$project/overlay.qcow2"
-	done
+  done
 elif [[ ! -d $state || -z "$(ls $state)" ]]; then
   cancel "rebasing skipped: no overlays to rebase"
 else
-  cancel "rebasing skipped: no old image from"
+  cancel "rebasing skipped: no old image to rebase from"
 fi
 
 # step 3

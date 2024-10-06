@@ -46,6 +46,7 @@ in {
         };
         repartConfig = {
           Type = "esp";
+          Label = "BOOT";
           UUID = "47b77fd0-1cb6-42e0-8228-44611f0617b6";
 
           Format = "vfat";
@@ -55,8 +56,10 @@ in {
       root = {
         storePaths = [system.build.toplevel] ++ shells;
         # TODO: also install configs into ~/zukunftslosigkeit/configs, then run distribute_symlinks.py --exclude-nixos --root $out
+        # TODO: get rid of elusive-ssh and elusive-rsync and do it all via ssh config
         repartConfig = {
           Type = "root";
+          Label = "ROOT";
           UUID = "276d46b6-2405-4c27-a28c-2fbefc6a97cd";
 
           Format = "ext4";
@@ -70,7 +73,7 @@ in {
     nameValuePair target (let
       cfg = config.image.repart.partitions.${name}.repartConfig;
     in {
-      device = "/dev/disk/by-uuid/${cfg.UUID}";
+      device = "/dev/disk/by-label/${cfg.Label}";
       fsType = cfg.Format;
       noCheck = true;
     })
