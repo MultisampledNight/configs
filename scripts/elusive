@@ -35,7 +35,7 @@ fi
 
 # then construct the command line
 base=(
-  -drive file=$overlay,if=virtio,cache.direct=on,aio=native
+  -drive file=$overlay,media=disk,cache.direct=on,aio=native
   -bios "$(echo $buildInputs | cut -d ' ' -f 1)/FV/OVMF.fd"
   -name "elusive-$project"
   -machine q35
