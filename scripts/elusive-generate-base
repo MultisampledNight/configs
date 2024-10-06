@@ -7,7 +7,7 @@ set -euo pipefail
 # note that these are symlinks *and* directories
 # the actual images are called base.qcow2 in each
 current="$gcroots/elusive"
-new="$(dirname $current)/elusive-new"
+new="$gcroots/elusive-new"
 
 # idea:
 # 1. generate the image and symlink to $new

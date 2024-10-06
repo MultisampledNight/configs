@@ -54,6 +54,7 @@ in {
       };
       root = {
         storePaths = [system.build.toplevel] ++ shells;
+        # TODO: also install configs into ~/zukunftslosigkeit/configs, then run distribute_symlinks.py --exclude-nixos --root $out
         repartConfig = {
           Type = "root";
           UUID = "276d46b6-2405-4c27-a28c-2fbefc6a97cd";
