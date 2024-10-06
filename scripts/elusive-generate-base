@@ -41,7 +41,7 @@ if [[ -h $current && -d $state && -n "$(ls $state)" ]]; then
     qemu-img rebase \
       -c -p \
       -b "$(readlink $new)/base.qcow2" -F qcow2 \
-      "$state/$project/overlay.qcow2"
+      "$project/overlay.qcow2"
 	done
 elif [[ ! -d $state || -z "$(ls $state)" ]]; then
   cancel "rebasing skipped: no overlays to rebase"

@@ -1,2 +1,10 @@
-#!/usr/bin/env sh
-rm -r ~/zukunftslosigkeit/state/elusive
+#!/usr/bin/env zsh
+set -eu
+. _util
+state=$state/elusive
+
+for overlay in $state/*; do
+  part $overlay
+  rm -r $overlay
+done
+rmdir $state
