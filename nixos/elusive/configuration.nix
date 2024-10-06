@@ -16,6 +16,23 @@ let
     "sdl"
     "typst"
   ];
+
+  # set up common things and symlinks for my workflow when actually working
+  rootTemplate = pkgs.runCommand
+    "root-template"
+    {
+      configRepo = ../..;
+      buildInputs = with pkgs; [ python3 ];
+    }
+    ''
+      mkdir $out
+
+      # despite its name (TODO: change that sometime) it can also take care of copying configs, shells, the works
+      python \
+        $configRepo/distribute_symlinks.py \
+        --exclude-nixos --no-backup --actually-install \
+        --root $out --user multisn8
+    '';
 in {
   imports = [
     ../generalized.nix
@@ -54,8 +71,8 @@ in {
         };
       };
       root = {
+        contents."/".source = rootTemplate;
         storePaths = [system.build.toplevel] ++ shells;
-        # TODO: also install configs into ~/zukunftslosigkeit/configs, then run distribute_symlinks.py --exclude-nixos --root $out
         # TODO: get rid of elusive-ssh and elusive-rsync and do it all via ssh config
         repartConfig = {
           Type = "root";

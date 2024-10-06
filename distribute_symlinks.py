@@ -121,11 +121,13 @@ def remove(path: Path):
 
 
 def main():
-    ensure_root(
-        "Should be run as root, since it also symlinks /etc/nixos. Prepare for some errors (or run with --exclude-nixos, in which case this message will be still displayed.)",
-        fail_fast=False,
-    )
     args = parse_args()
+    if not args.exclude_nixos:
+        ensure_root(
+            "Should be run as root, since it also symlinks /etc/nixos. "
+            "Prepare for some errors (or run with --exclude-nixos)",
+            fail_fast=False,
+        )
     distribute_symlinks(
         user=args.user,
         root=args.root,
