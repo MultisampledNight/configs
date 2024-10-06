@@ -7,9 +7,6 @@ let
   customVimPlugins = cfg.pkgs-unstable.vimPlugins.extend (
     cfg.pkgs-unstable.callPackage ./neovim/custom-plugins.nix {}
   );
-  latexWithTikz = (pkgs.texlive.combine {
-    inherit (pkgs.texlive) scheme-basic pgf standalone german babel;
-  });
   cuda = cfg.pkgs-unstable.cudatoolkit;
   nvidia = config.boot.kernelPackages.nvidia_x11;
 in {
@@ -30,7 +27,7 @@ in {
       python3 black
       jdk
       llvmPackages_latest.llvm llvmPackages_latest.bintools llvmPackages_latest.lld
-      clang sccache latexWithTikz texlab
+      clang sccache
 
       direnv
     ]
@@ -79,29 +76,6 @@ in {
         xset b off
       fi
     '' else "");
-  };
-
-  users = {
-    users = {
-      uedev = {
-        isNormalUser = true;
-        useDefaultShell = true;
-        extraGroups = ["antisuns"];
-      };
-    };
-    groups = {
-      antisuns = {};
-    };
-  };
-
-  fileSystems = let
-    as-path = user: "/home/${user}/studio/games/antisuns";
-  in {
-    ${as-path "uedev"} = {
-      device = as-path "multisn8";
-      fsType = "none";
-      options = ["bind"];
-    };
   };
 
   programs = {
@@ -187,10 +161,5 @@ in {
         monospace = ["IBM Plex Mono"];
       };
     };
-  };
-
-  i18n.inputMethod = mkIf cfg.graphical {
-    enabled = "ibus";
-    ibus.engines = with pkgs.ibus-engines; [hangul];
   };
 }

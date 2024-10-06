@@ -1,71 +1,83 @@
-{ config, pkgs, lib, ... }:
+{ name }:
+{ config, lib, pkgs, modulesPath, ... }:
 
-with lib;
 let
-  cfg = config.generalized;
+  efiArch = pkgs.stdenv.hostPlatform.efiArch;
 
-  configs = ./../..;
+  shells = map
+    (shell: pkgs.callPackage ../../nix/shells/${shell}/default.nix {})
+  [
+    "elixir"
+    "julia"
+    "python"
+    "rust"
+    "sdl"
+    "typst"
+  ];
 in {
-  imports = 
-    [
-      ./../generalized.nix
-      ./../development.nix
-    ];
+  imports = [
+    ../generalized.nix
+    ../development.nix
+    "${modulesPath}/image/repart.nix"
+  ];
 
-  generalized = {
-    hostName = "elusive";
-    ssh = true;
-    wayland = true;
-    xorg = true;
-    hidpi = false;
-    videoDriver = "virtio";
-    audio = true;
+  image.repart = {
+    inherit name;
+    seed = "d2c6527b-d43b-49cd-b724-d4f1fdd771ec";
+
+    # for the repartConfig key, see:
+    # https://www.freedesktop.org/software/systemd/man/latest/repart.d.html
+    partitions = {
+      boot = {
+        contents = {
+          "/EFI/BOOT/BOOT${lib.toUpper efiArch}.EFI".source =
+            "${pkgs.systemd}/lib/systemd/boot/efi/systemd-boot${efiArch}.efi";
+        };
+        repartConfig = {
+          Type = "esp";
+          Label = "P_BOOT";
+          Format = "vfat";
+          SizeMinBytes = "256M";
+          SizeMaxBytes = "256M";
+        };
+      };
+      root = {
+        storePaths = [config.system.build.toplevel] ++ shells;
+        repartConfig = {
+          Type = "root";
+          Label = "p_${name}";
+          Format = "ext4";
+          SizeMinBytes = "40G";
+        };
+      };
+    };
   };
+
+  fileSystems."/".device = "/dev/disk/by-label/p_${name}";
 
   boot = {
-    kernelParams = ["kernel.perf_event_paranoid=0"];
-    loader = {
-      systemd-boot.enable = mkForce false;
-      grub.enable = mkForce true;
-    };
+    kernelParams = ["console=ttyS0"];
+    uki = { inherit name; };
   };
 
-  hardware.opengl.extraPackages = with pkgs; [swiftshader];
+  generalized = {
+    hostName = name;
+    baremetal = false;
+    ssh = true;
+    wayland = true;
+  };
 
   users = {
-    defaultUserShell = pkgs.zsh;
     mutableUsers = false;
-
-    # this is an externally managed VM, no I don't want to have it magically modify itself
-    # so make sure the root user is NOT loginable
-    allowNoPasswordLogin = true;
-    users = {
-      root = {
-        password = null;
-        hashedPassword = null;
-        passwordFile = null;
-      };
-
-      multisn8 = {
-        isNormalUser = true;
-        password = "";
-        # generate a new one using
-        # ssh-keygen -f ~/.ssh/id_to_elusive -t ed25519
-        openssh.authorizedKeys.keyFiles = [
-          ~/.ssh/id_to_elusive.pub
-        ];
-      };
-    };
+    users.multisn8.openssh.authorizedKeys.keyFiles = [
+      ~/.ssh/id_to_elusive.pub
+    ];
   };
+  services.getty.autologinUser = "multisn8";
 
-  environment.extraInit = ''
-    export LD_LIBRARY_PATH="${makeLibraryPath (with pkgs; [gcc-unwrapped.lib])}:$LD_LIBRARY_PATH"
+  services.journald.extraConfig = ''
+    SystemMaxUse=10M
   '';
 
-  services = {
-    getty.autologinUser = "multisn8";
-    xserver.desktopManager.plasma5.enable = true;
-  };
-
-  system.stateVersion = "23.05";
+  system.stateVersion = "24.05";
 }

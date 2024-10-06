@@ -44,14 +44,23 @@ in {
       description = "What microcode updates to install.";
     };
 
-    wireless.wlan = mkOption {
+    baremetal = mkOption {
       type = types.bool;
       default = true;
+      description = ''
+        If this machine runs directly on real hardware.
+        If that is the case, firmware update and other hardware maintenance helpers are installed.
+      '';
+    };
+
+    wireless.wlan = mkOption {
+      type = types.bool;
+      default = cfg.baremetal;
       description = "If to enable wireless services through iwd and iwctl.";
     };
     wireless.bluetooth = mkOption {
       type = types.bool;
-      default = true;
+      default = cfg.baremetal;
       description = "If to enable bluetooth.";
     };
 
@@ -181,13 +190,13 @@ in {
     boot = {
       loader = {
         systemd-boot = {
-          enable = true;
+          enable = cfg.baremetal;
           editor = false;
           consoleMode = "auto";
           configurationLimit = 256;
         };
         grub.enable = false;
-        efi.canTouchEfiVariables = true;
+        efi.canTouchEfiVariables = cfg.baremetal;
       };
 
       kernelPackages = mkDefault (
@@ -195,6 +204,8 @@ in {
         then cfg.pkgs-unstable.linuxZenFast
         else cfg.pkgs-unstable.linuxKernel.packages.linux_zen
       );
+
+      tmp.cleanOnBoot = true;
     };
 
     console.colors = [
@@ -285,7 +296,7 @@ in {
 
     services = {
       fstrim.enable = cfg.ssd;
-      fwupd.enable = true;
+      fwupd.enable = cfg.baremetal;
 
       openssh = {
         enable = cfg.ssh;
@@ -301,11 +312,12 @@ in {
       # audio server
       pipewire = {
         enable = cfg.audio;
-        alsa.enable = true;
+        alsa.enable = cfg.audio;
+        pulse.enable = cfg.audio;
+        jack.enable = cfg.audio;
+        wireplumber.enable = cfg.audio;
+
         alsa.support32Bit = true;
-        pulse.enable = true;
-        jack.enable = true;
-        wireplumber.enable = true;
       };
 
       udev.extraRules = ''
@@ -472,7 +484,6 @@ in {
       (final: prev: {
         mpv = prev.mpv.override {
           scripts = with final.mpvScripts; [
-            evafast
             mpris
           ];
         };
