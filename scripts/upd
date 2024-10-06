@@ -1,3 +1,4 @@
 #!/usr/bin/env sh
 set -eux
 sudo nixos-rebuild switch --upgrade-all $@
+elusive-generate-base
