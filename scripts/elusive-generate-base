@@ -51,6 +51,7 @@ fi
 
 # step 3
 begin replacing current image
+rm $current
 mv $new $current
 
 complete generation finished
