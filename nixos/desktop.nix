@@ -262,6 +262,7 @@ in {
           "Rust rustc book" = "https://doc.rust-lang.org/rustc/";
           "Rust rustdoc book" = "https://doc.rust-lang.org/rustdoc/";
           "Rust unstable book" = "https://doc.rust-lang.org/nightly/unstable-book/";
+          "Rust rustup book" = "https://rust-lang.github.io/rustup/index.html";
         };
 
         DontCheckDefaultBrowser = true;
