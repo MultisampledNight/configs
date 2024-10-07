@@ -48,6 +48,12 @@ let
       mkdir -p $home/.rustup/toolchains
       cp -r $rustInstall $home/.rustup/toolchains/$rustChannel-$toolchain;
       cp $rustupSettings $home/.rustup/settings.toml;
+
+      # making nix' channels available so one can use nix-shell
+      target=$out/nix/var/nix/profiles/per-user/root/channels
+      mkdir -p $target
+      cp -r ${<nixos>} $target/nixos
+      cp -r ${<nixos-unstable>} $target/nixos-unstable
     '';
 in {
   imports = [
