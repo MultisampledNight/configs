@@ -20,13 +20,7 @@ in {
   sound.enable = true;
   security.rtkit.enable = true;
 
-  networking = {
-    dhcpcd.wait = "background"; # saves like 5 seconds of startup time
-
-    hosts = {
-      "127.0.0.1" = ["elusive"];
-    };
-  };
+  networking.dhcpcd.wait = "background"; # saves like 5 seconds of startup time
 
   users.users =
     mkIf cfg.gaming {

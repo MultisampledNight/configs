@@ -20,18 +20,34 @@ let
   # set up common things and symlinks for my workflow when actually working
   rootTemplate = pkgs.runCommand
     "root-template"
-    {
+    rec {
+      patchPhase = [
+        ./config.patch
+      ];
+
       configRepo = ../..;
       buildInputs = with pkgs; [ python3 ];
+      toolchain = pkgs.stdenv.hostPlatform.config;
+
+      rustChannel = "stable";
+      rustInstall = ~/.rustup/toolchains/${rustChannel}-${toolchain};
+      rustupSettings = ~/.rustup/settings.toml;
     }
     ''
       mkdir $out
+      user=multisn8
+      home=$out/home/$user
 
       # despite its name (TODO: change that sometime) it can also take care of copying configs, shells, the works
       python \
         $configRepo/distribute_symlinks.py \
         --exclude-nixos --no-backup --actually-install \
-        --root $out --user multisn8
+        --root $out --user $user
+
+      # "installing" Rust by just copying it from the host
+      mkdir -p $home/.rustup/toolchains
+      cp -r $rustInstall $home/.rustup/toolchains/$rustChannel-$toolchain;
+      cp $rustupSettings $home/.rustup/settings.toml;
     '';
 in {
   imports = [
@@ -117,11 +133,15 @@ in {
       ~/.ssh/id_to_elusive.pub
     ];
   };
-  services.getty.autologinUser = "multisn8";
 
-  services.journald.extraConfig = ''
-    SystemMaxUse=10M
-  '';
+  services = {
+    getty.autologinUser = "multisn8";
+    journald.extraConfig = ''
+      SystemMaxUse=10M
+    '';
+  };
+
+  security.sudo.enable = false;
 
   system.stateVersion = "24.05";
 }

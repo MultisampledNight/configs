@@ -1,7 +1,7 @@
 xwayland enable
 font pango:IBM Plex Sans 10
 
-set $mod Mod4
+set $mod Mod1
 
 set $left  n
 set $down  r
