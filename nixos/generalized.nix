@@ -298,6 +298,9 @@ in {
       fstrim.enable = cfg.ssd;
       fwupd.enable = cfg.baremetal;
 
+      displayManager.enable = lib.mkForce false;
+      xserver.displayManager.lightdm.enable = lib.mkForce false;
+
       openssh = {
         enable = cfg.ssh;
         startWhenNeeded = true;
