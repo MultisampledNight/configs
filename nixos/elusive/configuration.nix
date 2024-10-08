@@ -55,6 +55,7 @@ let
         --root $out --user $user
 
       # adjust some things to fit to a VM
+      chmod -R 777 $out
       patch -p1 -i $configPatch -d $out
 
       # "installing" Rust by just copying it from the host
@@ -66,7 +67,10 @@ let
       target=$out/nix/var/nix/profiles/per-user/root/channels
       mkdir -p $target
       cp -r $nixos $target/nixos
-      cp -r $nixosUnstable $target/nixos
+      cp -r $nixosUnstable $target/nixos-unstable
+
+      # make everything immutable, even in VM
+      chmod -R 550 $out
     '';
 in {
   imports = [
