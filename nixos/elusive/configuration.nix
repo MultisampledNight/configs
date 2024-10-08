@@ -6,20 +6,19 @@ let
   efiArch = pkgs.stdenv.hostPlatform.efiArch;
   system = config.system;
 
-  shellDeps = concatMap
-    (shell: (
-      pkgs.callPackage
+  shells = map
+    (shell: pkgs.callPackage
       ../../nix/shells/${shell}/default.nix
       {}
-    ).buildInputs)
-  [
-    "elixir"
-    "julia"
-    "python"
-    "rust"
-    "sdl"
-    "typst"
-  ];
+    )
+    [
+      "elixir"
+      "julia"
+      "python"
+      "rust"
+      "sdl"
+      "typst"
+    ];
 
   # set up common things and symlinks for my workflow when actually working
   rootTemplate = pkgs.runCommand
@@ -115,7 +114,7 @@ in {
       };
       root = {
         contents."/".source = rootTemplate;
-        storePaths = [system.build.toplevel] ++ shellDeps;
+        storePaths = [system.build.toplevel];
         # TODO: get rid of elusive-ssh and elusive-rsync and do it all via ssh config
         repartConfig = {
           Type = "root";
@@ -169,6 +168,12 @@ in {
   };
 
   security.sudo.enable = false;
+
+  # pretty much just a stub so the shell deps are included in the image
+  # and aren't cloned in each instance
+  environment.shellInit = ''
+    # ${toString shells}
+  '';
 
   system.stateVersion = "24.05";
 }
