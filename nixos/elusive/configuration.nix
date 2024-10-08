@@ -6,8 +6,12 @@ let
   efiArch = pkgs.stdenv.hostPlatform.efiArch;
   system = config.system;
 
-  shells = map
-    (shell: pkgs.callPackage ../../nix/shells/${shell}/default.nix {})
+  shellDeps = concatMap
+    (shell: (
+      pkgs.callPackage
+      ../../nix/shells/${shell}/default.nix
+      {}
+    ).buildInputs)
   [
     "elixir"
     "julia"
@@ -111,7 +115,7 @@ in {
       };
       root = {
         contents."/".source = rootTemplate;
-        storePaths = [system.build.toplevel] ++ shells;
+        storePaths = [system.build.toplevel] ++ shellDeps;
         # TODO: get rid of elusive-ssh and elusive-rsync and do it all via ssh config
         repartConfig = {
           Type = "root";
