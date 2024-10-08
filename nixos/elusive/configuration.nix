@@ -21,13 +21,23 @@ let
   rootTemplate = pkgs.runCommand
     "root-template"
     rec {
-      patchPhase = [
-        ./config.patch
-      ];
-
+      configPatch = ./config.patch;
       configRepo = ../..;
       buildInputs = with pkgs; [ python3 ];
       toolchain = pkgs.stdenv.hostPlatform.config;
+
+      nixos = pkgs.fetchzip {
+        # nixos-24.05 on 2024-10-06
+        name = "nixos-elusive";
+        url = "https://github.com/nixos/nixpkgs/archive/ecbc1ca8ffd6aea8372ad16be9ebbb39889e55b6.tar.gz";
+        hash = "sha256-PbDWAIjKJdlVg+qQRhzdSor04bAPApDqIv2DofTyynk=";
+      };
+      nixosUnstable = pkgs.fetchzip {
+        # nixos-unstable on 2024-10-05
+        name = "nixos-unstable-elusive";
+        url = "https://github.com/nixos/nixpkgs/archive/bc947f541ae55e999ffdb4013441347d83b00feb.tar.gz";
+        hash = "sha256-NOiTvBbRLIOe5F6RbHaAh6++BNjsb149fGZd1T4+KBg=";
+      };
 
       rustChannel = "stable";
       rustInstall = ~/.rustup/toolchains/${rustChannel}-${toolchain};
@@ -44,6 +54,9 @@ let
         --exclude-nixos --no-backup --actually-install \
         --root $out --user $user
 
+      # adjust some things to fit to a VM
+      patch -p1 -i $configPatch -d $out
+
       # "installing" Rust by just copying it from the host
       mkdir -p $home/.rustup/toolchains
       cp -r $rustInstall $home/.rustup/toolchains/$rustChannel-$toolchain;
@@ -52,8 +65,8 @@ let
       # making nix' channels available so one can use nix-shell
       target=$out/nix/var/nix/profiles/per-user/root/channels
       mkdir -p $target
-      cp -r ${<nixos>} $target/nixos
-      cp -r ${<nixos-unstable>} $target/nixos-unstable
+      cp -r $nixos $target/nixos
+      cp -r $nixosUnstable $target/nixos
     '';
 in {
   imports = [
