@@ -8,6 +8,16 @@ let
 
   indent = strings.replicate 7 " ";
 
+  nixpkgsFromCommit = { rev, hash, opts ? {} }:
+    let
+      tree = pkgs.fetchzip {
+        name = "nixpkgs-${rev}";
+        url = "https://github.com/nixos/nixpkgs/archive/${rev}.tar.gz";
+        hash = hash;
+      };
+    in
+      import tree opts;
+
   # see https://en.wikipedia.org/wiki/ANSI_escape_code
   # why they are exactly here? good question, had no other place to put them
   # if anyone has an idea on how to escape this in nix, let me know
@@ -490,6 +500,12 @@ in {
             mpris
           ];
         };
+      })
+      (final: prev: {
+        firefox-esr-128-unwrapped = (nixpkgsFromCommit {
+          rev = "955826bf83ace52371924d94577c2d4bdc645074";
+          hash = "sha256-3+TkDJCb+/lE7eNgEU4uJevjg0Gt5mKIIC8n5Sw3wOE=";
+        }).firefox-esr-128-unwrapped;
       })
     ];
     nix.settings = {
