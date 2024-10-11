@@ -501,12 +501,6 @@ in {
           ];
         };
       })
-      (final: prev: {
-        firefox-esr-128-unwrapped = (nixpkgsFromCommit {
-          rev = "955826bf83ace52371924d94577c2d4bdc645074";
-          hash = "sha256-3+TkDJCb+/lE7eNgEU4uJevjg0Gt5mKIIC8n5Sw3wOE=";
-        }).firefox-esr-128-unwrapped;
-      })
     ];
     nix.settings = {
       auto-optimise-store = true;
