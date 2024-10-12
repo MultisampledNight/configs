@@ -41,6 +41,11 @@ in {
     };
     joycond.enable = true;
 
+    tor = {
+      enable = true;
+      client.enable = true;
+    };
+
     # hide the mouse cursor when not moved
     unclutter-xfixes = {
       enable = cfg.xorg;
