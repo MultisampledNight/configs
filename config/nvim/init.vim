@@ -360,16 +360,14 @@ function MaybeContinueTaskList()
   norm g`J
 
   if ctx == "task"
-    " vim automatically inserts the list marker
-    " but not the checkbox
-    exe "norm a[ ] "
+    exe "norm a- [ ] "
   elseif ctx == "list"
     " neovim appears to insert a "fake space" after the marker
     " that's not actually visible to Context()
     " but will be inserted if typed further
     " however, we actually want a real space
     " so we insert something, then delete /shrug
-    exe "norm a \<BS>"
+    exe "norm a- "
   else
     return
   endif
