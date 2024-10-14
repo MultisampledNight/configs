@@ -210,7 +210,7 @@ function NotesMode()
   noremap <2-LeftMouse> <Cmd>call ToggleIfCheckbox(">")<CR>
   noremap <RightRelease> <Cmd>call ToggleIfCheckbox("/")<CR>
 
-  "inoremap <Enter> <Enter><Cmd>call MaybeContinueTaskList()<CR>
+  inoremap <Enter> <Cmd>call Enter()<CR>
 endfunction
 
 function InsertDailyTemplate()
@@ -238,26 +238,29 @@ function InteractTask(intended)
   " as suited for them
   norm mJ
 
-  let [ctx, start_line] = Context(v:true)
+  let [ctx, cfg] = Context(v:true)
   if ctx == "task"
     call ToggleTask(a:intended)
   elseif ctx == "list"
-    call CreateTask(start_line)
+    call CreateTask(ctx.marker_line)
   else
     call CreateTask()
   endif
 endfunction
 
 " Returns in which context the user is currently typing in.
+" The context is a list with 2 items:
+" A string identification of the context and
+" a dictionary for further configuration.
 "
 " One of (cursor is not moved unless explicitly listed and
 " `move_cursor` is truthy):
-" [v:null, 0] => no notable context
-" ["list", line] => user is in a list entry *without* a checkbox.
-"                   The list entry starts at `line`.
-" ["task", line] => user is in a list entry *with* a checkbox,
-"                   the cursor moves to the checkbox fill.
-"                   The list entry starts at `line`.
+" [v:null, {}] => no notable context
+" ["list", {marker_line}] => user is in a list entry *without* a checkbox.
+"   The list entry starts at `marker_line`.
+" ["task", {marker_line}] => user is in a list entry *with* a checkbox,
+"   the cursor moves to the checkbox fill.
+"   The task entry starts at `marker_line`.
 "
 " This overwrites the `K` mark with the initial cursor position
 " as a side effect.
@@ -275,12 +278,12 @@ function Context(move_cursor = v:false)
 
   " did any of them match at all?
   if entry == 0 && task == 0
-    let ctx = [v:null, 0]
+    let ctx = [v:null, {}]
   elseif entry <= task
     norm h
-    let ctx = ["task", task]
+    let ctx = ["task", #{marker_line: task}]
   else
-    let ctx = ["list", entry]
+    let ctx = ["list", #{marker_line: entry}]
   endif
 
   if !a:move_cursor
@@ -351,35 +354,36 @@ function ToggleIfCheckbox(intended)
   silent exe $"norm $?{s:checkbox}\<CR>l"
 endfunction
 
-" Presses enter and creates an empty checkbox on the next line
-" if the context on the line before is "task".
-" (Also fixes the space at the end of task continuation.)
-function MaybeContinueTaskList()
-  norm mJk
-  let [ctx, _] = Context()
-  norm g`J
+" Presses enter, preserving the context
+" by creating task or list markers as-needed
+" (or also just doing nothing).
+function Enter()
+  " recall that in insert mode, the cursor is *between* characters
+  " there's one special case here: the cursor being at the end of a line
+  " this is not reachable with `i`. it has to be done with one of `aAoOcC`
+  " if the user did that, the cursor column is at the highest possible for
+  " this line <=> text_after_cursor is true
+  " but to insert any text, we have to reset to normal mode and then go into
+  " insert mode again. there appears to be no way in VimScript to just stay in
+  " insert mode
+  " hence the cursor would always reset to before the last character on the line,
+  " even though the user was at the end of the line!
+
+  let text_after_cursor = col(".") != col("$")
+  let insertion_start = text_after_cursor ? "i" : "a"
+
+  let [ctx, _cfg] = Context()
 
   if ctx == "task"
-    exe "norm a- [ ] "
+    let marker = "- [ ] "
   elseif ctx == "list"
-    " neovim appears to insert a "fake space" after the marker
-    " that's not actually visible to Context()
-    " but will be inserted if typed further
-    " however, we actually want a real space
-    " so we insert something, then delete /shrug
-    exe "norm a- "
+    let marker = "- "
   else
-    return
+    let marker = ""
   endif
 
-  " we are in insert mode already
-  " but due to the norm usage, vim appears to go into normal mode and back
-  " into insert mode
-  " which causes the cursor to be one character before the end of the line
-  " so a space is always after the cursor
-  " which we don't want
-  " hence let's tell vim to append to this line and stay there
-  startinsert!
+  exe $"norm! {insertion_start}\<Enter>{marker}\<Esc>"
+  call feedkeys("\<Right>")
 endfunction
 
 autocmd BufNewFile,BufRead ~/notes/*.{md,typ} call NotesMode()
