@@ -210,7 +210,7 @@ function NotesMode()
   noremap <2-LeftMouse> <Cmd>call ToggleIfCheckbox(">")<CR>
   noremap <RightRelease> <Cmd>call ToggleIfCheckbox("/")<CR>
 
-  inoremap <Enter> <Enter><Cmd>call MaybeContinueTaskList()<CR>
+  "inoremap <Enter> <Enter><Cmd>call MaybeContinueTaskList()<CR>
 endfunction
 
 function InsertDailyTemplate()
@@ -688,6 +688,7 @@ autocmd BufNewFile,BufRead *.typ
     \ "watch",
     \ "--input", "dev=true",
     \ "--input", "filename=" . expand("%:t"),
+    \ "--root", ProjectToplevel(),
     \ expand("%:p"),
     \ CurrentPdfPath(),
   \ ])
