@@ -117,7 +117,7 @@ in {
       # since zathura flickers white when reloading, but evince does so only with the background color
       zathura
       scrcpy
-      element-desktop signal-desktop
+      fractal signal-desktop
     ]) else [])
     ++ (if cfg.xorg then [
       xorg.xauth rofi flameshot

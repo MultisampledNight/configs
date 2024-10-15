@@ -28,6 +28,7 @@ def destinations():
         "godot",
         "helix",
         "i3",
+        "keepassxc",
         "layaway",
         "nvim",
         "sway",
