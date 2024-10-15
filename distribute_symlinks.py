@@ -134,7 +134,7 @@ def install_one(
             name.symlink_to(target)
     except PermissionError:
         print(
-            f"Skipping {link_name} due to missing perms",
+            f"Skipping {name} due to missing perms",
             file=sys.stderr,
         )
 
