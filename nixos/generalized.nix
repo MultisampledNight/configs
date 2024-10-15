@@ -463,7 +463,10 @@ in {
       };
     };
 
-    xdg.portal.enable = lib.mkForce false;
+    xdg.portal = mkIf cfg.graphical {
+      enable = true;
+      extraPortals = with pkgs; [xdg-desktop-portal-gtk];
+    };
     qt = {
       enable = true;
       platformTheme = "qt5ct";

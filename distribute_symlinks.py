@@ -6,42 +6,66 @@ import os
 import shutil
 import subprocess
 import sys
+from itertools import starmap
 from pathlib import Path
 
 ROOT = "/"
 USER = "multisn8"
-CONFIG_DESTINATIONS = {
-    # user stuff
-    "config/alacritty": "~/.config/alacritty",
-    "config/cargo/config.toml": "~/.cargo/config.toml",
-    "config/evcxr": "~/.config/evcxr",
-    "config/git/gitignore-global": "~/.gitignore-global",
-    "config/git/gitconfig": "~/.gitconfig",
-    "config/godot/editor_settings-4.tres": "~/.config/godot/editor_settings-4.tres",
-    "config/gtk-3.0": "~/.config/gtk-3.0",
-    "config/helix": "~/.config/helix",
-    "config/i3": "~/.config/i3",
-    "config/layaway": "~/.config/layaway",
-    "config/nvim": "~/.config/nvim",
-    "config/pipewire": "~/.config/pipewire/pipewire.conf.d",
-    "config/ripgrep/rgignore": "~/.rgignore",
-    "config/sway": "~/.config/sway",
-    "config/swaylock": "~/.config/swaylock",
-    "config/waybar": "~/.config/waybar",
-    "config/zathura/zathurarc": "~/.config/zathura/zathurarc",
-    "config/zsh/zshrc": "~/.zshrc",
-    "config/zsh/zlogin": "~/.zlogin",
-    "wallpapers/wallpaper": "~/.background-image",
-    # putting things out of config so elusive gets them
-    "scripts": "~/zukunftslosigkeit/scripts",
-    "nix/shells": "~/zukunftslosigkeit/shells",
-    # system wide stuff
-    "nixos": "/etc/nixos",
-}
+
+
+def destinations():
+    raise Exception("not implemented yet")
+    # Named the same under ~/.config as well as $repo/config
+    literal = [
+        "alacritty",
+        "cargo/config.toml",
+        "evcxr",
+        "godot",
+        "helix",
+        "i3",
+        "layaway",
+        "nvim",
+        "sway",
+        "swaylock",
+        "waybar",
+        "zathura",
+    ]
+
+    # Other mappings between ~/.config and $repo/config
+    config = {
+        "gtk-3.0": "gtk",
+        "gtk-4.0": "gtk",
+        "pipewire/pipewire.conf.d": "pipewire",
+    }
+
+    # "Special" things in ~/zukunftslosigkeit so elusive can find them
+    zukunftslosigkeit = {
+        "scripts": "scripts",
+        "shells": "nix/shells",
+    }
+
+    # Anything else that belongs in ~
+    home = {
+        ".gitignore-global": "git/gitignore-global",
+        ".gitignore": "git/gitconfig",
+        ".rgignore": "ripgrep/rgignore",
+        ".zshrc": "zsh/zshrc",
+        ".zlogin": "zsh/zlogin",
+        ".background-image": "../wallpapers/wallpaper",
+    }
+
+    # Anything else
+    root = {
+        "/etc/nixos": "nixos",
+    }
+
+    all = ""
+
+    return all
 
 
 def distribute_symlinks(
-    destinations=CONFIG_DESTINATIONS,
+    destinations=destinations(),
     user=USER,
     root=ROOT,
     exclude_nixos=False,
@@ -50,37 +74,43 @@ def distribute_symlinks(
 ):
     repo_root = Path(__file__).resolve().parent
 
-    for repo_subpath, link_name in destinations.items():
-        # TODO: some day I'll need to rename exclude_nixos and have it check for a non-user path instead
-        if exclude_nixos and "nixos" in repo_subpath:
-            continue
-        link_name = expanduser(link_name, root=root, user=user)
-        link_target = (repo_root / repo_subpath).resolve()
+    for name, target in destinations.items():
+        install_one(name, target)
 
-        # back up the old content (if any)
-        if no_backup:
-            remove(link_name)
-        else:
-            subprocess.run(
-                ["python3", repo_root / "scripts" / "archive", link_name],
-            )
 
-        try:
-            link_name.parent.mkdir(parents=True, exist_ok=True)
-            if actually_install:
-                # directly copy to the destination instead
-                if link_target.is_file():
-                    shutil.copy2(link_target, link_name)
-                else:
-                    shutil.copytree(link_target, link_name)
+def install_one(name, target):
+    # TODO: some day I'll need to rename exclude_nixos and have it check for a non-user path instead
+    if exclude_nixos and "nixos" in target:
+        return
+    name = expanduser(name, root=root, user=user)
+    target = (repo_root / target).resolve()
+
+    remove(name)
+
+    try:
+        name.parent.mkdir(parents=True, exist_ok=True)
+        if actually_install:
+            # directly copy to the destination instead
+            if link_target.is_file():
+                shutil.copy2(link_target, link_name)
             else:
-                # create the symlink
-                link_name.symlink_to(link_target)
-        except PermissionError:
-            print(
-                f"Skipping {link_name} due to missing perms",
-                file=sys.stderr,
-            )
+                shutil.copytree(link_target, link_name)
+        else:
+            # create the symlink
+            link_name.symlink_to(link_target)
+    except PermissionError:
+        print(
+            f"Skipping {link_name} due to missing perms",
+            file=sys.stderr,
+        )
+
+
+def dictmap(op, subject):
+    """
+    Applies `op`, a callable accepting the key and value as parameters,
+    to the dictionary `subject`.
+    """
+    return dict(starmap(op, subject.items()))
 
 
 def expanduser(path, root=ROOT, user=USER):
@@ -104,7 +134,6 @@ def parse_args():
     parser.add_argument("--root", action="store", default=ROOT)
     parser.add_argument("--user", action="store", default=USER)
     parser.add_argument("--exclude-nixos", action="store_true")
-    parser.add_argument("--no-backup", action="store_true")
     parser.add_argument("--actually-install", action="store_true")
     return parser.parse_args()
 

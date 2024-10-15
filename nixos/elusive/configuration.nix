@@ -54,7 +54,7 @@ let
       # despite its name (TODO: change that sometime) it can also take care of copying configs, shells, the works
       python \
         $configRepo/distribute_symlinks.py \
-        --exclude-nixos --no-backup --actually-install \
+        --exclude-nixos --actually-install \
         --root $out --user $user
 
       # adjust some things to fit to a VM
