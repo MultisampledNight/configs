@@ -1,5 +1,6 @@
 xwayland enable
 font pango:IBM Plex Sans 10
+exec systemctl --user import-environment XDG_CURRENT_DESKTOP WAYLAND_DISPLAY DISPLAY
 
 set $mod Mod4
 

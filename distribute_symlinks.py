@@ -1,12 +1,18 @@
 #!/usr/bin/env nix-shell
 #!nix-shell -i python3 -p python3
 # vim: ft=python
+
+# Terminology:
+# - Link name: Where the symlink is stored
+# - Link target: What the symlink points to
+
 import argparse
 import os
 import shutil
 import subprocess
 import sys
 from itertools import starmap
+from os.path import abspath
 from pathlib import Path
 
 ROOT = "/"
@@ -14,7 +20,6 @@ USER = "multisn8"
 
 
 def destinations():
-    raise Exception("not implemented yet")
     # Named the same under ~/.config as well as $repo/config
     literal = [
         "alacritty",
@@ -44,14 +49,17 @@ def destinations():
         "shells": "nix/shells",
     }
 
-    # Anything else that belongs in ~
-    home = {
+    # Configs in ~ that are under $repo/config
+    home_config = {
         ".gitignore-global": "git/gitignore-global",
         ".gitignore": "git/gitconfig",
         ".rgignore": "ripgrep/rgignore",
         ".zshrc": "zsh/zshrc",
         ".zlogin": "zsh/zlogin",
-        ".background-image": "../wallpapers/wallpaper",
+    }
+    # Anything else that belongs in ~ and is under $repo
+    home = {
+        ".background-image": "wallpapers/wallpaper",
     }
 
     # Anything else
@@ -59,45 +67,70 @@ def destinations():
         "/etc/nixos": "nixos",
     }
 
-    all = ""
+    # merging them all
+    config |= dict(map(lambda name: (name, name), literal))
+
+    home |= kvmap(
+        lambda name, target: (
+            Path(".config") / name,
+            Path("config") / target,
+        ),
+        config,
+    )
+    home |= valuemap(lambda target: Path("config") / target, home_config)
+    home |= keymap(
+        lambda name: Path("zukunftslosigkeit") / name,
+        zukunftslosigkeit,
+    )
+
+    all = root
+    # note: using Path("~") rather than Path.home()
+    # so expanduser() later can, well, expand it accordingly
+    all |= keymap(lambda name: Path("~") / name, home)
 
     return all
 
 
-def distribute_symlinks(
-    destinations=destinations(),
+def distribute_symlinks(**cfg):
+    for name, target in destinations().items():
+        install_one(name, target, **cfg)
+
+
+def install_one(
+    name,
+    target,
     user=USER,
     root=ROOT,
-    exclude_nixos=False,
-    no_backup=False,
+    only_user=False,
     actually_install=False,
+    verbose=False,
+    dry_run=False,
 ):
-    repo_root = Path(__file__).resolve().parent
+    name = Path(name)
+    target = Path(target)
+    repo = Path(__file__).resolve().parent
 
-    for name, target in destinations.items():
-        install_one(name, target)
-
-
-def install_one(name, target):
-    # TODO: some day I'll need to rename exclude_nixos and have it check for a non-user path instead
-    if exclude_nixos and "nixos" in target:
+    if only_user and name.is_absolute():
+        if verbose:
+            print("Skipping", name)
         return
     name = expanduser(name, root=root, user=user)
-    target = (repo_root / target).resolve()
+    target = (repo / target).resolve()
 
-    remove(name)
+    if verbose:
+        print(name, "->", target)
+
+    if dry_run:
+        return
 
     try:
+        remove(name)
+
         name.parent.mkdir(parents=True, exist_ok=True)
         if actually_install:
-            # directly copy to the destination instead
-            if link_target.is_file():
-                shutil.copy2(link_target, link_name)
-            else:
-                shutil.copytree(link_target, link_name)
+            copy(target, name)
         else:
-            # create the symlink
-            link_name.symlink_to(link_target)
+            name.symlink_to(target)
     except PermissionError:
         print(
             f"Skipping {link_name} due to missing perms",
@@ -105,12 +138,38 @@ def install_one(name, target):
         )
 
 
-def dictmap(op, subject):
+def remove(path: Path):
+    if not (path.exists() or path.is_symlink()):
+        # can't delete something that doesn't exist
+        return
+
+    if path.is_file() or path.is_symlink():
+        path.unlink()
+    else:
+        shutil.rmtree(path)
+
+
+def copy(source: Path, to: Path):
+    if source.is_file():
+        shutil.copy2(source, to)
+    else:
+        shutil.copytree(source, to)
+
+
+def kvmap(op, subject):
     """
     Applies `op`, a callable accepting the key and value as parameters,
     to the dictionary `subject`.
     """
     return dict(starmap(op, subject.items()))
+
+
+def keymap(op, subject):
+    return kvmap(lambda k, v: (op(k), v), subject)
+
+
+def valuemap(op, subject):
+    return kvmap(lambda k, v: (k, op(v)), subject)
 
 
 def expanduser(path, root=ROOT, user=USER):
@@ -133,37 +192,38 @@ def parse_args():
     )
     parser.add_argument("--root", action="store", default=ROOT)
     parser.add_argument("--user", action="store", default=USER)
-    parser.add_argument("--exclude-nixos", action="store_true")
-    parser.add_argument("--actually-install", action="store_true")
+    parser.add_argument(
+        "--only-user",
+        action="store_true",
+        help="Do not copy system files like /etc/nixos.",
+    )
+    parser.add_argument(
+        "--actually-install", action="store_true", help="Copy instead of symlinking."
+    )
+    parser.add_argument(
+        "-v",
+        "--verbose",
+        action="store_true",
+        help="Print every single entry that is processed.",
+    )
+    parser.add_argument(
+        "-n",
+        "--dry-run",
+        action="store_true",
+        help="Do not actually perform any changes.",
+    )
     return parser.parse_args()
-
-
-def remove(path: Path):
-    if not path.exists():
-        # can't delete something that doesn't exist
-        return
-
-    if path.is_file() or path.is_symlink():
-        path.unlink()
-    else:
-        shutil.rmtree(path)
 
 
 def main():
     args = parse_args()
-    if not args.exclude_nixos:
+    if not args.only_user:
         ensure_root(
             "Should be run as root, since it also symlinks /etc/nixos. "
-            "Prepare for some errors (or run with --exclude-nixos)",
+            "Prepare for some errors (or run with --only-user)",
             fail_fast=False,
         )
-    distribute_symlinks(
-        user=args.user,
-        root=args.root,
-        exclude_nixos=args.exclude_nixos,
-        no_backup=args.no_backup,
-        actually_install=args.actually_install,
-    )
+    distribute_symlinks(**vars(args))
 
 
 if __name__ == "__main__":

@@ -389,11 +389,10 @@ in {
           if config.fonts.fontDir.enable
           then "/run/current-system/sw/share/X11/fonts"  # not sure if I should upstream this
           else "";
-        QT_PLUGIN_PATH =
-          if cfg.wayland
-          then map (plugin: "${plugin}/lib") (with pkgs; [libsForQt5.qtwayland])
-          else [];
-      };
+      } // (if cfg.wayland then {
+        QT_PLUGIN_PATH = map (plugin: "${plugin}/lib") (with pkgs; [libsForQt5.qtwayland]);
+        XDG_CURRENT_DESKTOP = "sway";
+      } else {});
 
       shellAliases = {
         l = "ls -lh --group-directories-first --sort ext";
