@@ -14,7 +14,7 @@ new="$gcroots/elusive-new"
 # 2. rebase from $(readlink $current) to $(readlink $new)
 # 3. move $new to $current
 
-state="$state/elusive"
+state="$state_local/elusive"
 
 # step 1
 begin building image

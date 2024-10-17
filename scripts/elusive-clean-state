@@ -1,7 +1,7 @@
 #!/usr/bin/env zsh
 set -eu
 . _util
-state=$state/elusive
+state=$state_local/elusive
 
 for overlay in $state/*; do
   part $overlay

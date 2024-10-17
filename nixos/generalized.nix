@@ -383,6 +383,7 @@ in {
         adapta-gtk-theme adapta-kde-theme
         breeze-icons volantes-cursors
         qalculate-gtk
+        glib
       ] else []);
 
       sessionVariables = {

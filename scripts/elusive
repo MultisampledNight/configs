@@ -15,7 +15,7 @@ project="$1"
 shift
 
 base="$(realpath $gcroots)/elusive/base.qcow2"
-overlay="$state/elusive/$project/overlay.qcow2"
+overlay="$state_local/elusive/$project/overlay.qcow2"
 
 if [[ ! -r $base ]]; then
   error base image does not exist

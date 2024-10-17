@@ -54,4 +54,5 @@ complete() {
 gcroots="/nix/var/nix/gcroots/per-user/$USER"
 zukunft="$HOME/zukunftslosigkeit"
 config="$zukunft/configs"
-state="$zukunft/state"
+state_local="$zukunft/state/local"
+state_share="$zukunft/state/share"
