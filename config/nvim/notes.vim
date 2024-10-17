@@ -185,8 +185,9 @@ function Enter()
   else
     let marker = ""
   endif
+  let concretize_indent = " \<BS>"
 
-  exe $"norm! {insertion_start}\<Enter>{marker}\<Esc>"
+  exe $"norm! {insertion_start}\<Enter>{concretize_indent}{marker}\<Esc>"
   call feedkeys("\<Right>")
 endfunction
 
