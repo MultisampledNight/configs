@@ -290,6 +290,12 @@ in {
       hostName = cfg.hostName;
       wireless.iwd.enable = cfg.wireless.wlan;
       networkmanager.enable = false;
+
+      nat = mkIf (cfg.externalInterface != null) {
+        enable = true;
+        enableIPv6 = true;
+        externalInterface = cfg.externalInterface;
+      };
     };
     time.timeZone = "Europe/Berlin";
 
