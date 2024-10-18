@@ -10,11 +10,6 @@ let
       (valueOp value)
     );
 in {
-  imports =
-    [
-      ./development.nix
-    ];
-
   boot.supportedFilesystems = ["ntfs"];
 
   sound.enable = true;

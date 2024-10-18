@@ -21,19 +21,19 @@ in {
       black delta
       inotify-tools geoipWithDatabase
       sshfs
-      cfg.pkgs-unstable.godot_4
 
       # languages (for Rust it's probably better to directly use a shell.nix instead)
       python3 black
-      jdk
       llvmPackages_latest.llvm llvmPackages_latest.bintools llvmPackages_latest.lld
       clang sccache
 
       direnv
     ]
     ++ (if cfg.graphical then [
-        ghidra sqlitebrowser cfg.pkgs-unstable.neovide
-        jetbrains.idea-community
+      cfg.pkgs-unstable.godot_4
+      cfg.pkgs-unstable.neovide
+      ghidra sqlitebrowser
+      jetbrains.idea-community
     ] else [])
     ++ (if cfg.videoDriver == "nvidia" then [
       cuda
@@ -121,9 +121,7 @@ in {
       };
     };
 
-    git.lfs = {
-      enable = true;
-    };
+    git.lfs.enable = true;
   };
 
   fonts = mkIf cfg.graphical {

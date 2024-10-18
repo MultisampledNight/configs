@@ -210,6 +210,7 @@ in {
   };
 
   config = {
+    imports = [./development.nix];
     boot = {
       loader = if cfg.boot == "uefi" then {
         systemd-boot = {
