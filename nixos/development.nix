@@ -7,7 +7,7 @@ let
   customVimPlugins = cfg.pkgs-unstable.vimPlugins.extend (
     cfg.pkgs-unstable.callPackage ./neovim/custom-plugins.nix {}
   );
-  cuda = cfg.pkgs-unstable.cudatoolkit;
+  cudatk = cfg.pkgs-unstable.cudatoolkit;
   nvidia = config.boot.kernelPackages.nvidia_x11;
 in {
   documentation = {
@@ -36,7 +36,7 @@ in {
       jetbrains.idea-community
     ] else [])
     ++ (if cfg.videoDriver == "nvidia" then [
-      cuda
+      cudatk
       nvidia
     ] else []);
 
@@ -53,9 +53,9 @@ in {
     }
     // (if cfg.videoDriver == "nvidia" then {
       # both required for blender
-      CUDA_PATH = "${cuda}";
+      CUDA_PATH = "${cudatk}";
       CYCLES_CUDA_EXTRA_CFLAGS = concatStringsSep " " [
-        "-I${cuda}/targets/x86_64-linux/include"
+        "-I${cudatk}/targets/x86_64-linux/include"
         "-I${nvidia}/lib"
       ];
     } else {})
