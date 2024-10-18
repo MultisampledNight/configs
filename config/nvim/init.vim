@@ -609,7 +609,7 @@ lspconfig.texlab.setup {
   },
 }
 lspconfig.tsserver.setup {}
-lspconfig.typst_lsp.setup {}
+-- lspconfig.typst_lsp.setup {}
 
 require("trouble").setup({
   open_no_results = true,

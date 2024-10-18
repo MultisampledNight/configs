@@ -148,6 +148,7 @@ in {
 
   generalized = {
     hostName = name;
+    boot = null;
     baremetal = false;
     ssh = true;
     wayland = true;

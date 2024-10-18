@@ -34,6 +34,19 @@ let
   error = "${fg 1}!${reset}";
 in {
   options.generalized = {
+    boot = mkOption {
+      type = types.oneOf ["uefi" "bios" null];
+      default = "uefi";
+      description = ''
+        How the interface talks to the firmware. Advice:
+
+        - Most likely you want `"uefi"`.
+        - If that doesn't work, only then use `"bios"`.
+        - If you really want to handle booting yourself,
+          e.g. for VM images, only then use `null`.
+      '';
+    };
+
     hostName = mkOption {
       type = types.strMatching
         "^$|^[[:alnum:]]([[:alnum:]_-]{0,61}[[:alnum:]])?$";
@@ -198,16 +211,18 @@ in {
 
   config = {
     boot = {
-      loader = {
+      loader = if cfg.boot == "uefi" then {
         systemd-boot = {
-          enable = cfg.baremetal;
+          enable = true;
           editor = false;
           consoleMode = "auto";
           configurationLimit = 256;
         };
         grub.enable = false;
-        efi.canTouchEfiVariables = cfg.baremetal;
-      };
+        efi.canTouchEfiVariables = true;
+      } else if cfg.boot == "bios" then {
+        grub.enable = true;
+      } else {};
 
       kernelPackages = mkDefault (
         if cfg.profileGuided
