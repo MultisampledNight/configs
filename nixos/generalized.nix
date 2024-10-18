@@ -35,7 +35,7 @@ let
 in {
   options.generalized = {
     boot = mkOption {
-      type = types.oneOf ["uefi" "bios" null];
+      type = types.nullOr (types.enum ["uefi" "bios"]);
       default = "uefi";
       description = ''
         How the interface talks to the firmware. Advice:
