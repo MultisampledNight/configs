@@ -11,10 +11,12 @@
 # a
 # ```
 
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, ... } @ args:
 
 with lib;
 {
+  term = import ./term.nix args;
+
   # Shorthand for generalized's configuration, usually done by the end-user.
   cfg = config.generalized;
 
@@ -42,4 +44,16 @@ with lib;
       };
     in
       import tree opts;
+
+  toSudoers = dense: concatStringsSep "\n" (
+    mapAttrsToList (name: value: "Defaults " + (
+      if (isBool value) then
+        (optionalString (!value) "!") + name
+      else if (isString value) then
+        "${name}=\"${value}\""
+      else
+        "${name}=${toString value}"
+    ))
+    dense
+  );
 }
