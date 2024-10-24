@@ -14,7 +14,7 @@ with import ./prelude args;
     mkIf cfg.gaming {
       nichthemeron = {
         isNormalUser = true;
-        extraGroups = if cfg.graphical then ["input"] else [];
+        extraGroups = condList cfg.graphical ["input"];
         shell = pkgs.zsh;
       };
     };
@@ -81,7 +81,7 @@ with import ./prelude args;
       pulseaudio-ctl playerctl
       vde2 lm_sensors
     ]
-    ++ (if cfg.graphical then [
+    ++ (condList cfg.graphical [
       # normal applications
       tor-browser-bundle-bin thunderbird
       xournalpp
@@ -107,11 +107,11 @@ with import ./prelude args;
       zathura
       scrcpy
       fractal signal-desktop
-    ]) else [])
-    ++ (if cfg.xorg then [
+    ]))
+    ++ (condList cfg.xorg [
       xorg.xauth rofi flameshot
-    ] else [])
-    ++ (if cfg.multimedia then [
+    ])
+    ++ (condList cfg.multimedia [
       # video
       # OBS Studio and its plugins
       (wrapOBS {
@@ -126,7 +126,7 @@ with import ./prelude args;
       # audio
       audacity lmms musescore vcv-rack polyphone
       easyeffects
-    ] else []);
+    ]);
 
     sessionVariables = {
       BROWSER = "firefox";

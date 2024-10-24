@@ -28,27 +28,26 @@ in {
 
       direnv
     ]
-    ++ (if cfg.graphical then [
+    ++ (condList cfg.graphical [
       unstable.godot_4
       unstable.neovide
       ghidra sqlitebrowser
       jetbrains.idea-community
       jetbrains.pycharm-community
-    ] else [])
-    ++ (if cfg.videoDriver == "nvidia" then [
+    ])
+    ++ (condList (cfg.videoDriver == "nvidia") [
       cudatk
       nvidia
-    ] else []);
+    ]);
 
     sessionVariables = {
       VK_ICD_FILENAMES =
         # hacky but who cares, it's semi-ensured to be there through hardware.opengl.extraPackages anyway
-        if cfg.videoDriver != null
-        then [
-          "/run/opengl-driver/share/vulkan/icd.d/${cfg.videoDriver}_icd.x86_64.json"
-          "/run/opengl-driver-32/share/vulkan/icd.d/${cfg.videoDriver}_icd.i686.json"
-        ]
-        else [];
+        condList (cfg.videoDriver != null)
+          [
+            "/run/opengl-driver/share/vulkan/icd.d/${cfg.videoDriver}_icd.x86_64.json"
+            "/run/opengl-driver-32/share/vulkan/icd.d/${cfg.videoDriver}_icd.i686.json"
+          ];
       NEOVIDE_FORK = "1";
     }
     // (if cfg.videoDriver == "nvidia" then {

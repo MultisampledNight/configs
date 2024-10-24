@@ -189,16 +189,13 @@ with import ./prelude args;
         enable = true;
         driSupport = true;
         driSupport32Bit = true; # :clueless:
-        extraPackages = with pkgs;
-          if cfg.videoDriver == "intel"
-            then [mesa.drivers intel-media-driver intel-compute-runtime]
-          else if cfg.videoDriver == "nvidia"
-            then [config.hardware.nvidia.package]
-          else [];
-        extraPackages32 =
-          if cfg.videoDriver == "nvidia"
-            then [config.hardware.nvidia.package.lib32]
-          else [];
+        extraPackages = with pkgs; {
+          intel = [mesa.drivers intel-media-driver intel-compute-runtime];
+          nvidia = [config.hardware.nvidia.package];
+        }.${cfg.videoDriver} or [];
+        extraPackages32 = condList
+          (cfg.videoDriver == "nvidia")
+          [config.hardware.nvidia.package.lib32];
       };
 
       nvidia = if cfg.videoDriver == "nvidia"
@@ -240,8 +237,8 @@ with import ./prelude args;
         isNormalUser = true;
         extraGroups =
           ["wheel" "plugdev" "antisuns" "kvm" "scanner" "lp"]
-          ++ (if cfg.graphical then ["input" "video" "audio"] else [])
-          ++ (if config.programs.adb.enable then ["adbusers"] else []);
+          ++ (condList cfg.graphical ["input" "video" "audio"])
+          ++ (condList config.programs.adb.enable ["adbusers"]);
         shell = pkgs.zsh;
       };
 
@@ -316,25 +313,25 @@ with import ./prelude args;
 
           unstable.helix
         ]
-        ++ (if cfg.wireless.wlan then [iw] else [])
-        ++ (if cfg.xorg then [xclip] else [])
-        ++ (if cfg.graphical then [
+        ++ (condList cfg.wireless.wlan [iw])
+        ++ (condList cfg.xorg [xclip])
+        ++ (condList cfg.graphical [
           speedcrunch
           qalculate-gtk
           glib
           # themes
           adapta-gtk-theme adapta-kde-theme
           breeze-icons volantes-cursors
-        ] else [])
+        ])
       ) ++ (with pkgs.unstable;
-        (if cfg.wayland then [
+        (condList cfg.wayland [
           fuzzel waybar grim slurp swappy hyprpicker fnott
           swaybg swaylock wl-clipboard
           waypipe
-        ] else [])
-        ++ (if cfg.graphical then [
+        ])
+        ++ (condList cfg.graphical [
           alacritty
-        ] else [])
+        ])
       );
 
       sessionVariables = {
