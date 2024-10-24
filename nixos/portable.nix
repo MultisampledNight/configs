@@ -1,10 +1,7 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, ... } @ args:
 
 with lib;
-let
-  cfg = config.generalized;
-  light-please = pkgs.unstable.callPackage ./packages/light-please/default.nix {};
-in
+with import ./prelude args;
 {
   imports = [
     ./desktop.nix
@@ -23,8 +20,7 @@ in
     environment.systemPackages = with pkgs; [
       mdadm
       acpi brightnessctl
-      xournalpp
-      light-please
+      custom.light-please
     ];
 
     specialisation.hardened.configuration = {

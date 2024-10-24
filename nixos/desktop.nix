@@ -1,15 +1,8 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, ... } @ args:
 
 with lib;
-let
-  cfg = config.generalized;
-  layaway = pkgs.unstable.callPackage ./packages/layaway/default.nix {};
-  mapKeyValue = keyOp: valueOp: mapAttrs'
-    (key: value: nameValuePair
-      (keyOp key)
-      (valueOp value)
-    );
-in {
+with import ./prelude args;
+{
   boot.supportedFilesystems = ["ntfs"];
 
   sound.enable = true;
@@ -91,6 +84,7 @@ in {
     ++ (if cfg.graphical then [
       # normal applications
       tor-browser-bundle-bin thunderbird
+      xournalpp
       keepassxc
       gimp inkscape scribus
       libresprite
@@ -104,9 +98,9 @@ in {
       gucharmap
       evince
       gnome.gnome-boxes
-      pkgs.unstable.blender
 
-      layaway
+      unstable.blender
+      custom.layaway
     ] ++ (with pkgs.unstable; [
       # zathura for viewing, evince for live-reloading
       # since zathura flickers white when reloading, but evince does so only with the background color
@@ -451,7 +445,7 @@ in {
       };
 
       preferences = concatMapAttrs (prefix:
-        mapKeyValue 
+        mapKv 
           (key: if prefix == ""
             then key
             else "${prefix}.${key}")
@@ -501,15 +495,12 @@ in {
   environment.etc."thunderbird/policies/policies.json".source =
     let
       json = (pkgs.formats.json {}).generate "thunderbird-policies.json";
-      preference = value: {
-        Value = value;
-        Status = "locked";
-      };
+      preferences = mapKv
+        (key: "intl.date_time.pattern_override.${key}")
+        (value: { Value = value; Status = "locked"; });
     in json {
       policies = {
-        Preferences = mapKeyValue
-          (key: "intl.date_time.pattern_override.${key}")
-          preference
+        Preferences = preferences
           # adjust to adhere to RFC 3339 (apart from the space separator)
           # and that even regardless of locale, whew
           # https://support.mozilla.org/en-US/kb/customize-date-time-formats-thunderbird

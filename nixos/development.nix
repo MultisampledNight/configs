@@ -1,9 +1,8 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, ... } @ args:
 
 with lib;
+with import ./prelude args;
 let
-  cfg = config.generalized;
-
   customVimPlugins = pkgs.unstable.vimPlugins.extend (
     pkgs.unstable.callPackage ./neovim/custom-plugins.nix {}
   );

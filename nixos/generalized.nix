@@ -1,22 +1,11 @@
 # Help is available in the configuration.nix(5) man page and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, ... } @ args:
 
 with lib;
+with import ./prelude args;
 let
-  cfg = config.generalized;
-
   indent = strings.replicate 7 " ";
-
-  nixpkgsFromCommit = { rev, hash, opts ? {} }:
-    let
-      tree = pkgs.fetchzip {
-        name = "nixpkgs-${rev}";
-        url = "https://github.com/nixos/nixpkgs/archive/${rev}.tar.gz";
-        hash = hash;
-      };
-    in
-      import tree opts;
 
   # see https://en.wikipedia.org/wiki/ANSI_escape_code
   # why they are exactly here? good question, had no other place to put them
@@ -526,6 +515,7 @@ in {
     in [
       (final: prev: {
         unstable = unstablePkgs;
+        custom = import ./packages { pkgs = prev; };
       })
       (final: prev: {
         mpv = prev.mpv.override {
