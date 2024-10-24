@@ -1,4 +1,4 @@
-{ pkgs ? import <nixpkgs> {} }:
+{ pkgs ? import <nixpkgs> {}, extraPkgs ? [] }:
 
 pkgs.mkShell rec {
   buildInputs = with pkgs; [
@@ -36,7 +36,7 @@ pkgs.mkShell rec {
     python3
     renderdoc
     gnuplot
-  ];
+  ] ++ extraPkgs;
 
   CARGO_BUILD_RUSTDOCFLAGS="--default-theme=ayu";
   RUSTC_VERSION = pkgs.lib.strings.removeSuffix "\n" (
