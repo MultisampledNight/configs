@@ -3,7 +3,7 @@
 with lib;
 let
   cfg = config.generalized;
-  layaway = cfg.pkgs-unstable.callPackage ./packages/layaway/default.nix {};
+  layaway = pkgs.unstable.callPackage ./packages/layaway/default.nix {};
   mapKeyValue = keyOp: valueOp: mapAttrs'
     (key: value: nameValuePair
       (keyOp key)
@@ -104,10 +104,10 @@ in {
       gucharmap
       evince
       gnome.gnome-boxes
-      cfg.pkgs-unstable.blender
+      pkgs.unstable.blender
 
       layaway
-    ] ++ (with cfg.pkgs-unstable; [
+    ] ++ (with pkgs.unstable; [
       # zathura for viewing, evince for live-reloading
       # since zathura flickers white when reloading, but evince does so only with the background color
       zathura

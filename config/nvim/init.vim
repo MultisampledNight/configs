@@ -539,7 +539,6 @@ function AutoWrite(target)
 
   augroup END
 endfunction
-call AutoWrite(v:true)
 
 function UpdateIfPossible()
   if &buftype == ""
@@ -624,9 +623,6 @@ require("trouble").setup({
 
 require("nvim-treesitter.configs").setup {
   highlight = {
-    enable = true,
-  },
-  indent = {
     enable = true,
   },
 }

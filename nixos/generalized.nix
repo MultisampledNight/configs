@@ -158,55 +158,6 @@ in {
       default = false;
       description = "If you want to record, produce and edit videos, music and audio. Only in effect on non-server setups.";
     };
-
-    pkgs-unstable = mkOption {
-      type = types.pkgs;
-      default = import <nixos-unstable> {
-        config = {
-          allowUnfreePredicate = pkg: (
-            (builtins.elem (lib.getName pkg) [
-              "nvidia-x11"
-              "nvidia-settings"
-              "vimplugin-treesitter-grammar-cuda_merged"
-              "blender"
-              # those below are all just for CUDA it's so joever
-              "libnpp"
-            ]) || (
-              any
-                (prefix: hasPrefix prefix (lib.getName pkg))
-                ["cuda" "libcu" "libnv"]
-            )
-          );
-        };
-
-        overlays = [
-          (final: prev: if cfg.profileGuided then {
-            godot_4 = prev.godot_4.override {
-              stdenv = final.fastStdenv;
-            };
-          } else {})
-          (final: prev: if cfg.profileGuided then {
-            linuxZenFast = prev.linuxPackagesFor (prev.linuxKernel.kernels.linux_zen.override {
-              stdenv = final.fastStdenv;
-            });
-          } else {})
-          (final: prev: if (cfg.videoDriver == "nvidia" && cfg.wayland) then {
-            # blatantly taken from https://wiki.hyprland.org/hyprland-wiki/pages/Nvidia/
-            wlroots = prev.wlroots.overrideAttrs (finalAttrs: prevAttrs: {
-              postPatch = (prev.postPatch or "") + ''
-                substituteInPlace render/gles2/renderer.c --replace "glFlush();" "glFinish();"
-              '';
-            });
-          } else {})
-          (final: prev: if (cfg.videoDriver == "nvidia") then {
-            blender = prev.blender.override {
-              cudaSupport = true;
-            };
-          } else {})
-        ];
-      };
-      description = "From where to pull unstable packages.";
-    };
   };
 
   imports = [./development.nix];
@@ -228,8 +179,8 @@ in {
 
       kernelPackages = mkDefault (
         if cfg.profileGuided
-        then cfg.pkgs-unstable.linuxZenFast
-        else cfg.pkgs-unstable.linuxKernel.packages.linux_zen
+        then pkgs.unstable.linuxZenFast
+        else pkgs.unstable.linuxKernel.packages.linux_zen
       );
 
       tmp.cleanOnBoot = true;
@@ -378,36 +329,41 @@ in {
     };
 
     environment = {
-      systemPackages = with pkgs; [
-        curl rsync rclone magic-wormhole-rs
-        efibootmgr usbutils
-        traceroute
-        fd ripgrep
-        tree
-        file pv
-        ffmpeg mpv jq unzip zip
-        sqlite-interactive
-        btop sysstat
-        hexyl
-      ]
-      ++ (with cfg.pkgs-unstable; [
-        helix
-      ])
-      ++ (if cfg.wireless.wlan then [iw] else [])
-      ++ (if cfg.xorg then [xclip] else [])
-      ++ (if cfg.wayland then with cfg.pkgs-unstable; [
-        fuzzel waybar grim slurp swappy hyprpicker fnott
-        swaybg swaylock wl-clipboard
-        waypipe
-      ] else [])
-      ++ (if cfg.graphical then [
-        cfg.pkgs-unstable.alacritty speedcrunch
-        # themes
-        adapta-gtk-theme adapta-kde-theme
-        breeze-icons volantes-cursors
-        qalculate-gtk
-        glib
-      ] else []);
+      systemPackages =
+        (with pkgs; [
+          curl rsync rclone magic-wormhole-rs
+          efibootmgr usbutils
+          traceroute
+          fd ripgrep
+          tree
+          file pv
+          ffmpeg mpv jq unzip zip
+          sqlite-interactive
+          btop sysstat
+          hexyl
+
+          unstable.helix
+        ]
+        ++ (if cfg.wireless.wlan then [iw] else [])
+        ++ (if cfg.xorg then [xclip] else [])
+        ++ (if cfg.graphical then [
+          speedcrunch
+          qalculate-gtk
+          glib
+          # themes
+          adapta-gtk-theme adapta-kde-theme
+          breeze-icons volantes-cursors
+        ] else [])
+      ) ++ (with pkgs.unstable;
+        (if cfg.wayland then [
+          fuzzel waybar grim slurp swappy hyprpicker fnott
+          swaybg swaylock wl-clipboard
+          waypipe
+        ] else [])
+        ++ (if cfg.graphical then [
+          alacritty
+        ] else [])
+      );
 
       sessionVariables = {
         TYPST_FONT_PATHS =
@@ -428,7 +384,9 @@ in {
         rebb = "sudo nixos-rebuild boot";
       };
 
-      gnome.excludePackages = with pkgs.gnome; [cheese epiphany geary tali iagno hitori atomix evince];
+      gnome.excludePackages = with pkgs.gnome; [
+        cheese epiphany geary tali iagno hitori atomix evince
+      ];
       shells = with pkgs; [bashInteractive zsh];
     };
 
@@ -454,7 +412,7 @@ in {
 
       sway = {
         enable = cfg.wayland;
-        package = cfg.pkgs-unstable.sway;
+        package = pkgs.unstable.sway;
         extraSessionCommands = ''
           export PATH=$HOME/zukunftslosigkeit/scripts:$PATH
           export SDL_VIDEODRIVER=wayland
@@ -520,7 +478,55 @@ in {
       kvmgt.enable = true;
     };
 
-    nixpkgs.overlays = [
+    nixpkgs.overlays = let
+      unstablePkgs = import <nixos-unstable> {
+        config = {
+          allowUnfreePredicate = pkg: (
+            (builtins.elem (lib.getName pkg) [
+              "nvidia-x11"
+              "nvidia-settings"
+              "vimplugin-treesitter-grammar-cuda_merged"
+              "blender"
+              # those below are all just for CUDA it's so joever
+              "libnpp"
+            ]) || (
+              any
+                (prefix: hasPrefix prefix (lib.getName pkg))
+                ["cuda" "libcu" "libnv"]
+            )
+          );
+        };
+
+        overlays = [
+          (final: prev: if cfg.profileGuided then {
+            godot_4 = prev.godot_4.override {
+              stdenv = final.fastStdenv;
+            };
+          } else {})
+          (final: prev: if cfg.profileGuided then {
+            linuxZenFast = prev.linuxPackagesFor (prev.linuxKernel.kernels.linux_zen.override {
+              stdenv = final.fastStdenv;
+            });
+          } else {})
+          (final: prev: if (cfg.videoDriver == "nvidia" && cfg.wayland) then {
+            # blatantly taken from https://wiki.hyprland.org/hyprland-wiki/pages/Nvidia/
+            wlroots = prev.wlroots.overrideAttrs (finalAttrs: prevAttrs: {
+              postPatch = (prev.postPatch or "") + ''
+                substituteInPlace render/gles2/renderer.c --replace "glFlush();" "glFinish();"
+              '';
+            });
+          } else {})
+          (final: prev: if (cfg.videoDriver == "nvidia") then {
+            blender = prev.blender.override {
+              cudaSupport = true;
+            };
+          } else {})
+        ];
+      };
+    in [
+      (final: prev: {
+        unstable = unstablePkgs;
+      })
       (final: prev: {
         mpv = prev.mpv.override {
           scripts = with final.mpvScripts; [

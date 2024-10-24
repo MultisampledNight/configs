@@ -4,10 +4,10 @@ with lib;
 let
   cfg = config.generalized;
 
-  customVimPlugins = cfg.pkgs-unstable.vimPlugins.extend (
-    cfg.pkgs-unstable.callPackage ./neovim/custom-plugins.nix {}
+  customVimPlugins = pkgs.unstable.vimPlugins.extend (
+    pkgs.unstable.callPackage ./neovim/custom-plugins.nix {}
   );
-  cudatk = cfg.pkgs-unstable.cudatoolkit;
+  cudatk = pkgs.unstable.cudatoolkit;
   nvidia = config.boot.kernelPackages.nvidia_x11;
 in {
   documentation = {
@@ -30,10 +30,11 @@ in {
       direnv
     ]
     ++ (if cfg.graphical then [
-      cfg.pkgs-unstable.godot_4
-      cfg.pkgs-unstable.neovide
+      unstable.godot_4
+      unstable.neovide
       ghidra sqlitebrowser
       jetbrains.idea-community
+      jetbrains.pycharm-community
     ] else [])
     ++ (if cfg.videoDriver == "nvidia" then [
       cudatk
@@ -81,7 +82,7 @@ in {
   programs = {
     neovim = {
       defaultEditor = true;
-      package = cfg.pkgs-unstable.neovim-unwrapped;
+      package = pkgs.unstable.neovim-unwrapped;
       withNodeJs = true;
       withRuby = false;
 

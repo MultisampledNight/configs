@@ -29,7 +29,9 @@ exec systemctl --user import-environment XDG_CURRENT_DESKTOP WAYLAND_DISPLAY DIS
 exec gsettings set org.gnome.desktop.interface color-scheme prefer-dark
 exec gsettings set org.gnome.desktop.interface gtk-theme Adapta-Nokto-Eta
 exec gsettings set org.gnome.desktop.interface icon-theme breeze-dark
+
 exec_always layaway
+exec fnott
 
 output DP-3 max_render_time 13
 
@@ -65,11 +67,10 @@ input type:touchpad {
     pointer_accel 0.9
 }
 
-exec fnott
-
 bindsym $mod+Tab exec fuzzel
 bindsym $mod+j exec firefox -p fedi
 bindsym $mod+d exec firefox
+bindsym $mod+Shift+d exec tor-browser
 bindsym $mod+u exec discord
 bindsym $mod+a exec firefox -p github
 bindsym $mod+x exec thunderbird

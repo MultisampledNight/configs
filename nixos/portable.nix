@@ -3,7 +3,7 @@
 with lib;
 let
   cfg = config.generalized;
-  light-please = cfg.pkgs-unstable.callPackage ./packages/light-please/default.nix {};
+  light-please = pkgs.unstable.callPackage ./packages/light-please/default.nix {};
 in
 {
   imports = [
@@ -29,12 +29,12 @@ in
 
     specialisation.hardened.configuration = {
       system.nixos.tags = ["hardened"];
-      boot.kernelPackages = cfg.pkgs-unstable.linuxKernel.packages.linux_hardened;
+      boot.kernelPackages = pkgs.unstable.linuxKernel.packages.linux_hardened;
     };
 
     specialisation.kmscon.configuration = {
       system.nixos.tags = ["kmscon" "hardened"];
-      boot.kernelPackages = cfg.pkgs-unstable.linuxKernel.packages.linux_hardened;
+      boot.kernelPackages = pkgs.unstable.linuxKernel.packages.linux_hardened;
 
       generalized = {
         wayland = lib.mkForce false;
