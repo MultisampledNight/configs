@@ -16,6 +16,8 @@
 with lib;
 {
   term = import ./term.nix args;
+  unstable = pkgs.unstable;
+  custom = pkgs.custom;
 
   # Shorthand for generalized's configuration, usually done by the end-user.
   cfg = config.generalized;
@@ -25,6 +27,29 @@ with lib;
     if cond
     then value
     else [];
+
+  # Flattens the given list twice.
+  # 1. The first level is flattened unconditionally.
+  #    It is thought for `with ...;` statements.
+  # 2. The second level needs to be a list with
+  #    the first element being a boolean and
+  #    the second element being another list.
+  #    The list is only included iff the boolean is true.
+  #
+  # An example: unite [
+  #   [
+  #     [true ["meow" "awawa" "mrrp"]
+  #     [false ["nyoom"]]
+  #   ]
+  #   [
+  #     [true ["owo"]]]
+  #   ]
+  # ]
+  # => ["meow" "awawa" "mrrp" "owo"]
+  unite = toplevel: concatLists (
+    concatMap tail
+    (filter head (concatLists toplevel))
+  );
 
   # Maps both keys and values of an attribute set, but each only individually.
   mapKv = keyOp: valueOp: mapAttrs'

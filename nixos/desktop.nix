@@ -72,61 +72,67 @@ with import ./prelude args;
   };
 
   environment = {
-    systemPackages = with pkgs;
-    [
-      # system debugging tools
-      clinfo vulkan-tools pciutils
+    systemPackages = unite [
+      (with pkgs; [
+        [true [
+          # system debugging tools
+          clinfo vulkan-tools pciutils
 
-      # tools
-      pulseaudio-ctl playerctl
-      vde2 lm_sensors
-    ]
-    ++ (condList cfg.graphical [
-      # normal applications
-      tor-browser-bundle-bin thunderbird
-      xournalpp
-      keepassxc
-      gimp inkscape scribus
-      libresprite
-      libreoffice-fresh
-      pavucontrol carla
-      mate.eom
-      dunst virt-manager qemu_kvm
-      qt5ct
-      helvum
-      libsForQt5.kruler
-      gucharmap
-      evince
-      gnome.gnome-boxes
+          # tools
+          pulseaudio-ctl playerctl
+          vde2 lm_sensors
+        ]]
+        [cfg.graphical [
+          # normal applications
+          tor-browser-bundle-bin thunderbird
+          xournalpp
+          keepassxc
+          gimp inkscape scribus
+          libresprite
+          libreoffice-fresh
+          pavucontrol
+          helvum
+          mate.eom
+          dunst qemu_kvm
+          qt5ct
+          gucharmap
+          evince
+          kdePackages.kruler
+        ]]
+        [cfg.xorg [
+          xorg.xauth rofi flameshot
+        ]]
+        [cfg.multimedia [
+          # video
+          # OBS Studio and its plugins
+          (wrapOBS {
+            plugins = with obs-studio-plugins; [
+              obs-vkcapture
+              obs-pipewire-audio-capture
+              input-overlay
+            ];
+          })
+          libsForQt5.kdenlive
 
-      unstable.blender
-      custom.layaway
-    ] ++ (with pkgs.unstable; [
-      # zathura for viewing, evince for live-reloading
-      # since zathura flickers white when reloading, but evince does so only with the background color
-      zathura
-      scrcpy
-      fractal signal-desktop
-    ]))
-    ++ (condList cfg.xorg [
-      xorg.xauth rofi flameshot
-    ])
-    ++ (condList cfg.multimedia [
-      # video
-      # OBS Studio and its plugins
-      (wrapOBS {
-        plugins = with obs-studio-plugins; [
-          obs-vkcapture
-          obs-pipewire-audio-capture
-          input-overlay 
-        ];
-      })
-      libsForQt5.kdenlive
-
-      # audio
-      audacity lmms musescore vcv-rack polyphone
-      easyeffects
-    ]);
+          # audio
+          audacity lmms musescore vcv-rack polyphone
+          easyeffects
+        ]]
+      ])
+      (with unstable; [
+        [true [
+          # zathura for viewing, evince for live-reloading
+          # since zathura flickers white when reloading, but evince does so only with the background color
+          zathura
+          scrcpy
+          fractal signal-desktop
+        ]]
+        [cfg.graphical [blender]]
+      ])
+      (with custom; [
+        [true [layaway]]
+      ])
+    ];
 
     sessionVariables = {
       BROWSER = "firefox";

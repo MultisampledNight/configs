@@ -15,30 +15,37 @@ in {
   };
 
   environment = {
-    systemPackages = with pkgs;
-    [
-      black delta
-      inotify-tools geoipWithDatabase
-      sshfs
+    systemPackages = unite [
+      (with pkgs; [
+        [true [
+          black delta
+          inotify-tools geoipWithDatabase
+          sshfs
 
-      # languages (for Rust it's probably better to directly use a shell.nix instead)
-      python3 black
-      llvmPackages_latest.llvm llvmPackages_latest.bintools llvmPackages_latest.lld
-      clang sccache
+          # languages (for Rust it's probably better to directly use a shell.nix instead)
+          black
+          llvmPackages_latest.llvm llvmPackages_latest.bintools llvmPackages_latest.lld
+          clang sccache
 
-      direnv
-    ]
-    ++ (condList cfg.graphical [
-      unstable.godot_4
-      unstable.neovide
-      ghidra sqlitebrowser
-      jetbrains.idea-community
-      jetbrains.pycharm-community
-    ])
-    ++ (condList (cfg.videoDriver == "nvidia") [
-      cudatk
-      nvidia
-    ]);
+          direnv
+        ]]
+        [cfg.graphical [
+          ghidra sqlitebrowser
+          jetbrains.idea-community
+          jetbrains.pycharm-community
+        ]]
+        [(cfg.videoDriver == "nvidia") [
+          cudatk
+          nvidia
+        ]]
+      ])
+      (with unstable; [
+        [cfg.graphical [
+          godot_4
+          neovide
+        ]]
+      ])
+    ];
 
     sessionVariables = {
       VK_ICD_FILENAMES =

@@ -298,41 +298,45 @@ with import ./prelude args;
     };
 
     environment = {
-      systemPackages =
+      systemPackages = unite [
         (with pkgs; [
-          curl rsync rclone magic-wormhole-rs
-          efibootmgr usbutils
-          traceroute
-          fd ripgrep
-          tree
-          file pv
-          ffmpeg mpv jq unzip zip
-          sqlite-interactive
-          btop sysstat
-          hexyl
+          [true [
+            curl rsync rclone magic-wormhole-rs
+            efibootmgr usbutils
+            traceroute
+            fd ripgrep
+            tree
+            file pv
+            ffmpeg mpv jq unzip zip
+            sqlite-interactive
+            btop sysstat
+            hexyl
 
-          unstable.helix
-        ]
-        ++ (condList cfg.wireless.wlan [iw])
-        ++ (condList cfg.xorg [xclip])
-        ++ (condList cfg.graphical [
-          speedcrunch
-          qalculate-gtk
-          glib
-          # themes
-          adapta-gtk-theme adapta-kde-theme
-          breeze-icons volantes-cursors
+            unstable.helix
+          ]]
+          [cfg.wireless.wlan [iw]]
+          [cfg.xorg [xclip]]
+          [cfg.graphical [
+            speedcrunch
+            qalculate-gtk
+            glib
+            # themes
+            adapta-gtk-theme adapta-kde-theme
+            breeze-icons volantes-cursors
+          ]]
         ])
-      ) ++ (with pkgs.unstable;
-        (condList cfg.wayland [
-          fuzzel waybar grim slurp swappy hyprpicker fnott
-          swaybg swaylock wl-clipboard
-          waypipe
+        (with unstable; [
+          [true [python3]]
+          [cfg.wayland [
+            fuzzel waybar grim slurp swappy hyprpicker fnott
+            swaybg swaylock wl-clipboard
+            waypipe
+          ]]
+          [cfg.graphical [
+            alacritty
+          ]]
         ])
-        ++ (condList cfg.graphical [
-          alacritty
-        ])
-      );
+      ];
 
       sessionVariables = {
         TYPST_FONT_PATHS =
